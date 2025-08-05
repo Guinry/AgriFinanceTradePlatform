@@ -54,17 +54,16 @@ import Subtitle from "../../components/Subtitle.vue";
   padding: 140px 0;
   div{
     font-weight: 500;
-    font-family: 鸿蒙字体Regular;
+    font-family: 鸿蒙字体Regular,serif;
     font-size: 25px;
     color: white;
   }
 }
 
 .content{
-
   font-size: 17px;
   font-weight: 540;
-  text-shadow: 0px 0px 1px #c7c7c7;
+  text-shadow: 0 0 1px #c7c7c7;
   text-align: left;
 }
 </style>

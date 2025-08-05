@@ -34,7 +34,7 @@
         </div>
       </div>
       <hr />
-      <p class="copyright">Copyright © 2025 农业贷款服务平台. 版权所有</p>
+      <p class="copyright">Copyright © 2025 融销通. 版权所有</p>
     </div>
   </footer>
 </template>
@@ -106,6 +106,10 @@ ul li a:hover {
 /* 添加：使版权信息居中 */
 .copyright {
   text-align: center; /* 居中对齐 */
+}
+
+.footer {
+  margin-top: auto;
 }
 </style>
 <script setup lang="ts">

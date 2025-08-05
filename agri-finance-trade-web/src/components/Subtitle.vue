@@ -1,6 +1,6 @@
 <template>
   <div class="subtitle-div">
-    <img src="../assets/img/icon.png">
+    <img src="../assets/img/icon.png" alt="">
     <div class="subtitle-font">
       ——— {{ subtitle }} ———
     </div>
@@ -27,7 +27,7 @@ const props = defineProps({
 <style scoped>
 
 .subtitle-font{
-  font-family: 微软雅黑;
+  font-family: 微软雅黑,serif;
   font-weight: bold;
   font-size: 28px;
   color: black;
@@ -35,7 +35,7 @@ const props = defineProps({
 
 .subtitle-div{
   text-align: center;
-  margin: 40px 0px;
+  margin: 40px 0;
   animation: fadeInAnimation ease 4s;
   animation-iteration-count: 1; /*设置动画播放次数*/
   animation-fill-mode: forwards;

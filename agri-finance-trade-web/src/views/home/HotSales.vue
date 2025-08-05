@@ -115,12 +115,4 @@ const getImgUrl = (imgName) => {
   height: auto;
   animation: 0s ease 0s 1 normal none running none;
 }
-.right{
-  position: absolute;
-  top: 60px;
-  left:80px;
-  width: 504px;
-  height: auto;
-  animation: 0s ease 0s 1 normal none running none;
-}
 </style>

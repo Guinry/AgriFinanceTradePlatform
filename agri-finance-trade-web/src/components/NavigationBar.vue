@@ -1,270 +1,184 @@
 <template>
-  <div class="navigation-bar">
-    <span class="initiator">
-      <div class="logo-content">
-        <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;height: 90px">
-          <span class="logo-text" style="color: #4ab344;display: inline-block;margin-left: -1px">农产品</span>
-          <span class="logo-text" style="color: #9e9d9d;display: inline-block;margin-left: -1px">融销一体平台</span>
-          <img src="../icons/favicon.ico" style="height:60px;margin-left: 500px" alt="" />
-          <span class="logo-text" style="color: #4ab344;display: inline-block;">融销通</span>
-        </div>
+  <header class="header">
+    <div class="logo-nav-container">
+      <img src="../icons/favicon.ico" alt="农产品融销一体平台标志" class="logo-image">
+      <nav>
+        <ul>
+          <li><router-link to="/home">首页</router-link></li>
+          <li><router-link to="/goodsSource">商品货源</router-link></li>
+          <li><router-link to="/purchaseInfo">求购需求</router-link></li>
+          <li><router-link to="#">农业知识</router-link></li>
+          <li><router-link to="#">购物车</router-link></li>
+          <li><router-link to="#">融资申请</router-link></li>
+        </ul>
+      </nav>
+      <div class="actions" v-if="loginUserNickname === ''">
+        <button><a href="javascript:void(0)" @click="Login">登录</a></button>
+        <button><a href="javascript:void(0)" @click="Register">注册</a></button>
       </div>
-
-    </span>
-
-    <div class="menu-content" v-cloak>
-      <el-menu
-        :default-active="$store.state.activeIndex"
-        mode="horizontal"
-        @select="handleSelect"
-        background-color="#4ab344"
-        text-color="#fff"
-        active-text-color="#fff"
-        id="menu">
-        <el-menu-item index="1" class="item" @click="frontBtn">首页</el-menu-item>
-        <el-menu-item index="2" class="item" @click="goodsBtn">商品货源</el-menu-item>
-        <el-menu-item index="3" class="item" @click="purchaseBtn">求购需求</el-menu-item>
-        <el-menu-item index="4" class="item" @click="knowledgesBtn">农业知识</el-menu-item>
-        <el-menu-item index="5" class="item" @click="guideBtn">专家指导</el-menu-item>
-        <el-menu-item index="6" class="item" @click="shopCartBtn">购物车</el-menu-item>
-        <el-sub-menu index="7">
-          <template #title>融资申请</template>
-          <el-menu-item index="7-1" @click="smartMatchBtn">智能匹配</el-menu-item>
-          <el-menu-item index="7-2" @click="financingBtn">融资申请</el-menu-item>
-        </el-sub-menu>
-        <div class="userin" v-if="$store.state.loginUserNickname === ''">
-            <span @click="Login" class="login">登录</span> |
-            <span @click="Register" class="register">注册</span>
-        </div>
-        <el-sub-menu index="8" v-else>
-          <template #title>设置</template>
-          <el-menu-item index="8-1" @click="userPage">个人中心</el-menu-item>
-          <el-menu-item index="8-3" @click="userManage" v-if="$store.getters.isAdmin">用户管理</el-menu-item>
-          <el-menu-item index="8-4" @click="goodsManage" v-if="$store.getters.isAdmin">商品管理</el-menu-item>
-          <el-menu-item index="8-6" @click="logout">退出</el-menu-item>
-        </el-sub-menu>
-      </el-menu>
+      <div class="actions" v-else>
+        <button><a href="javascript:void(0)" @click="userPage">个人中心</a></button>
+        <button><a href="javascript:void(0)" @click="logout">退出</a></button>
+      </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
+// let Base64 = require("js-base64");
+
+// 使用 Composition API
 const store = useStore()
 const router = useRouter()
 
+// 响应式数据
+const avatar = ref("")
+const loginUserNickname = ref("")
+
+// 方法定义
 const handleSelect = (key, keyPath) => {}
+
 const Login = () => {
-  router.push("/login");
+  router.push("/login")
 }
+
 const Register = () => {
-  router.push("/register");
+  router.push("/register")
 }
+
 const logout = () => {
-  store.commit("updateLoginUserNickname", "");
-  store.commit("removeStorage");
-  router.push("/home").catch((err) => err);
+  store.commit("updateLoginUserNickname", "")
+  store.commit("removeStorage")
+  loginUserNickname.value = ""
+  router.push("/home").catch((err) => err)
   if (sessionStorage.getItem("/order/needs/pageCode")) {
-    sessionStorage.removeItem("/order/needs/pageCode");
+    sessionStorage.removeItem("/order/needs/pageCode")
   }
   if (sessionStorage.getItem("/order/goods/pageCode")) {
-    sessionStorage.removeItem("/order/goods/pageCode");
+    sessionStorage.removeItem("/order/goods/pageCode")
   }
   if (sessionStorage.getItem("/user/search/pageCode")) {
-    sessionStorage.removeItem("/user/search/pageCode");
+    sessionStorage.removeItem("/user/search/pageCode")
   }
 }
-const frontBtn = () => {
-  router.push("/home/front").catch((err) => err);
-}
-const purchaseBtn = () => {
-  router.push("/home/purchase").catch((err) => err);
-}
-const goodsBtn = () => {
-  router.push("/home/goods").catch((err) => err);
-}
-const knowledgesBtn = () => {
-  router.push("/home/knowledge").catch((err) => err);
-}
-const guideBtn = () => {
-  router.push("/home/guide").catch((err) => err);
-}
-const shopCartBtn = () => {
-  router.push("/home/shopcart").catch((err) => err);
-}
+
 const userPage = () => {
-  router.push("/home/user").catch((err) => err);
-}
-const addMessagePage = () => {
-  router.push("/home/addmessage").catch((err) => err);
-}
-const handleAbout = () => {
-  router.push("/home/aboutUs").catch((err) => err);
-}
-const goodsManage = () => {
-  router.push("/home/userGood/publishedgoodsAdmin").catch((err) => err)
-}
-const userManage = () => {
-  router.push("/home/usermanage").catch((err) => err);
-}
-const financingBtn = () => {
-  router.push("/home/financing").catch((err) => err);
-}
-const smartMatchBtn = () => {
-  router.push("/home/smartMatch").catch((err) => err);
+  router.push("/home/user").catch((err) => err)
 }
 
+// 生命周期钩子
 onMounted(() => {
-  store.commit("updateActiveIndex", "1");
+  store.commit("updateActiveIndex", "1")
   if (window.localStorage.token) {
-    let token = window.localStorage.token;
-    let arr = token.split(".");
-    let res = atob(arr[1]);  // 使用原生atob替代js-base64
-    store.commit("updateLoginUserNickname", JSON.parse(res).nickname);
-    store.commit("updateLoginUserAvatar", JSON.parse(res).avatar);
-    store.commit("updateRole", JSON.parse(res).role);
+    let token = window.localStorage.token
+    let arr = token.split(".")
+    let res = Base64.decode(arr[1])
+    const nickname = JSON.parse(res).nickname
+    const avatar = JSON.parse(res).avatar
+    const role = JSON.parse(res).role
+    
+    store.commit("updateLoginUserNickname", nickname)
+    store.commit("updateLoginUserAvatar", avatar)
+    store.commit("updateRole", role)
+    
+    loginUserNickname.value = nickname
   }
-  console.log(store.state.loginUserNickname)
+  console.log(loginUserNickname.value)
 })
-
 </script>
 
-<style lang="less" scoped>
-.navigation-bar {
-  width: 100%;
-  height: 160px;
-  .initiator{
-    width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    color: #035D1C;
-    padding: 5px 20px;
-    .logo-content{
-      color: #035D1C;
-      text-align: center;
-      .logo-text{
-        margin-left: 10px;
-        font-size: 36px;
-        font-family: 微软雅黑;
-        font-weight: bold;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        // justify-content: flex-start;
-      }
-    }
-  }
-  .menu-content{
-    height: 60px;
-    background-color: #4ab344 !important;
-  }
-  .el-menu {
-    width: 1100px;
-    margin: 0 auto;
-    height: 60px;
-    .el-menu-item {
-      background-color: #4ab344 !important;
-      height: 60px;
-      line-height: 60px;
-      font-size: 16px;
-      width: 110px;
-      text-align: center;
-    }
-    .el-submenu {
-      .template {
-        background-color: #4ab344 !important;
-        height: 60px;
-        line-height: 60px;
-        font-size: 16px;
-      }
-      .el-submenu__title {
-        font-size: 16px !important;
-        line-height: 60px;
-        height: 60px;
-        background-color: #4ab344;
-      }
-      .el-menu-item {
-        background-color: #4ab344 !important;
-        height: 60px;
-        line-height: 60px;
-        font-size: 16px;
-      }
-      background-color: #4ab344 !important;
-      height: 60px;
-      line-height: 60px;
-      font-size: 16px !important ;
-    }
-  }
-  .login{
-    cursor: pointer;
-  }
-  .register{
-    cursor: pointer;
-  }
-}
-.el-menu.el-menu--horizontal{
-  border-bottom: none;
-}
-.el-menu--horizontal>.el-menu-item.is-active{
-  background-color: white !important;
+<style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 80px; /* 修改: 增加左右内边距 */
+  background-color: #f8f9fa; /* 更改背景颜色 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
 
-.menu-content :deep(.el-submenu__title i){
-  color: #4ab344;
+/* 修改: 图标样式 */
+.logo-image {
+  height: 40px; /* 调整图片高度以适应布局 */
+  width: auto; /* 自动调整宽度保持比例 */
+  margin-right: 80px; /* 修改: 进一步增加 logo 和导航栏之间的间距 */
 }
 
-[v-cloak] {
-  display: none;
+/* 修改: 导航容器样式 */
+.logo-nav-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
 }
 
-.el-menu-item.is-active {
-  color:#4ab344!important;
+nav {
+  display: flex;
+  align-items: center;
 }
 
-.el-submenu__title:focus,
-.el-submenu__title:hover {
-  outline: 0;
-  background-color: white !important;
-  color: #4ab344 !important;
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.el-menu-item:focus,
-.el-menu-item:hover {
-  outline: 0;
-  background-color: white !important;
-  color: #4ab344 !important;
+nav ul li {
+  margin-left: 20px;
 }
 
-.userin  {
+nav ul li a {
+  text-decoration: none; /* 移除下划线 */
+  color: #2c3e50; /* 设置初始颜色 */
   font-size: 16px;
-  height: 60px;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #4CAF50; /* 链接悬停时的颜色 */
+  text-decoration: none; /* 悬停时也移除下划线 */
+}
+
+/* 添加：处理 .actions 内部的 <router-link> 样式 */
+.actions button a {
+  text-decoration: none;
+  color: inherit; /* 继承父元素颜色 */
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* 修改: 确保 actions 右对齐 */
+}
+
+.actions button {
+  border: 2px solid #4CAF50; /* 修改: 边框颜色改为绿色 */
+  padding: 8px 16px; /* 修改: 缩小按钮大小 */
   text-align: center;
-  color: #ffffff;
-  line-height: 60px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* 修改: 减小字体大小 */
+  margin: 4px 8px; /* 修改: 增加按钮间距 */
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-.menu-content :deep(.el-submenu__title i) {
-  color: #e24f4f;
+.actions button:first-child { /* 登录按钮 */
+  background-color: white; /* 修改: 登录按钮背景颜色改为白色 */
+  color: #4CAF50; /* 修改: 登录按钮文本颜色改为绿色 */
 }
 
-:deep(.el-menu--horizontal > .el-submenu .el-submenu__title) {
-  height: 60px;
-  line-height: 60px;
-  font-size: 16px;
-  &:hover{
-    background-color: white !important;
-    color: #4ab344 !important;
-  }
+.actions button:last-child { /* 注册按钮 */
+  background-color: #4CAF50; /* 修改: 注册按钮背景颜色改为绿色 */
+  color: white; /* 修改: 注册按钮文本颜色改为白色 */
 }
 
-.el-menu--horizontal > .el-menu-item:hover {
-  background-color: white !important;
-  color: #4ab344 !important;
+.actions button:hover {
+  background-color: #45a049; /* 按钮悬停时的颜色 */
 }
 </style>
