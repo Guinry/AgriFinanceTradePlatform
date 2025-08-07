@@ -1,7 +1,7 @@
 <!--商品货源-->
 <template>
   <div>
-    <navigation-bar></navigation-bar>
+    <NavigationBar />
     <div class="font-background">
 
       <img src="../../assets/page2/fontback5.png" alt="">
@@ -13,11 +13,11 @@
     <Subtitle subtitle="商品列表" description="买到就是赚到哦~"  style="margin-top:100px;"/>
 
     <div class="home-goods">
-      <GoodsSourse :cgoods="goods" @handleSearch="handleSearch" />
+      <GoodsSource :cgoods="goods" @handleSearch="handleSearch" />
       <Pagination @item-click="pageClick" :cUrl="url" :cTotal="total" :cPageSize="pageSize" />
     </div>
   </div>
-  <footer></footer>
+  <Footer />
 </template>
 
 <script setup>
@@ -25,7 +25,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { selectGoodsPage } from "../../api/order";
-import GoodsSourse from "./GoodsList.vue";
+import GoodsSource from "./GoodsList.vue";
 import Pagination from "../../components/Pagination.vue";
 import Subtitle from "../../components/Subtitle.vue";
 import NavigationBar from "../../components/NavigationBar.vue";

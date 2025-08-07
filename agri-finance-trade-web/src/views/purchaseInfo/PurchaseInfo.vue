@@ -1,6 +1,6 @@
 <template>
   <div>
-    <navigation-bar></navigation-bar>
+    <NavigationBar />
     <div class="font-background">
       <img src="../../assets/page3/fontback3.png" alt="">
       <img src="../../assets/img/fontback.png" alt="" style="margin-top: 20px">
@@ -15,7 +15,7 @@
           :cTotal="total"
           :cPageSize="pageSize"></pagination>
     </div>
-    <footer></footer>
+    <Footer />
   </div>
 </template>
 
