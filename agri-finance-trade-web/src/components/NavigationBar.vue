@@ -8,6 +8,7 @@
           <li><router-link to="/goodsSource">商品货源</router-link></li>
           <li><router-link to="/purchaseInfo">求购需求</router-link></li>
           <li><router-link to="/agriculturalKnowledge">农业知识</router-link></li>
+          <li><router-link to="/expertGuidance">专家指导</router-link></li>
           <li><router-link to="/shoppingCart">购物车</router-link></li>
           <li><router-link to="#">融资申请</router-link></li>
         </ul>

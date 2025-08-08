@@ -13,7 +13,7 @@
         <h3 class="back-title" @click="handleDetail(item)">{{ item.title }}</h3>
         <p class="content">{{ item.content }}</p>
         <span class="initiator">
-          <img src="../../assets/img/up-user.png" @click="handleDetail(item)"/>
+          <img src="../../assets/img/up-user.png" @click="handleDetail(item)" alt=""/>
           {{item.ownName}}
         </span>
       </div>
@@ -84,7 +84,7 @@ const handleDetail = (item) => {
           margin-right: 10px;
           border-radius: 6px;
           filter: brightness(50%);
-          box-shadow: 0px 0px 10px #393939;
+          box-shadow: 0 0 10px #393939;
         }
         .front-title{
 
@@ -106,7 +106,7 @@ const handleDetail = (item) => {
           //标题样式
           color: white;
           font-weight: bold;
-          font-family: 鸿蒙字体Regular;
+          font-family: 鸿蒙字体Regular,serif;
           font-size: 25px;
         }
       }
@@ -136,7 +136,7 @@ const handleDetail = (item) => {
         position: absolute;
         transform: rotateY(180deg);
         .content {
-          font-family: 鸿蒙字体Regular;
+          font-family: 鸿蒙字体Regular,serif;
           font-size:15px;
           font-weight: bold;
           height: 130px;
@@ -154,11 +154,10 @@ const handleDetail = (item) => {
         .initiator {
           color: #bfbfbf;
           img {
-            margin: 0;
             padding: 0;
             width: 20px;
             height: 20px;
-            margin-right: 10px;
+            margin: 0 10px 0 0;
             vertical-align: center;
             border-radius: 6px;
           }

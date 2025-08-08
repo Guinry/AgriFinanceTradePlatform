@@ -19,7 +19,7 @@
           <div class="operation-item"><img src="../../assets/img/fill-in.png" class="operation-img" alt="" />评论</div>
         </div>
         <div class="btn-content">
-          <el-button type="success" plain round @click="addShopcartClick" v-if="data.type == 'goods'">加入购物车</el-button>
+          <el-button type="success" plain round @click="addShopcartClick" v-if="data.type === 'goods'">加入购物车</el-button>
           <el-popover placement="right" width="320" trigger="hover">
             <div>
               <div class="item-sales">卖家姓名：<span class="sales-text">{{updateUserData.userName}}</span></div>
@@ -28,7 +28,7 @@
               <div class="item-sales">更新时间：<span class="sales-text">{{ formatTimer(updateUserData.updateTime) }}</span></div>
             </div>
             <template #reference>
-              <el-button type="danger" @click.once="changeInfo(data.orderId)" v-show="data.type == 'needs'">联系买家</el-button>
+              <el-button type="danger" @click.once="changeInfo(data.orderId)" v-show="data.type === 'needs'">联系买家</el-button>
             </template>
           </el-popover>
         </div>
@@ -45,7 +45,7 @@ import { ElMessage } from 'element-plus'
 import { addOrderToCart } from "../../api/cart";
 import { selectOrderById } from "../../api/order";
 import ChangeMessage from "../../components/ChangeMessage.vue";
-import { selectUserByUsername } from "../../api/user";
+import { selectUserByUsername } from "@/api/user";
 
 const store = useStore()
 const route = useRoute()
@@ -129,7 +129,7 @@ onMounted(() => {
   selectOrderById({
     order_id: route.query.orderId,
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag === true) {
       data.value = res.data;
       getSalesInfo()
     }

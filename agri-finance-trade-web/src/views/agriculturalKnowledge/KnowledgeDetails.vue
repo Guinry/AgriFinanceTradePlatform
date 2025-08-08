@@ -44,8 +44,8 @@
         </div>
       </div>
       <div
-        v-if="commentArray.length == 0"
-        style="width: 100%; text-align: center; margin: 50px 0px"
+        v-if="commentArray.length === 0"
+        style="width: 100%; text-align: center; margin: 50px 0"
       >
         <img src="../../assets/page4/noComments.png" alt="" />
       </div>
@@ -192,11 +192,11 @@ onMounted(() => {
 <style lang="less" scoped>
 .knowlege-detail-container {
   width: 1100px;
-  margin: 0 auto;
   background: #fff;
   min-height: 1200px;
   padding: 10px 20px;
-  margin-top: 30px;
+  margin: 30px auto 0;
+
   .title {
     font-size: 25px;
     text-align: center;

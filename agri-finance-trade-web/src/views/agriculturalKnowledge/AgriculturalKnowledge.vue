@@ -57,7 +57,7 @@ onMounted(() => {
   selectKnowledgesPage({
     pageNum: knowledgesCount.value,
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag === true) {
       let tmp = res.data.list;
       tmp.forEach(e => {
         const flieArr = e.picPath.split('.');

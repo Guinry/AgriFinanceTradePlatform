@@ -50,7 +50,7 @@ const getData = () => {
     pageNum: goodsCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag === true) {
       goods.value = res.data.list;
       total.value = res.data.total;
     } else {

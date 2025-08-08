@@ -23,8 +23,8 @@
 
     <div class="goods" v-for="(item, index) in cgoods"
          :key="index" @click="detailsClick(item.orderId)" :style="(index+1)%4===0?'margin-right:0':'margin-right:44px;'">
-      <img class="goods-img" v-if="item.picture!=''" :src="$store.state.imgShowRoad + '/file/' + item.picture" alt="" />
-      <img class="goods-img" v-if="item.picture==''" :src="$store.state.imgShowRoad + '/file/' + 'wutu.gif'" alt="" />
+      <img class="goods-img" v-if="item.picture!==''" :src="$store.state.imgShowRoad + '/file/' + item.picture" alt="" />
+      <img class="goods-img" v-if="item.picture===''" :src="$store.state.imgShowRoad + '/file/' + 'wutu.gif'" alt="" />
       <div style="text-align: right;height:250px">
         <el-tooltip
             class="box-item"
@@ -45,7 +45,7 @@
       </div>
       <div class="info">
         <p class="content">{{ item.content }}</p>
-        <div style="padding:0px 15px;display:flex;align-items: center;">
+        <div style="padding:0 15px;display:flex;align-items: center;">
           <span class="price" v-if="item.price">￥{{ item.price }}</span>
           <span class="initiator">来自:{{ item.ownName }}</span>
         </div>
@@ -116,7 +116,7 @@ const addShopcartClick = (val) => {
   })
     .then((res) => {
       console.log(res);
-      if (res.flag == true) {
+      if (res.flag === true) {
         ElMessage.success(res.message);
       } else {
         ElMessage.error(res.message);
@@ -133,7 +133,6 @@ const addShopcartClick = (val) => {
   height: 60px;
   background-color: white;
   padding: 10px 10px;
-  background-color: white;
   margin-top: 10px;
   .tag-item{
     margin-right: 10px;
@@ -252,28 +251,28 @@ const addShopcartClick = (val) => {
 }
 
 .icon:hover{
-  box-shadow: 0em 0em 14px black;
+  box-shadow: 0 0 14px black;
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
 
 .goods:hover{
-  box-shadow: 0em 0em 15px black;
+  box-shadow: 0 0 15px black;
   -webkit-transform: scale(1.1);
   transform: scale(1.03);
 }
 
 .card{
-  margin: 10px 0px;height:360px
+  margin: 10px 0;height:360px
 }
 
 .card:hover{
-  box-shadow:0em 0em 2em #343434;
+  box-shadow:0 0 2em #343434;
 }
 
 :deep(.el-button-group>.el-button) {
   border-radius: 100px;
-  margin:0px 5px;
+  margin:0 5px;
   border: 1px solid #DCDFE6;
   &:hover{
     text-decoration: underline;
