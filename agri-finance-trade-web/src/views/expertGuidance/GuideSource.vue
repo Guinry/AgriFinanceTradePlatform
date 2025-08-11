@@ -2,7 +2,9 @@
   <div class="goods-box3">
     <div >
       <el-input  placeholder="有问题直接搜" v-model="searchValue" maxlength="100" clearable style="width:700px;margin-right: 15px">
-        <i slot="prefix" class="el-input__icon el-icon-search search-icon" @click="handleSearch"  ></i>
+        <template #prefix>
+          <el-icon class="el-input__icon search-icon" @click="handleSearch"><Search /></el-icon>
+        </template>
       </el-input>
       <el-button-group>
         <el-button round @click="handleTopicDetail('')" >全部 </el-button>
@@ -34,72 +36,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { Search } from '@element-plus/icons-vue'
 import Pagination from "../../components/Pagination.vue";
 
-export default {
-  data() {
-    return {
-      searchValue:''
-    };
+const store = useStore()
+const router = useRouter()
+
+const searchValue = ref('')
+
+const props = defineProps({
+  cgoods: {
+    type: Array,
   },
-  components:{
-    Pagination
+  total:{
+    type: Number
   },
-  filters: {
-    formatTimer: function (value) {
-      let date = new Date(value);
-      let y = date.getFullYear();
-      let MM = date.getMonth() + 1;
-      MM = MM < 10 ? "0" + MM : MM;
-      let d = date.getDate();
-      d = d < 10 ? "0" + d : d;
-      let h = date.getHours();
-      h = h < 10 ? "0" + h : h;
-      let m = date.getMinutes();
-      m = m < 10 ? "0" + m : m;
-      let s = date.getSeconds();
-      s = s < 10 ? "0" + s : s;
-      return y + "-" + MM + "-" + d + " ";
-    },
+  pageSize:{
+    type: Number
   },
-  props: {
-    cgoods: {
-      type: Array,
-    },
-    total:{
-      type: Number
-    },
-    pageSize:{
-      type: Number
-    },
-    url:{
-      type: String
-    }
-  },
-  methods: {
-    detailsClick(item) {
-      this.$store.commit("updateOrderId", item);
-      this.$router.push(`/home/details?id=${item.id}`).catch((err) => err);
-    },
-    pageClick(val){
-      this.$emit('pageClick',val)
-    },
-    handleSearch(){
-      this.$emit('handleSearch',this.searchValue)
-    },
-    handleDetail(item){
-      this.$router.push(`/home/guide/${item.id}`)
-    },
-    handleTopicDetail(val){
-      this.searchValue = val
-      this.handleSearch()
-    }
-  },
-  mounted(){
-    this.$store.commit("updateActiveIndex", "5");
+  url:{
+    type: String
   }
-};
+})
+
+const emit = defineEmits(['pageClick', 'handleSearch'])
+
+const detailsClick = (item) => {
+  store.commit("updateOrderId", item);
+  router.push(`/home/details?id=${item.id}`).catch((err) => err);
+}
+
+const pageClick = (val) => {
+  emit('pageClick', val)
+}
+
+const handleSearch = () => {
+  emit('handleSearch', searchValue.value)
+}
+
+const handleDetail = (item) => {
+  router.push(`/home/guide/${item.id}`)
+}
+
+const handleTopicDetail = (val) => {
+  searchValue.value = val
+  handleSearch()
+}
+
 </script>
 
 <style lang="less" scoped>
@@ -242,13 +229,12 @@ export default {
   text-overflow:ellipsis;
   width:658px;
 }
-.search /deep/ .el-input--suffix .el-input__inner{
+.search :deep(.el-input--suffix .el-input__inner){
   height: 35px;
   line-height: 35px;
 }
 
-
-::v-deep .el-button-group>.el-button {
+:deep(.el-button-group>.el-button) {
   border-radius: 100px;
   margin:0px 5px;
   border: 1px solid #DCDFE6;
@@ -263,7 +249,7 @@ export default {
   }
 }
 
-::v-deep .el-button-group>.el-button:not(:first-child):not(:last-child) {
+:deep(.el-button-group>.el-button:not(:first-child):not(:last-child)) {
   border-radius: 100px;
 }
 </style>

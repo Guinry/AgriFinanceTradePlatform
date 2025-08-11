@@ -10,7 +10,19 @@
           <li><router-link to="/agriculturalKnowledge">农业知识</router-link></li>
           <li><router-link to="/expertGuidance">专家指导</router-link></li>
           <li><router-link to="/shoppingCart">购物车</router-link></li>
-          <li><router-link to="#">融资申请</router-link></li>
+          <li class="dropdown">
+            <el-dropdown @command="handleFinancingCommand">
+              <span class="el-dropdown-link">
+                融资申请<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="smartMatch">智能匹配</el-dropdown-item>
+                  <el-dropdown-item command="financing">融资申请</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </li>
         </ul>
       </nav>
       <div class="actions" v-if="loginUserNickname === ''">
@@ -71,6 +83,18 @@ const userPage = () => {
   router.push("/home/user").catch((err) => err)
 }
 
+// 添加融资申请相关的处理函数
+const handleFinancingCommand = (command) => {
+  switch (command) {
+    case 'smartMatch':
+      router.push("/smartMatch").catch((err) => err)
+      break
+    case 'financing':
+      router.push("/financingApplication").catch((err) => err)
+      break
+  }
+}
+
 // 生命周期钩子
 onMounted(() => {
   store.commit("updateActiveIndex", "1")
@@ -81,11 +105,11 @@ onMounted(() => {
     const nickname = JSON.parse(res).nickname
     const avatar = JSON.parse(res).avatar
     const role = JSON.parse(res).role
-    
+
     store.commit("updateLoginUserNickname", nickname)
     store.commit("updateLoginUserAvatar", avatar)
     store.commit("updateRole", role)
-    
+
     loginUserNickname.value = nickname
   }
   console.log(loginUserNickname.value)
@@ -130,6 +154,8 @@ nav ul {
 
 nav ul li {
   margin-left: 20px;
+  display: flex;
+  align-items: center;
 }
 
 nav ul li a {
@@ -137,11 +163,37 @@ nav ul li a {
   color: #2c3e50; /* 设置初始颜色 */
   font-size: 16px;
   transition: color 0.3s ease;
+  display: block;
+  height: 100%;
+  line-height: 60px;
 }
 
 nav ul li a:hover {
   color: #4CAF50; /* 链接悬停时的颜色 */
   text-decoration: none; /* 悬停时也移除下划线 */
+}
+
+/* 添加下拉菜单样式 */
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  height: 60px;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #2c3e50;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.el-dropdown-link:hover {
+  color: #4CAF50;
 }
 
 /* 添加：处理 .actions 内部的 <router-link> 样式 */

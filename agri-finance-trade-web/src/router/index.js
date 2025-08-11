@@ -34,6 +34,16 @@ const routes = [
         path: '/expertGuidance',
         name: 'ExpertGuidance',
         component: () => import('../views/expertGuidance/ExpertGuidance.vue')
+    },
+    {
+        path: '/financingApplication',
+        name: 'FinancingApplication',
+        component: () => import('../views/financingApplication/FinancingApplication.vue')
+    },
+    {
+        path: '/smartMatch',
+        name: 'SmartMatch',
+        component: () => import('../views/financingApplication/SmartMatch.vue')
     }
 ]
 

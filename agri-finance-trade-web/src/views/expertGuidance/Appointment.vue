@@ -1,6 +1,6 @@
 <template>
   <div class="appointment-container">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleFormRef" label-width="150px" class="demo-ruleForm">
       <el-form-item label="地址" prop="address">
         <el-input v-model="ruleForm.address" placeholder="请输入地址"></el-input>
       </el-form-item>
@@ -30,60 +30,65 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { addReserve } from '../../api/order'
 
-export default {
-  data(){
-    return{
-      ruleForm:{
-        phone:'',
-        soilCondition:'',
-        plantCondition:'',
-        plantDetail:'',
-        plantName:'',
-        address:'',
-        area:'',
-        status:0,
-        expertName:this.$route.query.id,
-      },
-      rules:{
+const router = useRouter()
+const route = useRoute()
 
-        phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
-        soilCondition: [{ required: true, message: '请输入土壤状况', trigger: 'blur' }],
-        plantCondition: [{ required: true, message: '请输入作物生长状况', trigger: 'blur' }],
-        plantDetail: [{ required: true, message: '请输入作物详细信息', trigger: 'blur' }],
-        plantName: [{ required: true, message: '请输入种植的作物', trigger: 'blur' }],
-        address: [{ required: true, message: '请输入地址', trigger: 'blur' }],
-        area: [{ required: true, message: '请输入面积', trigger: 'blur' }],
+const ruleFormRef = ref()
+
+const ruleForm = reactive({
+  phone: '',
+  soilCondition: '',
+  plantCondition: '',
+  plantDetail: '',
+  plantName: '',
+  address: '',
+  area: '',
+  status: 0,
+  expertName: route.query.id,
+})
+
+const rules = {
+  phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+  soilCondition: [{ required: true, message: '请输入土壤状况', trigger: 'blur' }],
+  plantCondition: [{ required: true, message: '请输入作物生长状况', trigger: 'blur' }],
+  plantDetail: [{ required: true, message: '请输入作物详细信息', trigger: 'blur' }],
+  plantName: [{ required: true, message: '请输入种植的作物', trigger: 'blur' }],
+  address: [{ required: true, message: '请输入地址', trigger: 'blur' }],
+  area: [{ required: true, message: '请输入面积', trigger: 'blur' }],
+}
+
+const onSubmit = () => {
+  if (localStorage.getItem('token')) {
+    ruleFormRef.value.validate((valid) => {
+      if (valid) {
+        addReserve(ruleForm).then(res => {
+          ElMessage.success('预约成功！')
+          router.push("/home/guide").catch((err) => err);
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        console.log('error submit!!');
+        return false;
       }
-    }
-  },
-  methods:{
-    onSubmit(){
-      if(localStorage.getItem('token')){
-        this.$refs.ruleForm.validate((valid) => {
-          if(valid){
-            addReserve(this.ruleForm).then(res => {
-              this.$message.success('预约成功！')
-              this.$router.push("/home/guide").catch((err) => err);
-            }).catch(err=>{
-              console.log(err)
-            })
-          }else{
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      }else{
-        this.$message.error('请先登录')
-      }
-    }
-  },
-  mounted(){
-    this.$store.commit("updateActiveIndex", "5");
+    });
+  } else {
+    ElMessage.error('请先登录')
   }
 }
+
+onMounted(() => {
+  // 需要访问store时可以使用useStore()
+  // const store = useStore()
+  // store.commit("updateActiveIndex", "5");
+})
+
 </script>
 
 <style lang="less" scoped>

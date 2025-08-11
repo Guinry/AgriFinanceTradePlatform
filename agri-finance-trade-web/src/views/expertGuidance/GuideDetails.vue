@@ -8,30 +8,30 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import { questionDetail } from "../../api/order";
 
-export default {
-  data(){
-    return{
-      detailObj:{}
-    }
-  },
-  methods:{
-    getData(){
-      questionDetail({id:this.$route.params.id}).then(res => {
-        console.log('reeeee',res)
-        this.detailObj = res.data
-      }).catch(err=>{
-        console.log(err)
-      })
-    }
-  },
-  mounted(){
-    this.$store.commit("updateActiveIndex", "5");
-    this.getData()
-  }
+const route = useRoute()
+const store = useStore()
+
+const detailObj = ref({})
+
+const getData = () => {
+  questionDetail({id: route.params.id}).then(res => {
+    console.log('reeeee',res)
+    detailObj.value = res.data
+  }).catch(err=>{
+    console.log(err)
+  })
 }
+
+onMounted(() => {
+  store.commit("updateActiveIndex", "5");
+  getData()
+})
 </script>
 
 <style lang="less" scoped>

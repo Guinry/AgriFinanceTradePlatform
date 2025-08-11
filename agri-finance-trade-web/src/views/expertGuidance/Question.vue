@@ -1,6 +1,6 @@
 <template>
   <div class="question-container">
-    <el-form ref="form" :model="form" :rules="ruleForm" label-width="150px">
+    <el-form ref="formRef" :model="form" :rules="ruleForm" label-width="150px">
       <el-form-item label="标题：" prop="title">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
@@ -19,57 +19,64 @@
     </el-form>
   </div>
 </template>
-<script>
+
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { addQuestion } from "../../api/order";
 
-export default {
-  data(){
-    return{
-      form:{
-        title:'',
-        plantName:'',
-        phone:'',
-        expertName:this.$route.query.id,
-        status:0,
-        question:''
-      },
-      ruleForm:{
-        title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-        plantName: [{ required: true, message: '请输入农作物名称', trigger: 'blur' }],
-        phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
-        question: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+const router = useRouter()
+const route = useRoute()
+
+const formRef = ref()
+
+const form = reactive({
+  title: '',
+  plantName: '',
+  phone: '',
+  expertName: route.query.id,
+  status: 0,
+  question: ''
+})
+
+const ruleForm = {
+  title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+  plantName: [{ required: true, message: '请输入农作物名称', trigger: 'blur' }],
+  phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+  question: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+}
+
+const onSubmit = () => {
+  if (localStorage.getItem('token')) {
+    formRef.value.validate((valid) => {
+      if (valid) {
+        addQuestion(form).then(res => {
+          ElMessage.success('提问成功！')
+          router.push("/home/guide").catch((err) => err);
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        console.log('error submit!!');
+        return false;
       }
-    }
-  },
-  methods:{
-    onSubmit(){
-      if(localStorage.getItem('token')){
-        this.$refs.form.validate((valid) => {
-          if(valid){
-            addQuestion(this.form).then(res=>{
-              this.$message.success('提问成功！')
-              this.$router.push("/home/guide").catch((err) => err);
-            }).catch(err=>{
-              console.log(err)
-            })
-          }else{
-            console.log('error submit!!');
-            return false;
-          }
-        } )
-      }else{
-        this.$message.error('请先登录')
-      }
-    }
-  },
-  mounted(){
-    this.$store.commit("updateActiveIndex", "5");
+    })
+  } else {
+    ElMessage.error('请先登录')
   }
 }
+
+onMounted(() => {
+  // 如果需要使用store，可以这样引入：
+  // import { useStore } from 'vuex'
+  // const store = useStore()
+  // store.commit("updateActiveIndex", "5");
+})
 </script>
 
 <style lang="less" scoped>
-.question-container{
+.question-container {
   width: 1100px;
   height: 100%;
   margin: 10px auto;

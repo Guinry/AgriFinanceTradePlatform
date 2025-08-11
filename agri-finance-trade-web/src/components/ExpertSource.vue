@@ -2,12 +2,14 @@
   <div class="goods-box4">
     <div class="search">
       <el-input  placeholder="查找专家" v-model="searchValue" maxlength="100" clearable style="width:290px;">
-        <i slot="prefix" class="el-input__icon el-icon-search search-icon" @click="handleSearch"  ></i>
+        <template #prefix>
+          <el-icon class="el-input__icon search-icon" @click="handleSearch"><Search /></el-icon>
+        </template>
       </el-input>
     </div>
 
     <div class="goods" v-for="(item, index) in cgoods" :style="index===cgoods.length-1?'':'border-bottom:1px solid #f2f2f2;'" :key="index">
-      <img :src="$store.state.imgShowRoad + '/file/' + 'experta.png'" alt="" />
+      <img :src="imgShowRoad + '/file/' + 'experta.png'" alt="" />
       <div class="info">
         <p class="content">
           <span style="margin-right:50px;">姓名：{{item.realName}}</span>
@@ -29,51 +31,66 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchValue:''
-    };
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { Search } from '@element-plus/icons-vue'
+
+// 使用 Composition API
+const store = useStore()
+const router = useRouter()
+
+// 定义 props
+const props = defineProps({
+  cgoods: {
+    type: Array,
   },
-  filters: {
-    formatTimer: function (value) {
-      let date = new Date(value);
-      let y = date.getFullYear();
-      let MM = date.getMonth() + 1;
-      MM = MM < 10 ? "0" + MM : MM;
-      let d = date.getDate();
-      d = d < 10 ? "0" + d : d;
-      let h = date.getHours();
-      h = h < 10 ? "0" + h : h;
-      let m = date.getMinutes();
-      m = m < 10 ? "0" + m : m;
-      let s = date.getSeconds();
-      s = s < 10 ? "0" + s : s;
-      return y + "-" + MM + "-" + d + " " + h + ":" + m;
-    },
-  },
-  props: {
-    cgoods: {
-      type: Array,
-    },
-  },
-  methods: {
-    detailsClick(item) {
-      this.$store.commit("updateOrderId", item);
-      this.$router.push("/home/details").catch((err) => err);
-    },
-    handleQuestion(item){
-      this.$router.push(`/home/question?id=${item.userName}`).catch((err) => err);
-    },
-    handleAppoint(item){
-      this.$router.push(`/home/appointment?id=${item.userName}`).catch((err) => err);
-    },
-    handleSearch(){
-      this.$emit('handleSearch',this.searchValue)
-    }
-  },
-};
+})
+
+// 定义 emits
+const emit = defineEmits(['handleSearch'])
+
+// 响应式数据
+const searchValue = ref('')
+
+// 计算属性替代 filters
+const imgShowRoad = computed(() => store.state.imgShowRoad)
+
+// 格式化时间函数
+const formatTimer = (value) => {
+  let date = new Date(value);
+  let y = date.getFullYear();
+  let MM = date.getMonth() + 1;
+  MM = MM < 10 ? "0" + MM : MM;
+  let d = date.getDate();
+  d = d < 10 ? "0" + d : d;
+  let h = date.getHours();
+  h = h < 10 ? "0" + h : h;
+  let m = date.getMinutes();
+  m = m < 10 ? "0" + m : m;
+  let s = date.getSeconds();
+  s = s < 10 ? "0" + s : s;
+  return y + "-" + MM + "-" + d + " " + h + ":" + m;
+}
+
+// 方法定义
+const detailsClick = (item) => {
+  store.commit("updateOrderId", item);
+  router.push("/home/details").catch((err) => err);
+}
+
+const handleQuestion = (item) => {
+  router.push(`/home/question?id=${item.userName}`).catch((err) => err);
+}
+
+const handleAppoint = (item) => {
+  router.push(`/home/appointment?id=${item.userName}`).catch((err) => err);
+}
+
+const handleSearch = () => {
+  emit('handleSearch', searchValue.value)
+}
 </script>
 
 <style lang="less" scoped>
@@ -174,7 +191,7 @@ export default {
     }
   }
 }
-.search /deep/ .el-input--suffix .el-input__inner{
+.search :deep(.el-input--suffix .el-input__inner){
   height: 35px;
   line-height: 35px;
 }

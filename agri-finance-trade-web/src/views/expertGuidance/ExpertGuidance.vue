@@ -12,7 +12,11 @@
   </div>
 
 </template>
-<script>
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { selectQuestions,selectExpert } from "../../api/order";
 import GuideSource from "./GuideSource.vue";
 import Subtitle from "../../components/Subtitle.vue";
@@ -21,93 +25,92 @@ import AllExpert from "./AllExpert.vue";
 import NavigationBar from "../../components/NavigationBar.vue";
 import Footer from "../../components/Footer.vue";
 
-export default {
-  data() {
-    return {
-      goods: [],
-      total: 0,
-      searchValue:'',
-      pageSize: 30,
-      url: "/order/goods/",
-      expertCount:1,
-      guideCount: sessionStorage.getItem("/order/goods/pageCode")
-        ? sessionStorage.getItem("/order/goods/pageCode")
-        : 1,
-      expertArray:[]
-    };
-  },
-  created() {
-    if (this.$store.state.token == "") {
-      alert;
-    }
-    this.$store.commit("updateActiveIndex", "5");
-    this.getData()
-    this.getExpertData()
-  },
-  methods: {
-    pageClick(item) {
-      this.goods = item;
-    },
+// 使用 Vue 3 Composition API
+const store = useStore()
+const router = useRouter()
 
-    handleSearch(val){
-      this.searchValue = val
-      this.getData()
-    },
-    getData(){
-      selectQuestions({
-        pageNum: this.guideCount,
-        keys:this.searchValue
-      }).then((res) => {
-        if (res.flag == true) {
-          this.goods = res.data.list;
-          this.total = res.data.total;
-        } else {
-          // alert(res.message);
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
-    },
-    getExpertData(){
-      selectExpert({
-        pageNum: this.expertCount,
-        keys:this.searchValue
-      }).then(res => {
-        if(res.flag == true){
-          this.expertArray = res.data.list
-        }else{
-          this.$message.error(res.message);
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
-    },
-    handleQuestion(item){
-      if(localStorage.getItem('token')){
-        this.$router.push(`/home/question?id=${item.userName}`).catch((err) => err);
-      }else{
-        this.$message.error('请先登录')
-        this.$router.push(`/login`).catch((err) => err);
-      }
-    },
-    handleAppointment(item){
-      if(localStorage.getItem('token')){
-        this.$router.push(`/home/appointment?id=${item.userName}`).catch((err) => err);
-      }else{
-        this.$message.error('请先登录')
-        this.$router.push(`/login`).catch((err) => err);
-      }
+// 响应式数据
+const goods = ref([])
+const total = ref(0)
+const searchValue = ref('')
+const pageSize = ref(30)
+const url = ref("/order/goods/")
+const expertCount = ref(1)
+const guideCount = ref(sessionStorage.getItem("/order/goods/pageCode")
+  ? sessionStorage.getItem("/order/goods/pageCode")
+  : 1)
+const expertArray = ref([])
+
+// 方法定义
+const pageClick = (item) => {
+  goods.value = item;
+}
+
+const handleSearch = (val) => {
+  searchValue.value = val
+  getData()
+}
+
+const getData = () => {
+  selectQuestions({
+    pageNum: guideCount.value,
+    keys: searchValue.value
+  }).then((res) => {
+    if (res.flag == true) {
+      goods.value = res.data.list;
+      total.value = res.data.total;
+    } else {
+      // alert(res.message);
     }
-  },
-  components: {
-    Footer,
-    NavigationBar,
-    GuideSource,
-    Subtitle,
-    Questions,
-    AllExpert
-  },
-};
+  }).catch(err=>{
+    console.log(err)
+  })
+}
+
+const getExpertData = () => {
+  selectExpert({
+    pageNum: expertCount.value,
+    keys: searchValue.value
+  }).then(res => {
+    if(res.flag == true){
+      expertArray.value = res.data.list
+    }else{
+      ElMessage.error(res.message);
+    }
+  }).catch(err=>{
+    console.log(err)
+  })
+}
+
+const handleQuestion = (item) => {
+  if(localStorage.getItem('token')){
+    router.push(`/home/question?id=${item.userName}`).catch((err) => err);
+  }else{
+    ElMessage.error('请先登录')
+    router.push(`/login`).catch((err) => err);
+  }
+}
+
+const handleAppointment = (item) => {
+  if(localStorage.getItem('token')){
+    router.push(`/home/appointment?id=${item.userName}`).catch((err) => err);
+  }else{
+    ElMessage.error('请先登录')
+    router.push(`/login`).catch((err) => err);
+  }
+}
+
+// 生命周期钩子
+onMounted(() => {
+  if (store.state.token == "") {
+    // 原代码中这里似乎有问题，只写了 alert;
+  }
+  store.commit("updateActiveIndex", "5");
+  getData()
+  getExpertData()
+})
+
+// 组件注册 (在<script setup>中导入的组件会自动注册)
 </script>
 
 <style lang="less" scoped>
