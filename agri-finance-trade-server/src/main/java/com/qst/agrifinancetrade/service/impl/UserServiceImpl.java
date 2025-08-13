@@ -1,7 +1,9 @@
 package com.qst.agrifinancetrade.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qst.agrifinancetrade.dao.AddressDao;
 import com.qst.agrifinancetrade.dao.UserDao;
 import com.qst.agrifinancetrade.entity.User;
@@ -10,14 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import tk.mybatis.mapper.entity.Example;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
     @Autowired
     private UserDao userDao;
     @Resource
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> selectAll() {
-        return userDao.selectAll();
+        return userDao.selectList(null);
     }
 
     @Override
@@ -76,40 +77,35 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    // 修改:使用MyBatis-Plus分页功能
     @Override
-    public PageInfo<User> findPage(Integer pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<User> users = userDao.selectAll();
-        PageInfo<User> userPageInfo = new PageInfo<User>(users);
-        return userPageInfo;
+    public Page<User> findPage(Integer pageNum) {
+        Page<User> page = new Page<>(pageNum, pageSize);
+        return this.page(page);
     }
 
+    // 修改:使用MyBatis-Plus分页和查询功能
     @Override
-    public PageInfo<User> findPage(User user, Integer pageNum, Integer pageSize) {
-        //TODO
-//        Example example = createExample(user);
-//        PageHelper.startPage(pageNum, pageSize);
-        List<User> users = userDao.selectAll();
-        PageInfo<User> pageInfo = new PageInfo<User>(users);
-        return pageInfo;
+    public Page<User> findPage(User user, Integer pageNum, Integer pageSize) {
+        Page<User> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        
+        if (!StringUtils.isEmpty(user.getUserName())) {
+            queryWrapper.like("user_name", user.getUserName());
+        }
+        if (!StringUtils.isEmpty(user.getAddress())){
+            queryWrapper.like("address", user.getAddress());
+        }
+        if (!StringUtils.isEmpty(user.getRole())){
+            queryWrapper.eq("role", user.getRole());
+        }
+        
+        return this.page(page, queryWrapper);
     }
 
     @Override
     public void loginUpdateByUsername(User user) {
         user.setUpdateTime(new Date());
         userDao.updateByPrimaryKeySelective(user);
-    }
-
-    //创建example
-    public Example createExample(User user) {
-        Example example = new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        if (!StringUtils.isEmpty(user.getUserName())) {
-            criteria.andLike("userName", "%" + user.getUserName() + "%");
-        }
-        if (!StringUtils.isEmpty(user.getAddress())){
-            criteria.andLike("address", "%" + user.getAddress() + "%");
-        }
-        return example;
     }
 }

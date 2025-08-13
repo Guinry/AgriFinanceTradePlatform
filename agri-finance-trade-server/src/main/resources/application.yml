@@ -2,15 +2,12 @@ server:
   port: 9090
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/rongxiaotong?serverTimezone=GMT%2B8&useUnicode=true&characterEncodeing=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/agri-finance-trade?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: zq0814
+    password: G200410115812
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     time-zone: GMT+8
-  redis:
-    host: localhost
-    port: 6379
   servlet:
     multipart:
       enabled: true
@@ -18,20 +15,30 @@ spring:
       max-request-size: 500MB
   application:
     name: uploadService8007
-  resources:
-    static-locations: file:d:/zq/file/order,file:d:/zq/file/avatar,file:d:/zq/file/video
   mvc:
     static-path-pattern: /file/**
   devtools:
     restart:
       enabled: true
+  data:
+    redis:
+      port: 6379
+      host: localhost
+  web:
+    resources:
+      static-locations: file:d:/zq/file/order,file:d:/zq/file/avatar,file:d:/zq/file/video
 application:
     upload-path: d:/zq/file
 #mybatis配置
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
+# 添加MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.qst.agrifinancetrade.entity
   configuration:
     map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
 
 #nginx存放图片的路径
 file:

@@ -4,13 +4,21 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Id;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 import java.util.Date;
 
+// 添加MyBatis-Plus的Model类导入
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import org.springframework.data.annotation.Id;
+
+// 继承Model类以支持ActiveRecord模式
 @Data
-public class User {
+@TableName("tb_user") // 指定表名
+public class User extends Model<User> {
     @Id
+    @TableId // 标识主键
 //    @Column(name = "userName")
 //    @NotBlank(message = "账号不能为空")
     @Pattern(regexp = "^[a-zA-Z][A-Za-z0-9]{2,9}+$",message = "账号必须以字母开头，长度在3-10之间，只能包含英文字符、数字")
