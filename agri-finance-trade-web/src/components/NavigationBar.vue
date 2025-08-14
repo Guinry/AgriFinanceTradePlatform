@@ -26,8 +26,8 @@
         </ul>
       </nav>
       <div class="actions" v-if="loginUserNickname === ''">
-        <button><a href="javascript:void(0)" @click="Login">登录</a></button>
-        <button><a href="javascript:void(0)" @click="Register">注册</a></button>
+        <button><router-link to="/login">登录</router-link></button>
+        <button><router-link to="/register">注册</router-link></button>
       </div>
       <div class="actions" v-else>
         <button><a href="javascript:void(0)" @click="userPage">个人中心</a></button>
