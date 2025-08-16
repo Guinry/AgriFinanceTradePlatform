@@ -4,33 +4,33 @@ export function request(config) {
     // 创建axios的实例
     const envURL = import.meta.env.VITE_API_URL;
     const baseURL = envURL || 'http://localhost:9090';
-    
+
     // 添加更详细的环境变量检查
     if (!envURL) {
         console.warn('未配置环境变量VITE_API_URL，使用默认地址: http://localhost:9090');
         console.warn('请在.env文件中配置VITE_API_URL以指向正确的后端服务地址');
     }
-    
+
     const instance = axios.create({
         // baseURL: 'http://3958b99l28.zicp.vip',
         // baseURL: 'http://119.3.180.117:9090',
         baseURL: baseURL,
         timeout: 100000
     })
-    
+
     // 请求拦截器
     instance.interceptors.request.use(config => {
         return config
     }, err => { })
-    
+
     // 响应拦截器
     instance.interceptors.response.use(
         res => {
             // 根据实际的响应结构进行调整
             const { code, data, message } = res.data;
-            
+            console.log('后端返回的数据:', res.data); // 打印响应内容，检查 `code` 和 `message`
             // 根据后端约定的状态码进行处理
-            if (code === 200) {
+            if (code === 20000) {
                 return data;
             } else {
                 // 处理业务错误
@@ -74,7 +74,7 @@ export function request(config) {
             return Promise.reject(err);
         }
     );
-    
+
     // 3.发送真正的网络请求
     return instance(config)
 }

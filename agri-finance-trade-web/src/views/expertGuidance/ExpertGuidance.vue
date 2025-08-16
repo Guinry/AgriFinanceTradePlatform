@@ -17,7 +17,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { selectQuestions,selectExpert } from "../../api/order";
+import {selectQuestions, selectExpert, selectGoodsPage} from "../../api/order";
 import GuideSource from "./GuideSource.vue";
 import Subtitle from "../../components/Subtitle.vue";
 import Questions from "./Questions.vue";
@@ -56,15 +56,15 @@ const getData = () => {
     pageNum: guideCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.flag == true) {
-      goods.value = res.data.list;
-      total.value = res.data.total;
+    if (res.list && res.total) {
+      goods.value = res.list;
+      total.value = res.total;
     } else {
-      // alert(res.message);
+      alert('数据格式错误');
     }
-  }).catch(err=>{
-    console.log(err)
-  })
+  }).catch((error) => {
+    console.error('API 调用失败:', error);
+  });
 }
 
 const getExpertData = () => {

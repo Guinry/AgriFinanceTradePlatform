@@ -57,14 +57,14 @@ onMounted(() => {
   selectKnowledgesPage({
     pageNum: knowledgesCount.value,
   }).then((res) => {
-    if (res.flag === true) {
-      let tmp = res.data.list;
+    if (res.list === true) {
+      let tmp = res.list;
       tmp.forEach(e => {
         const flieArr = e.picPath.split('.');
         e.type = flieArr[flieArr.length - 1]
       })
       knowledges.value = tmp;
-      total.value = res.data.total;
+      total.value = res.total;
     }
   });
 })

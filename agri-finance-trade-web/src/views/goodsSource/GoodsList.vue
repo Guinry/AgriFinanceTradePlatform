@@ -144,11 +144,7 @@ const addShopcartClick = (val) => {
     left: -2px;
     cursor: pointer;
   }
-
-
-
 }
-
 
 .goods-box {
   background-color: #f9f9f9;
@@ -226,7 +222,6 @@ const addShopcartClick = (val) => {
   line-height: 35px;
 }
 
-
 .goods,.icon{
   -webkit-transform: perspective(1px) translateZ(0);
   transform: perspective(1px) translateZ(0);
@@ -235,7 +230,6 @@ const addShopcartClick = (val) => {
   -webkit-transition-property: box-shadow, transform;
   transition-property: box-shadow, transform;
 }
-
 
 .icon{
   position:relative;

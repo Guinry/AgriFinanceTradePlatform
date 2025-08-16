@@ -12,7 +12,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { questionDetail } from "../../api/order";
+import {questionDetail, selectGoodsPage} from "../../api/order";
 
 const route = useRoute()
 const store = useStore()
@@ -21,11 +21,10 @@ const detailObj = ref({})
 
 const getData = () => {
   questionDetail({id: route.params.id}).then(res => {
-    console.log('reeeee',res)
-    detailObj.value = res.data
-  }).catch(err=>{
-    console.log(err)
-  })
+    detailObj.value = res
+  }).catch((error) => {
+    console.error('API 调用失败:', error);
+  });
 }
 
 onMounted(() => {

@@ -22,7 +22,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { selectNeedsPage } from "../../api/order";
+import {selectGoodsPage, selectNeedsPage} from "../../api/order";
 import PurchaseList from "./PurchaseList.vue";
 import Pagination from "../../components/Pagination.vue";
 import Subtitle from "../../components/Subtitle.vue";
@@ -48,10 +48,14 @@ const getData = () => {
     pageNum: needsCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.flag == true) {
-      needs.value = res.data.list;
-      total.value = res.data.total;
+    if (res.list && res.total) {
+      needs.value = res.list;
+      total.value = res.total;
+    } else {
+      alert('数据格式错误');
     }
+  }).catch((error) => {
+    console.error('API 调用失败:', error);
   });
 }
 

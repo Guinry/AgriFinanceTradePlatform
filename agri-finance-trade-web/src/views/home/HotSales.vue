@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top:110px;text-align: center">
+  <div style="margin-top: 0;text-align: center">
     <Subtitle subtitle="热门商品" description="自然之宝，滋养味蕾；质量保证，健康共享"/>
     <div  style="margin: 50px 200px">
 
@@ -21,7 +21,7 @@
             </span>
             <div style="text-align: left;">
               <span style="font-size: 15px;">
-                <font style="color: rgb(222, 222, 222);">———————————————————————————————</font>
+                <span style="color: rgb(222, 222, 222);">———————————————————————————————</span>
               </span>
             </div>
             <div style="text-align: left;">
@@ -48,7 +48,7 @@
             </span>
             <div style="text-align: left;">
               <span style="font-size: 15px;">
-                <font style="color: rgb(222, 222, 222);">———————————————————————————————</font>
+                <span style="color: rgb(222, 222, 222);">———————————————————————————————</span>
               </span>
             </div>
             <div style="text-align: left;">
@@ -78,21 +78,19 @@
             </span>
             <div style="text-align: left;">
               <span style="font-size: 15px;">
-                <font style="color: rgb(222, 222, 222);">———————————————————————————————</font>
+                <span style="color: rgb(222, 222, 222);">———————————————————————————————</span>
               </span>
             </div>
             <div style="text-align: left;">
               <span style="font-size: 14px;color: #666666">
                 <span style="line-height: 35px;">
-                草莓具有较高的营养价值、医疗价值和生态价值。草莓浆果芳香多汁，营养丰富，素有“水果皇后”的美称，又是果树中上市最早的鲜果，素有“早春第一果”的美称。草莓含有较高的维生素、钙、磷、铁等营养物质，且草莓中含有众多活性物质，可清凉止渴，健胃消食的功效，具有一定的医疗价值。草莓也可作为观赏、绿化植物，已成为中国西部地区农民脱贫致富的首选作物</span>
+                草莓具有较高的营养价值、医疗价值和生态价值。草莓浆果芳香多汁，营养丰富，素有"水果皇后"的美称，又是果树中上市最早的鲜果，素有"早春第一果"的美称。草莓含有较高的维生素、钙、磷、铁等营养物质，且草莓中含有众多活性物质，可清凉止渴，健胃消食的功效，具有一定的医疗价值。草莓也可作为观赏、绿化植物，已成为中国西部地区农民脱贫致富的首选作物</span>
               </span>
             </div>
           </div>
         </el-col>
       </el-row >
-
     </div>
-
   </div>
 </template>
 
@@ -116,3 +114,4 @@ const getImgUrl = (imgName) => {
   animation: 0s ease 0s 1 normal none running none;
 }
 </style>
+

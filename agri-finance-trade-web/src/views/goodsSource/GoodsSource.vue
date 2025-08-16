@@ -1,19 +1,18 @@
 <!--商品货源-->
 <template>
-  <div>
-    <NavigationBar />
-    <div class="font-background">
+  <NavigationBar />
 
-      <img src="../../assets/page2/fontback5.png" alt="">
-      <img src="../../assets/page2/fontback6.png" alt="" style="margin-left: 20px;">
+  <div class="font-background">
+    <img src="../../assets/page2/fontback5.png" alt="">
+    <img src="../../assets/page2/fontback6.png" alt="" style="margin-left: 20px;">
+    <div style="color:#FCFCFC;font-family: 'PingFang SC';font-size: 80px;margin-top: 10px">农资农科新时代</div>
+  </div>
 
-      <div style="color:#FCFCFC;font-family: 'PingFang SC';font-size: 80px;margin-top: 10px">农资农科新时代</div>
-    </div>
+  <Subtitle subtitle="商品列表" description="买到就是赚到哦~"  style="margin-top:100px;"/>
 
-    <Subtitle subtitle="商品列表" description="买到就是赚到哦~"  style="margin-top:100px;"/>
-
-    <div class="home-goods">
-      <GoodsSource :cgoods="goods" @handleSearch="handleSearch" />
+  <div class="home-goods">
+    <GoodsList :cgoods="goods" @handleSearch="handleSearch" />
+    <div class="pagination-container">
       <Pagination @item-click="pageClick" :cUrl="url" :cTotal="total" :cPageSize="pageSize" />
     </div>
   </div>
@@ -25,7 +24,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { selectGoodsPage } from "../../api/order";
-import GoodsSource from "./GoodsList.vue";
+import GoodsList from "./GoodsList.vue";
 import Pagination from "../../components/Pagination.vue";
 import Subtitle from "../../components/Subtitle.vue";
 import NavigationBar from "../../components/NavigationBar.vue";
@@ -38,8 +37,8 @@ const pageSize = ref(30)
 const searchValue = ref('')
 const url = ref("/order/goods/")
 const goodsCount = ref(sessionStorage.getItem("/order/goods/pageCode")
-  ? sessionStorage.getItem("/order/goods/pageCode")
-  : 1)
+    ? sessionStorage.getItem("/order/goods/pageCode")
+    : 1)
 
 // 使用 store 和 route
 const store = useStore()
@@ -50,14 +49,17 @@ const getData = () => {
     pageNum: goodsCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.flag === true) {
-      goods.value = res.data.list;
-      total.value = res.data.total;
+    if (res.list && res.total) {
+      goods.value = res.list;
+      total.value = res.total;
     } else {
-      // alert(res.data.data);
+      alert('数据格式错误');
     }
+  }).catch((error) => {
+    console.error('API 调用失败:', error);
   });
 }
+
 
 const pageClick = (item) => {
   goods.value = item;
@@ -93,5 +95,13 @@ watch(route, (val, oldVal) => {
   width: 1920px;
   padding-left: 350px;
   padding-top: 90px;
+}
+
+// 修改: 添加分页容器样式，实现居中和间距
+.pagination-container {
+  clear: both;
+  margin: 50px 20px 0 0;
+  display: flex;
+  justify-content: center;
 }
 </style>
