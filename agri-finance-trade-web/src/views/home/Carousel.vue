@@ -32,7 +32,7 @@
 
 :deep(.el-carousel__container) {
   position: relative;
-  height: 400px;
+  height: 350px;
 }
 
 :deep(.el-carousel__indicators--horizontal) {
@@ -96,7 +96,7 @@
 }
 
 .carousel-title2 {
-  top: 30%;
+  top: 20%;
   left: 15%;
   height: 300px;
   width: 70%;
@@ -150,7 +150,7 @@
 
   .carousel-title2 {
     width: 90%;
-    padding-top: 20px;
+    padding-top: 10px;
   }
 
   .main-text {

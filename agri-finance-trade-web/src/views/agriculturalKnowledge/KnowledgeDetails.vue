@@ -130,7 +130,6 @@ const formatTimer2 = (value) => {
 
 // 方法定义
 const getData = () => {
-  store.commit('updateActiveIndex', '4')
   selectKnowledgeById({
     knowledgeId: route.params.id
   })

@@ -228,7 +228,6 @@ onMounted(() => {
     alert;
   }
   getOrderList()
-  store.commit("updateActiveIndex", "6");
   selectDefaultByOwnName({})
     .then((res) => {
       addressData.value = res.data;

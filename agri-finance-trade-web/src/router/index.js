@@ -25,10 +25,21 @@ const routes = [
         name: 'GoodsSource',
         component: () => import('../views/goodsSource/GoodsSource.vue')
     },
+    // 添加: 商品详情页路由
+    {
+        path: '/goodsSource/goodsDetails',
+        name: 'GoodsDetails',
+        component: () => import('../views/goodsSource/GoodsDetails.vue')
+    },
     {
         path: '/purchaseInfo',
         name: 'PurchaseInfo',
         component: () => import('../views/purchaseInfo/PurchaseInfo.vue')
+    },
+    {
+        path: '/purchaseInfo/PurchaseDetails',
+        name: 'PurchaseDetails',
+        component: () => import('../views/purchaseInfo/PurchaseDetails.vue')
     },
     {
         path: '/agriculturalKnowledge',

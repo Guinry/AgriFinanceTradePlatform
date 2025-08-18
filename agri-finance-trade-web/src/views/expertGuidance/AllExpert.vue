@@ -56,7 +56,6 @@ const getData = () => {
 
 // 生命周期钩子
 onMounted(() => {
-  store.commit("updateActiveIndex", "5");
   getData()
 })
 

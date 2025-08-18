@@ -20,8 +20,13 @@
 
 
     </div>
+    <!-- 添加无数据时的显示 -->
+    <div v-if="cneeds.length === 0" class="no-purchase-container">
+      <img class="no-purchase-img" src="../../assets/img/no-purchase.png" alt="暂无求购" />
+      <div class="no-purchase-text">暂无求购信息</div>
+    </div>
 
-    <div class="purchase-content">
+    <div v-else class="purchase-content">
       <div v-for="(item, index) in cneeds"
       :key="index" class="purchase-item"
       @click="detailsClick(item.orderId)">
@@ -45,6 +50,7 @@ import { useRouter } from 'vue-router'
 const props = defineProps({
   cneeds: {
     type: Array,
+    default: () => []
   },
 })
 
@@ -61,7 +67,7 @@ const router = useRouter()
 // 方法定义
 const detailsClick = (item) => {
   store.state.orderId = item;
-  router.push(`/home/purchaseDetails?orderId=${item}`).catch((err) => err);
+  router.push(`/purchaseInfo/PurchaseDetails?orderId=${item}`).catch((err) => err);
 }
 
 const handleSearch = () => {
@@ -112,6 +118,26 @@ const formatTimer = (value) => {
       cursor: pointer;
     }
   }
+
+  // 添加无数据时的样式
+  .no-purchase-container {
+    width: 100%;
+    text-align: center;
+    padding: 50px 0;
+
+    .no-purchase-img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .no-purchase-text {
+      font-size: 18px;
+      color: #999;
+      margin-top: 20px;
+    }
+  }
+
   .purchase-content{
     background: #fff;
     padding: 20px;

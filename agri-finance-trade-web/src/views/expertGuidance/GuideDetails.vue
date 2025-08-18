@@ -28,7 +28,6 @@ const getData = () => {
 }
 
 onMounted(() => {
-  store.commit("updateActiveIndex", "5");
   getData()
 })
 </script>

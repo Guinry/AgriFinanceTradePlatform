@@ -1,16 +1,16 @@
 <!--专家指导-->
 <template>
-  <div>
-    <NavigationBar />
-    <img src="../../assets/page5/background5.jpg" alt="">
-    <Questions />
-    <div class="home-guide-container">
-        <guide-source :cgoods="goods" :pageSize="pageSize" :url="url" :total="total" @handleSearch="handleSearch" @pageClick="pageClick"></guide-source>
-    </div>
-    <AllExpert />
-    <Footer />
+  <NavigationBar />
+  <div class="font-background">
+    <img src="../../assets/page2/fontback5.png" alt="">
+    <img src="../../assets/page2/fontback6.png" alt="" style="margin-left: 20px;">
+    <div style="color:rgba(241,10,10,0.61);font-family: 'PingFang SC';font-size: 80px;margin-top: 10px">农资专家齐聚</div>
   </div>
-
+  <Questions />
+  <div class="home-guide-container">
+      <guide-source :cgoods="goods" :pageSize="pageSize" :url="url" :total="total" @handleSearch="handleSearch" @pageClick="pageClick"></guide-source></div>
+  <AllExpert />
+  <Footer />
 </template>
 <script setup>
 import { ref, onMounted, computed } from 'vue'
@@ -105,7 +105,6 @@ onMounted(() => {
   if (store.state.token == "") {
     // 原代码中这里似乎有问题，只写了 alert;
   }
-  store.commit("updateActiveIndex", "5");
   getData()
   getExpertData()
 })
@@ -114,13 +113,27 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.font-background {
+  background-image: url("../../assets/page5/background5.jpg");
+  height: 350px;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 350px;
+  padding-right: 800px;
+  padding-top: 30px;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  overflow: hidden; /* 超出部分隐藏 */
+}
+
 .home-guide-container{
   width: 1100px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
 }
-
 
 .epert {
   min-height: 80px;

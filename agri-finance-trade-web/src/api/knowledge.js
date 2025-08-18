@@ -13,7 +13,7 @@ export function addKnowledge(params) {
 }
 
 // 分页查询所有知识
-export function selectKnowledgesPage(params) {
+export function selectKnowledgePage(params) {
     return request({
         method: 'get',
         url: 'knowledge/' + params.pageNum,

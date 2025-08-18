@@ -15,8 +15,8 @@ export default createStore({
         userActiveIndex: '1-1',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
         paymentInfo: '',
-        imgShowRoad: import.meta.env.VITE_APP_Address,
-        fileUploadRoad: import.meta.env.VITE_APP_Address,
+        imgShowRoad: import.meta.env.VITE_API_URL,
+        fileUploadRoad: import.meta.env.VITE_API_URL,
         mutiFile: '',
     },
     getters: {

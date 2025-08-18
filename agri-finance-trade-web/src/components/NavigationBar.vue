@@ -68,11 +68,14 @@ const logout = () => {
   store.commit("removeStorage")
   loginUserNickname.value = ""
   router.push("/home").catch((err) => err)
+  if (sessionStorage.getItem("/order/goods/pageCode")) {
+    sessionStorage.removeItem("/order/goods/pageCode")
+  }
   if (sessionStorage.getItem("/order/needs/pageCode")) {
     sessionStorage.removeItem("/order/needs/pageCode")
   }
-  if (sessionStorage.getItem("/order/goods/pageCode")) {
-    sessionStorage.removeItem("/order/goods/pageCode")
+  if (sessionStorage.getItem("/knowledge/pageCode")) {
+    sessionStorage.removeItem("/knowledge/pageCode")
   }
   if (sessionStorage.getItem("/user/search/pageCode")) {
     sessionStorage.removeItem("/user/search/pageCode")
@@ -97,7 +100,6 @@ const handleFinancingCommand = (command) => {
 
 // 生命周期钩子
 onMounted(() => {
-  store.commit("updateActiveIndex", "1")
   if (window.localStorage.token) {
     let token = window.localStorage.token
     let arr = token.split(".")

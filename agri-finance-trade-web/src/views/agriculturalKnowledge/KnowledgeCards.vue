@@ -1,8 +1,6 @@
 <template>
-
-
 <div class="knowledge-box">
-  <div class="knowledge" v-for="(item, index) in cknowledges" :key="index">
+  <div class="knowledge" v-for="(item, index) in cknowledge" :key="index">
     <div class="flipper" >
       <div class="front">
         <video class="knowledge-img" width="200px" height="160px" v-if="item.type==='mp4'||item.type==='MP4'" accept="MP4,mp4" :src="$store.state.imgShowRoad + '/file/' + item.picPath" controls autoplay/>
@@ -26,7 +24,7 @@
 <script setup>
 // 定义 props
 const props = defineProps({
-  cknowledges: {
+  cknowledge: {
     type: Array,
   },
 })
@@ -162,23 +160,15 @@ const handleDetail = (item) => {
             border-radius: 6px;
           }
         }
-
       }
     }
-
   }
 }
-
-
-
-
 
 /* flip the pane when hovered */
 .knowledge:hover .flipper, .knowledge.hover .flipper {
   transform: rotateY(180deg);
 }
-
-
 
 @keyframes flip{
   0% {

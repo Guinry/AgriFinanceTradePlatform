@@ -1,72 +1,51 @@
 <template>
   <div class="goods-box">
     <div class="search2">
-      <el-input  placeholder="请输入内容" v-model="searchValue" maxlength="100" clearable style="width:250px;margin-right: 5px">
+      <el-input placeholder="请输入内容" v-model="searchValue" maxlength="100" clearable style="width:250px;margin-right: 5px">
         <template #prefix>
           <i class="el-input__icon el-icon-search search-icon" @click="handleSearch"></i>
         </template>
       </el-input>
 
       <el-button-group>
-        <el-button round @click="handleTopicDetail('')">全部 </el-button>
-        <el-button round @click="handleTopicDetail('苹果')"> 苹果 </el-button>
-        <el-button round @click="handleTopicDetail('新疆哈密瓜')" style="width: 120px">新疆哈密瓜 </el-button>
+        <el-button round @click="handleTopicDetail('')">全部</el-button>
+        <el-button round @click="handleTopicDetail('苹果')"> 苹果</el-button>
+        <el-button round @click="handleTopicDetail('新疆哈密瓜')" style="width: 120px">新疆哈密瓜</el-button>
         <el-button round @click="handleTopicDetail('樱桃')"> 樱桃</el-button>
-        <el-button round @click="handleTopicDetail('西红柿')"> 西红柿 </el-button>
-        <el-button round @click="handleTopicDetail('水稻')"> 水稻 </el-button>
-        <el-button round @click="handleTopicDetail('玉米')"> 玉米 </el-button>
-        <el-button round @click="handleTopicDetail('赣南脐橙')" style="width: 110px"> 赣南脐橙 </el-button>
+        <el-button round @click="handleTopicDetail('西红柿')"> 西红柿</el-button>
+        <el-button round @click="handleTopicDetail('水稻')"> 水稻</el-button>
+        <el-button round @click="handleTopicDetail('玉米')"> 玉米</el-button>
+        <el-button round @click="handleTopicDetail('赣南脐橙')" style="width: 110px">赣南脐橙</el-button>
       </el-button-group>
-
-
     </div>
 
-    <div class="goods" v-for="(item, index) in cgoods"
-         :key="index" @click="detailsClick(item.orderId)" :style="(index+1)%4===0?'margin-right:0':'margin-right:44px;'">
-      <img class="goods-img" v-if="item.picture!==''" :src="$store.state.imgShowRoad + '/file/' + item.picture" alt="" />
-      <img class="goods-img" v-if="item.picture===''" :src="$store.state.imgShowRoad + '/file/' + 'wutu.gif'" alt="" />
-      <div style="text-align: right;height:250px">
-        <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="加入购物车"
-            placement="top-start"
-        >
-          <i class="el-icon-shopping-cart-2 icon" @click="addShopcartClick(item.orderId)"></i>
-        </el-tooltip>
-        <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="查看详情"
-            placement="top-start"
-        >
-          <i class="el-icon-d-arrow-right icon"  @click="detailsClick(item.orderId)"></i>
+    <!-- 添加无数据时的显示 -->
+    <div v-if="cgoods.length === 0" class="no-goods-container">
+      <img class="no-goods-img" src="../../assets/img/no-goods.png" alt="暂无商品" />
+    </div>
+
+    <div v-else class="goods" v-for="(item, index) in cgoods" :key="index" @click="detailsClick(item.orderId)">
+      <div class="image-container">
+        <el-tooltip class="box-item" effect="dark" :content="item.content" placement="top-start">
+          <img class="goods-img" v-if="item.picture !== ''" :src="getImagePath(item.picture)" alt="" />
+          <img class="goods-img" v-if="item.picture === ''" :src="getImagePath('/wutu.gif')" alt="" />
         </el-tooltip>
       </div>
+
       <div class="info">
-        <p class="content">{{ item.content }}</p>
-        <div style="padding:0 15px;display:flex;align-items: center;">
-          <span class="price" v-if="item.price">￥{{ item.price }}</span>
-          <span class="initiator">来自:{{ item.ownName }}</span>
+        <!-- 修改: 使用 el-tooltip 显示完整标题 -->
+        <el-tooltip class="box-item" effect="dark" :content="item.content" placement="top">
+          <p class="content">{{ item.content }}</p>
+        </el-tooltip>
+        <div class="price-container">
+          <span class="price">￥{{ item.price }}</span>
         </div>
       </div>
+      
+      <el-tooltip class="box-item" effect="dark" content="加入购物车" placement="top-start">
+        <img class="icon" src="../../assets/img/adding.svg" @click.stop="addShopcartClick(item.orderId)" alt="加入购物车" />
+      </el-tooltip>
     </div>
-
-<!--    <el-card  class="goods card"  v-for="(item, index) in cgoods" :key="index" @click="" :style="(index+1)%4===0?'margin-right:0':'margin-right:25px;'" >-->
-<!--      <img class="goods-img" v-if="item.picture !== ''" :src="`${$store.state.imgShowRoad}/file/${item.picture}`" alt="" />-->
-<!--      <img class="goods-img" v-else :src="`${$store.state.imgShowRoad}/file/wutu.gif`" alt="" />-->
-
-
-<!--      <div class="info">-->
-<!--        <p class="content">{{ item.content }}</p>-->
-<!--        <div style="display: flex;align-items: center">-->
-<!--          <span class="price" v-if="item.price">￥{{ item.price }}</span>-->
-<!--          <span class="initiator">卖家：{{ item.ownName }}</span>-->
-<!--        </div>-->
-
-<!--      </div>-->
-<!--    </el-card>-->
-
   </div>
 </template>
 
@@ -96,9 +75,14 @@ const store = useStore()
 const router = useRouter()
 
 // 方法定义
+const getImagePath = (picturePath) => {
+  const fullPath = store.state.imgShowRoad + '/file/' + picturePath;
+  return fullPath;
+};
+
 const detailsClick = (item) => {
   store.commit("updateOrderId", item);
-  router.push(`/home/details?orderId=${item}`).catch((err) => err);
+  router.push(`/goodsSource/goodsDetails?orderId=${item}`).catch((err) => err);
 }
 
 const handleSearch = () => {
@@ -114,17 +98,16 @@ const addShopcartClick = (val) => {
   addOrderToCart({
     order_id: val,
   })
-    .then((res) => {
-      console.log(res);
-      if (res.flag === true) {
-        ElMessage.success(res.message);
-      } else {
-        ElMessage.error(res.message);
-      }
-    })
-    .catch((err) => {
-      ElMessage.error("添加失败,请先登录");
-    });
+      .then((res) => {
+        if (res.flag === true) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      })
+      .catch((err) => {
+        ElMessage.error("添加失败,请先登录");
+      });
 }
 </script>
 
@@ -134,13 +117,9 @@ const addShopcartClick = (val) => {
   background-color: white;
   padding: 10px 10px;
   margin-top: 10px;
-  .tag-item{
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  .search-icon{
-    position:relative;
-    bottom:2px;
+  .search-icon {
+    position: relative;
+    bottom: 2px;
     left: -2px;
     cursor: pointer;
   }
@@ -150,136 +129,142 @@ const addShopcartClick = (val) => {
   background-color: #f9f9f9;
   width: 1100px;
   margin: 0 auto;
-  .goods {
-    float: left;
-    width: 240px;
-    height: 370px;
-    margin-top: 15px;
-    background-color: white;
-    border: 1px solid #d3d3d3;
-    cursor: pointer;
-    border-radius: 10px;
-    .goods-img {
-      float: left;
-      width: 240px;
-      height: 240px;
-      margin-right: 10px;
-      border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 使商品卡片水平居中 */
+  gap: 30px; /* 增加卡片之间的间距 */
+  padding: 20px 0;
+}
+
+// 添加无数据时的样式
+.no-goods-container {
+  width: 100%;
+  text-align: center;
+  padding: 50px 0;
+  
+  .no-goods-img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
+  
+  .no-goods-text {
+    font-size: 18px;
+    color: #999;
+    margin-top: 20px;
+  }
+}
+
+.goods {
+  width: 240px;
+  height: 370px;
+  background-color: white;
+  border: 1px solid #d3d3d3;
+  cursor: pointer;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden; /* 防止溢出 */
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-color: #ff4f16;
+  }
+
+  .image-container {
+    position: relative;
+  }
+
+  .goods-img {
+    width: 100%;
+    height: 240px;
+    border-radius: 6px 6px 0 0;
+    object-fit: cover;
+    margin-bottom: 0; /* 减少图片和标题之间的间隔 */
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .goods-img {
+    transform: scale(1.05);
+  }
+
+  .info {
+    padding: 5px 10px;
+    text-align: left;
+
+    .content {
+      font-size: 16px;
+      font-family: "PingFang SC", sans-serif;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* 限制为2行 */
+      -webkit-box-orient: vertical;
+      height: 45px; /* 限制最大高度，避免标题超出 */
     }
-    .info {
-      width: 240px;
-      float: left;
 
-      .initiator {
-        color: #666;
-        font-size: 15px;
-        font-family: 苹果字体Black;
-        text-align: right;
-        width: 70%;
-      }
-      .title {
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 1;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
-      }
-      .content {
-        padding:15px ;
-        height: 80px;
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 7;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
-        font-size: 16px;
-        font-family: 苹果字体Black;
-        font-weight: 600;
+    .price-container {
+      display: flex;
+      justify-content: flex-start; /* 让价格靠左对齐 */
+      align-items: center;
+      margin-top: 15px;
+    }
 
-      }
-      .price {
-        font-size: 17px;
-        font-weight: bold;
-        display: block;
-        color: red;
-        width:40%;
-      }
+    .price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff4f16;
+      margin-right: 5px;
+      font-size: 20px;
+    }
+  }
+
+  /* 修改：icon 使用图片，调整为右下角对齐并在图片范围内，减小尺寸 */
+  .icon {
+    position: absolute;
+    bottom: 8px;
+    right: 8px; /* 右下角对齐 */
+    padding: 0.5em;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(255, 255, 255, 0.8); /* 添加背景色以便更好地显示 */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10; /* 确保在图片上方 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: rotate(15deg) scale(1.2);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background-color: #fff8f0;
     }
   }
 }
-.search2 :deep(.el-input--suffix .el-input__inner){
+
+:deep(.el-input__inner) {
   height: 35px;
   line-height: 35px;
 }
 
-.goods,.icon{
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: box-shadow, transform;
-  transition-property: box-shadow, transform;
-}
-
-.icon{
-  position:relative;
-  padding: 0.5em;
-  font-size:20px;
-  color: white;
-  background-color:#4ab344;
-  border-radius: 50%;
-  box-shadow: 0.2em 0.2em 0.2em  #888888;
-  top:-22px;
-  margin-right: 15px;
-
-}
-
-.icon:hover{
-  box-shadow: 0 0 14px black;
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-
-.goods:hover{
-  box-shadow: 0 0 15px black;
-  -webkit-transform: scale(1.1);
-  transform: scale(1.03);
-}
-
-.card{
-  margin: 10px 0;height:360px
-}
-
-.card:hover{
-  box-shadow:0 0 2em #343434;
-}
-
-:deep(.el-button-group>.el-button) {
+:deep(.el-button-group .el-button) {
   border-radius: 100px;
-  margin:0 5px;
+  margin: 0 5px;
   border: 1px solid #DCDFE6;
-  &:hover{
+  &:hover {
     text-decoration: underline;
     background-color: #ffffff;
     color: black;
   }
-  &:focus{
+  &:focus {
     color: #ff4f16;
     background-color: #ffffff;
   }
-}
-
-:deep(.el-button-group>.el-button:not(:first-child):not(:last-child)) {
-  border-radius: 100px;
 }
 </style>

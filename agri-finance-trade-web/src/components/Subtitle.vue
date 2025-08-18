@@ -35,7 +35,7 @@ const props = defineProps({
 
 .subtitle-div{
   text-align: center;
-  margin: 40px 0;
+  margin: 10px 0;
   animation: fadeInAnimation ease 4s;
   animation-iteration-count: 1; /*设置动画播放次数*/
   animation-fill-mode: forwards;
