@@ -1,75 +1,83 @@
 <!-- 农业知识详情 -->
 <template>
-  <div class="knowlege-detail-container">
-    <div class="title">{{ updateInfo.title }}</div>
-    <div class="tips">
-      <span>作者：</span>
-      <span style="margin-right: 20px">{{ updateInfo.ownName }}</span>
-      <span>日期：</span>
-      <span>{{ formatTimer(updateInfo.updateTime) }}</span>
+  <NavigationBar />
+  <div class="knowledge-detail-container">
+    <div class="header-section">
+      <h1 class="title">{{ updateInfo.title }}</h1>
+      <div class="meta-info">
+        <span class="author">作者：{{ updateInfo.ownName }}</span>
+        <span class="date">发布日期：{{ formatTimer(updateInfo.updateTime) }}</span>
+      </div>
     </div>
-    <div class="detail-img">
+
+    <div class="media-section">
       <video
         v-if="updateInfo.type === 'mp4' || updateInfo.type === 'MP4'"
-        id="video"
-        width="900"
-        height="360"
+        class="media-content"
         :src="imgShowRoad + '/file/' + updateInfo.picPath"
         controls
       ></video>
       <img
         v-else
-        style="width: 657px; height: 300px"
+        class="media-content"
         :src="imgShowRoad + '/file/' + updateInfo.picPath"
         alt=""
       />
     </div>
-    <div class="detail-content">
-      <p>{{ updateInfo.content }}</p>
+
+    <div class="content-section">
+      <div class="content-text">{{ updateInfo.content }}</div>
     </div>
 
-    <div class="comment-container">
-      <div class="comment-num">评论共{{ commentArray.length || 0 }}条</div>
-      <div
-        class="comment-item"
-        v-for="(item, index) in commentArray"
-        :key="index"
-      >
-        <div>{{ item.content }}</div>
-        <div class="comment-tips">
-          <div style="margin-right: 40px">
-            评论人：<span class="color6">{{ item.ownName }}</span>
-          </div>
-          <div>评论时间：<span class="color6">{{ formatTimer2(item.createTime) }}</span></div>
-        </div>
-      </div>
-      <div
-        v-if="commentArray.length === 0"
-        style="width: 100%; text-align: center; margin: 50px 0"
-      >
-        <img src="../../assets/page4/noComments.png" alt="" />
+    <div class="comments-section">
+      <div class="comments-header">
+        <h2 class="comments-title">评论 ({{ commentArray.length || 0 }})</h2>
       </div>
 
-      <div class="comment-num">发表评论</div>
-      <el-input
-        type="textarea"
-        v-model="content"
-        :rows="5"
-      ></el-input>
-      <div
-        style="
-          margin-top: 20px;
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-end;
-        "
-      >
-        <el-button type="success" plain @click="handleComment"
-          >添加评论</el-button
+      <div class="comments-list">
+        <div
+          class="comment-item"
+          v-for="(item, index) in commentArray"
+          :key="index"
         >
+          <div class="comment-content">{{ item.content }}</div>
+          <div class="comment-meta">
+            <span class="comment-author">{{ item.ownName }}</span>
+            <span class="comment-date">{{ formatTimer2(item.createTime) }}</span>
+          </div>
+        </div>
+        
+        <div
+          v-if="commentArray.length === 0"
+          class="no-comments"
+        >
+          <img src="../../assets/page4/noComments.png" alt="暂无评论" />
+          <p>暂无评论，快来抢沙发吧！</p>
+        </div>
+      </div>
+
+      <div class="comment-form">
+        <h3 class="form-title">发表评论</h3>
+        <el-input
+          type="textarea"
+          v-model="content"
+          :rows="4"
+          placeholder="请输入您的评论..."
+          class="comment-textarea"
+        ></el-input>
+        <div class="form-actions">
+          <el-button 
+            type="success" 
+            @click="handleComment"
+            :disabled="!content.trim()"
+          >
+            发布评论
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script setup>
@@ -82,6 +90,8 @@ import {
   selectComment,
   addComment
 } from '../../api/knowledge'
+import NavigationBar from "../../components/NavigationBar.vue";
+import Footer from "../../components/Footer.vue";
 
 // 响应式数据
 const updateInfo = ref({})
@@ -108,7 +118,7 @@ const formatTimer = (value) => {
   m = m < 10 ? '0' + m : m
   let s = date.getSeconds()
   s = s < 10 ? '0' + s : s
-  return y + '-' + MM + '-' + d + ' '
+  return y + '-' + MM + '-' + d + ' ' + h + ':' + m
 }
 
 const formatTimer2 = (value) => {
@@ -132,15 +142,12 @@ const formatTimer2 = (value) => {
 const getData = () => {
   selectKnowledgeById({
     knowledgeId: route.params.id
-  })
-    .then((res) => {
+  }).then((res) => {
       let tmp = res.data
       const flieArr = tmp.picPath.split('.')
       tmp.type = flieArr[flieArr.length - 1]
       updateInfo.value = tmp
-      console.log('this.updateInfo', updateInfo.value)
-    })
-    .catch((err) => {
+    }).catch((err) => {
       console.log(err)
     })
 }
@@ -149,11 +156,9 @@ const getData = () => {
 const getCommentData = () => {
   selectComment({
     knowledgeId: route.params.id
-  })
-    .then((res) => {
+  }).then((res) => {
       commentArray.value = res.data
-    })
-    .catch((err) => {
+    }).catch((err) => {
       console.log(err)
     })
 }
@@ -189,62 +194,225 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.knowlege-detail-container {
-  width: 1100px;
+.knowledge-detail-container {
+  width: 100%;
+  max-width: 900px;
   background: #fff;
-  min-height: 1200px;
-  padding: 10px 20px;
-  margin: 30px auto 0;
+  min-height: 800px;
+  margin: 30px auto 50px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
 
-  .title {
-    font-size: 25px;
-    text-align: center;
-    font-weight: bold;
-  }
-  .tips {
-    color: #999;
+.header-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px 0;
+  line-height: 1.4;
+}
+
+.meta-info {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: #666;
+  
+  .author, .date {
     display: flex;
-    justify-content: flex-end;
-    height: 30px;
     align-items: center;
+    
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background-color: #999;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
   }
-  .detail-img {
+}
+
+.media-section {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+  
+  .media-content {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &[controls] {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+    }
+  }
+}
+
+.content-section {
+  margin: 30px 0;
+  
+  .content-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #444;
+    white-space: pre-wrap;
+    text-align: justify;
+  }
+}
+
+.comments-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #eee;
+}
+
+.comments-header {
+  margin-bottom: 20px;
+  
+  .comments-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+}
+
+.comments-list {
+  margin-bottom: 40px;
+}
+
+.comment-item {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #f5f5f5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .comment-content {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  
+  .comment-meta {
     display: flex;
-    justify-content: center;
-    margin-top: 40px;
-    video {
-      border: 1px solid #f2f2f2;
-    }
-    img {
-      border-radius: 6px;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #888;
+    
+    .comment-author {
+      font-weight: 500;
+      color: #035D1C;
     }
   }
-  .detail-content {
-    font-size: 17px;
-    margin-top: 20px;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 40px 0;
+  
+  img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 15px;
   }
-  .comment-container {
-    clear: both;
-    margin-top: 10px;
-    .comment-num {
-      font-weight: bold;
-      font-size: 17px;
-      margin-bottom: 10px;
-    }
-    .comment-item {
-      border-bottom: 1px solid #f2f2f2;
-      padding: 10px 20px;
-      margin: 20px 0;
-      word-break: break-all;
-      .comment-tips {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        .color6 {
-          color: #666;
-        }
+  
+  p {
+    color: #999;
+    font-size: 15px;
+  }
+}
+
+.comment-form {
+  .form-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 20px 0;
+  }
+  
+  .comment-textarea {
+    margin-bottom: 20px;
+    
+    :deep(.el-textarea__inner) {
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      
+      &:focus {
+        border-color: #035D1C;
       }
     }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    
+    :deep(.el-button) {
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 15px;
+      background-color: #035D1C;
+      border-color: #035D1C;
+      
+      &:hover {
+        background-color: #028a2c;
+        border-color: #028a2c;
+      }
+      
+      &:disabled {
+        background-color: #f5f5f5;
+        border-color: #ddd;
+        color: #ccc;
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .knowledge-detail-container {
+    padding: 20px 15px;
+    margin: 15px auto;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .meta-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .content-text {
+    font-size: 15px;
+  }
+  
+  .comment-meta {
+    flex-direction: column;
+    gap: 5px;
   }
 }
 </style>

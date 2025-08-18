@@ -86,9 +86,8 @@ const formatTimer = (value) => {
 const addShopcartClick = () => {
   addOrderToCart({
     order_id: data.value.orderId,
-  })
-    .then((res) => {
-      if (res.flag == true) {
+  }).then((res) => {
+      if (res.flag) {
         ElMessage.success(res.message);
       } else {
         ElMessage.error(res.message);
@@ -132,7 +131,7 @@ onMounted(() => {
     order_id: route.query.orderId,
   }).then((res) => {
     if (res) {
-      data.value = res;
+      data.value = res.data;
       getSalesInfo()
     } else {
       console.log("数据格式错误");

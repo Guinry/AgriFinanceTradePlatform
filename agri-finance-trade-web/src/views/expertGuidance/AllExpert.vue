@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Subtitle subtitle="专家列表" description="欢迎咨询专业人士 ~" style="margin-top:100px;" />
+    <Subtitle subtitle="专家列表" description="欢迎咨询专业人士 ~" style="margin-top:10px;" />
 
     <div class="allExpert-page">
       <expert-source :cgoods="goods" @handleSearch="handleSearch"></expert-source>
@@ -45,7 +45,7 @@ const getData = () => {
     pageNum: goodsCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag) {
       goods.value = res.data.list;
       total.value = res.data.total;
     } else {

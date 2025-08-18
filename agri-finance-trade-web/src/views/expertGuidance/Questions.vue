@@ -1,8 +1,8 @@
 <template>
   <div class="questions-container">
-    <Subtitle subtitle="常见问题" description="大家都在问的问题哦~"  style="margin-top:100px;"/>
+    <Subtitle subtitle="常见问题" description="大家都在问的问题哦~"  style="margin-top:10px;"/>
     <div class="questions">
-      <el-row :gutter="80">
+      <el-row :gutter="30">
         <el-col :span="8"  >
           <el-card shadow="always" class="card" @click="handleTopicDetail('苹果果树种植方法')"> 苹果果树种植方法?</el-card>
         </el-col>
@@ -14,9 +14,7 @@
         </el-col>
       </el-row>
     </div>
-
   </div>
-
 </template>
 
 <script setup>
@@ -63,34 +61,87 @@ const handleTopicDetail = (val) => {
 <style scoped>
 .questions-container{
   text-align: center;
-
+  padding: 20px;
 }
 
 .questions{
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 30px;
 }
+
 .card{
-  border-radius: 5px;
-  width: 300px;
+  border-radius: 15px;
+  width: 100%;
   height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 20px;
-  font-family: 鸿蒙字体Regular;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+}
+
+.card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 93, 28, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover:before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(3, 93, 28, 0.2);
+  color: #035D1C;
 }
 
 :deep(.el-card){
-  border-radius: 10px;
-  background-color: #f1f1f1;
-  box-shadow: 0px 0px 10px #959595;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-card__body) {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 :deep(.el-card:hover){
-  border-radius: 10px;
-  box-shadow: 0px 0px 20px #828282;
+  border-radius: 15px;
+  box-shadow: 0 12px 24px rgba(3, 93, 28, 0.15);
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .questions {
+    padding: 0 15px;
+  }
+  
+  :deep(.el-col) {
+    margin-bottom: 20px;
+  }
 }
 </style>

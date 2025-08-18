@@ -27,11 +27,11 @@ export function request(config) {
     instance.interceptors.response.use(
         res => {
             // 根据实际的响应结构进行调整
-            const { code, data, message } = res.data;
+            const { code, message } = res.data;
             console.log('后端返回的数据:', res.data); // 打印响应内容，检查 `code` 和 `message`
             // 根据后端约定的状态码进行处理
             if (code === 20000) {
-                return data;
+                return res.data;
             } else {
                 // 处理业务错误
                 console.error('业务错误:', message);

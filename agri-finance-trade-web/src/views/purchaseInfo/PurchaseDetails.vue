@@ -89,7 +89,7 @@ const addShopcartClick = () => {
 const changeInfo = () => {
   selectOrderById({ order_id: route.query.orderId })
       .then((res) => {
-        if (res) {
+        if (res.flag) {
           selectUserByUsername({ user_name: res.data.ownName })
               .then((userRes) => {
                 // 处理买家数据
@@ -104,8 +104,8 @@ const changeInfo = () => {
 onMounted(() => {
   selectOrderById({ order_id: route.query.orderId })
       .then((res) => {
-        if (res) {
-          data.value = res;
+        if (res.flag) {
+          data.value = res.data;
         }
       }).catch((err) => {
     console.error('数据获取失败:', err);

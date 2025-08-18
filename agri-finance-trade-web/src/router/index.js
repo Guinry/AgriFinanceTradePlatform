@@ -47,6 +47,11 @@ const routes = [
         component: () => import('../views/agriculturalKnowledge/AgriculturalKnowledge.vue')
     },
     {
+        path: '/agriculturalKnowledge/knowledgeDetails/:id',
+        name: 'KnowledgeDetails',
+        component: () => import('../views/agriculturalKnowledge/KnowledgeDetails.vue')
+    },
+    {
         path: '/shoppingCart',
         name: 'ShoppingCart',
         component: () => import('../views/shoppingCart/ShoppingCart.vue')

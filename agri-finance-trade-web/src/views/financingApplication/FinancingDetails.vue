@@ -334,7 +334,7 @@ const handleApplyOne = () => {
       fileInfo: store.state.mutiFile
     })
       .then((res) => {
-        if (res.flag == true) {
+        if (res.flag) {
           ElMessage.success(res.message);
           // router.push("/home/financing").catch((err) => err);
           localStorage.removeItem("financeObj");
@@ -441,7 +441,7 @@ const handleApplyMulti = () => {
       fileInfo: store.state.mutiFile
     })
       .then((res) => {
-        if (res.flag == true) {
+        if (res.flag) {
           ElMessage.success(res.message);
           // router.push("/home/financing").catch((err) => err);
           localStorage.removeItem("financeObj");
@@ -472,7 +472,7 @@ const individual = () => {
   }).then((res) => {
     showIndividual.value = true;
     showCombination.value = false;
-    if (res.flag == true) {
+    if (res.flag) {
       Object.assign(FinaceUserDetails, res.data);
       console.log(route.query.bankId);
     } else {
@@ -486,7 +486,7 @@ const select = () => {
   selectFinaceUser({
     bank_id: window.localStorage.financeObj.substring(10, 14),
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag) {
       Object.assign(FinaceUserDetails, res.data);
       console.log(FinaceUserDetails);
     } else {
@@ -504,7 +504,7 @@ const combination = () => {
   }).then((res) => {
     showCombination.value = true;
     showIndividual.value = false;
-    if (res.flag == true) {
+    if (res.flag) {
       Object.assign(UserDetailsMulti, res.data);
       console.log(route.query.bankId);
     } else {
@@ -540,7 +540,7 @@ const toAuthorization = () => {
   toAuthorizationUser({
     userName: AuthorizationUser.userName,
   }).then((res) => {
-    if (res.flag == true) {
+    if (res.flag) {
       ElMessage.success(res.message);
       showAdd.value = false;
       isAuthorization.value = false;

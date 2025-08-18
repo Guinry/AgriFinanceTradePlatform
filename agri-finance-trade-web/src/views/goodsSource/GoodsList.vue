@@ -99,7 +99,7 @@ const addShopcartClick = (val) => {
     order_id: val,
   })
       .then((res) => {
-        if (res.flag === true) {
+        if (res.flag) {
           ElMessage.success(res.message);
         } else {
           ElMessage.error(res.message);

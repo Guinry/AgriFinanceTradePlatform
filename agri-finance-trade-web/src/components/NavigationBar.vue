@@ -42,7 +42,8 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-// let Base64 = require("js-base64");
+// 正确引入 js-base64 库
+import { Base64 } from 'js-base64';
 
 // 使用 Composition API
 const store = useStore()

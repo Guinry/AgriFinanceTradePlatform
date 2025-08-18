@@ -4,11 +4,12 @@
   <div class="font-background">
     <img src="../../assets/page2/fontback5.png" alt="">
     <img src="../../assets/page2/fontback6.png" alt="" style="margin-left: 20px;">
-    <div style="color:rgba(241,10,10,0.61);font-family: 'PingFang SC';font-size: 80px;margin-top: 10px">农资专家齐聚</div>
+    <div style="color:rgb(82,181,72);font-family: 'PingFang SC';font-size: 80px;margin-top: 10px">农资专家齐聚</div>
   </div>
   <Questions />
   <div class="home-guide-container">
-      <guide-source :cgoods="goods" :pageSize="pageSize" :url="url" :total="total" @handleSearch="handleSearch" @pageClick="pageClick"></guide-source></div>
+      <guide-source :cgoods="goods" :pageSize="pageSize" :url="url" :total="total" @handleSearch="handleSearch" @pageClick="pageClick"></guide-source>
+  </div>
   <AllExpert />
   <Footer />
 </template>
@@ -56,9 +57,9 @@ const getData = () => {
     pageNum: guideCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res.list && res.total) {
-      goods.value = res.list;
-      total.value = res.total;
+    if (res.flag) {
+      goods.value = res.data.list;
+      total.value = res.data.total;
     } else {
       alert('数据格式错误');
     }
@@ -72,7 +73,7 @@ const getExpertData = () => {
     pageNum: expertCount.value,
     keys: searchValue.value
   }).then(res => {
-    if(res.flag == true){
+    if(res.flag){
       expertArray.value = res.data.list
     }else{
       ElMessage.error(res.message);

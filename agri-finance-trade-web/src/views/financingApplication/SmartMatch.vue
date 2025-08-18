@@ -30,7 +30,7 @@ const changeTime = (time) => {
 // 方法定义
 const getAllRecommned = () => {
   selectRecommned().then(res => {
-    if (res.flag == true) {
+    if (res.flag) {
       console.log('ressss', res);
       allRecommendData.value = res.data;
     } else {

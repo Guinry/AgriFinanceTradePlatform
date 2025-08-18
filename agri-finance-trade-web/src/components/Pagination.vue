@@ -54,9 +54,15 @@ const currentChange = (current) => {
     cUrl: props.cUrl,
     pageNum: current, // 使用传入的 current 参数而不是 pageCode
   }).then((res) => {
-    if (res.flag == true) {
-      pageGoods.value = res.data.list;
-      emit("item-click", pageGoods.value);
+    if (res) {
+      pageGoods.value = res.list;
+      // 修改: 向父组件传递更完整的分页信息
+      emit("item-click", {
+        list: pageGoods.value,
+        currentPage: current,
+        total: res.total,
+        pageSize: res.pageSize
+      });
     }
   });
 }

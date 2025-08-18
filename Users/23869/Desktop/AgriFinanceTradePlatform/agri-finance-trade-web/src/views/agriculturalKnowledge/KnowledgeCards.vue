@@ -1,23 +1,23 @@
 <template>
-  <div class="knowledge-box">
-    <div class="knowledge" v-for="(item, index) in cknowledge" :key="index">
-      <div class="flipper" >
-        <div class="front">
-          <video class="knowledge-img" width="200px" height="160px" v-if="item.type==='mp4'||item.type==='MP4'" accept="MP4,mp4" :src="$store.state.imgShowRoad + '/file/' + item.picPath" controls autoplay/>
-          <img v-else class="knowledge-img" :src="$store.state.imgShowRoad + '/file/' + item.picPath" alt="" />
-          <div class="front-title">{{ item.title }}</div>
-        </div>
-        <div class="back">
-          <h3 class="back-title" @click="handleDetail(item)">{{ item.title }}</h3>
-          <p class="content">{{ item.content }}</p>
-          <span class="initiator">
+<div class="knowledge-box">
+  <div class="knowledge" v-for="(item, index) in cknowledge" :key="index">
+    <div class="flipper" >
+      <div class="front">
+        <video class="knowledge-img" width="200px" height="160px" v-if="item.type==='mp4'||item.type==='MP4'" accept="MP4,mp4" :src="$store.state.imgShowRoad + '/file/' + item.picPath" controls autoplay/>
+        <img v-else class="knowledge-img" :src="$store.state.imgShowRoad + '/file/' + item.picPath" alt="" />
+        <div class="front-title">{{ item.title }}</div>
+      </div>
+      <div class="back">
+        <h3 class="back-title" @click="handleDetail(item)">{{ item.title }}</h3>
+        <p class="content">{{ item.content }}</p>
+        <span class="initiator">
           <img src="../../assets/img/up-user.png" @click="handleDetail(item)" alt=""/>
           {{item.ownName}}
         </span>
-        </div>
       </div>
     </div>
   </div>
+</div>
 
 </template>
 
@@ -39,7 +39,7 @@ const router = useRouter()
 
 // 方法定义
 const handleDetail = (item) => {
-  router.push(`/agriculturalKnowledge/knowledgeDetails/${item.knowledgeId}`).catch((err) => err)
+  router.push(`/home/knowledge/${item.knowledgeId}`)
 }
 </script>
 
@@ -55,7 +55,7 @@ const handleDetail = (item) => {
   flex-wrap: wrap;
   gap: 30px;
   padding: 20px 0;
-
+  
   .knowledge {
     width: 48%;
     max-width: 550px;
@@ -66,11 +66,11 @@ const handleDetail = (item) => {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     perspective: 1000px;
     transition: transform 0.3s ease;
-
+    
     &:hover {
       transform: translateY(-5px);
     }
-
+    
     .flipper {
       transition: 0.8s;
       transform-style: preserve-3d;
@@ -78,6 +78,7 @@ const handleDetail = (item) => {
       width: 100%;
       height: 100%;
       border-radius: 15px;
+      overflow: hidden;
 
       .front{
         z-index: 2;
@@ -85,7 +86,7 @@ const handleDetail = (item) => {
         position: absolute;
         width: 100%;
         height: 100%;
-
+        
         video{
           border: none;
           backface-visibility: hidden;
@@ -94,14 +95,14 @@ const handleDetail = (item) => {
           height: 100%;
           object-fit: cover;
         }
-
+        
         .knowledge-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           filter: brightness(70%);
         }
-
+        
         .front-title{
           width: 100%;
           height: 100%;
@@ -121,7 +122,7 @@ const handleDetail = (item) => {
           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
       }
-
+      
       .back{
         width: 100%;
         height: 100%;
@@ -135,7 +136,7 @@ const handleDetail = (item) => {
         background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
         display: flex;
         flex-direction: column;
-
+        
         .back-title {
           font-weight: bold;
           font-size: 20px;
@@ -143,13 +144,13 @@ const handleDetail = (item) => {
           margin: 0 0 15px 0;
           cursor: pointer;
           transition: all 0.3s;
-
+          
           &:hover{
             color: #035D1C;
             text-decoration: underline;
           }
         }
-
+        
         .content {
           font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
           font-size: 15px;
@@ -162,7 +163,7 @@ const handleDetail = (item) => {
           -webkit-box-orient: vertical;
           text-align: justify;
         }
-
+        
         .initiator {
           color: #888;
           font-size: 14px;
@@ -170,7 +171,7 @@ const handleDetail = (item) => {
           align-items: center;
           align-self: flex-end;
           margin-top: 15px;
-
+          
           img {
             width: 24px;
             height: 24px;
@@ -200,7 +201,7 @@ const handleDetail = (item) => {
 @media (max-width: 768px) {
   .knowledge-box {
     gap: 20px;
-
+    
     .knowledge {
       width: 100%;
       height: 250px;

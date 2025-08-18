@@ -79,7 +79,7 @@ const DetailBtn = (item) => {
 // 数据获取
 const fetchData = () => {
   selectBank({}).then((res) => {
-    if (res.flag == true) {
+    if (res.flag) {
       let tmp = res.data;
       if(tmp&&tmp.length>0){
         tmp.map((item2)=>{

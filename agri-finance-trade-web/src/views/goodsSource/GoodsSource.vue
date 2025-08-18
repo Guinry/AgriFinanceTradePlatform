@@ -48,9 +48,9 @@ const getData = () => {
     pageNum: goodsCount.value,
     keys: searchValue.value
   }).then((res) => {
-    if (res) {
-      goods.value = res.list;
-      total.value = res.total;
+    if (res.flag) {
+      goods.value = res.data.list;
+      total.value = res.data.total;
     } else {
       alert('数据格式错误');
     }

@@ -1,33 +1,30 @@
 <template>
   <div class="login">
-    <div class="big-title">
-      <div style="width:500px;font:120px 字魂武林江湖体;color:#ffaa00;margin-left: 240px">融销通</div>
-      <div class="title" style="font-family:字魂27号-布丁体;" >
-        农产品融销一体化平台
-      </div>
-    </div>
-    <div style="margin-top: 10px" class="registerPart">
-      <img :src="icon" id="icon" >
-      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleFormRef" label-width="100px" class="demo-ruleForm">
+    <div class="loginPart">
+      <img :src="icon" id="icon" alt="logo" />
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleFormRef" label-width="70px" class="demo-ruleForm">
         <h2>用户注册</h2>
         <el-form-item label="账号" prop="username">
-          <el-input placeholder="请输入账号"  v-model="ruleForm.username" autocomplete="off"></el-input>
+          <el-input placeholder="请输入账号" v-model="ruleForm.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
-          <el-input placeholder="请输入昵称"  v-model="ruleForm.nickname" autocomplete="off"></el-input>
+          <el-input placeholder="请输入昵称" v-model="ruleForm.nickname" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input placeholder="请输入密码"  type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+          <el-input placeholder="请输入密码" type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input placeholder="请再次输入密码"  type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          <el-input placeholder="请再次输入密码" type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button round type="warning" @click="register(ruleFormRef)">注册</el-button>
-          <el-button round @click="resetForm(ruleFormRef)">重置</el-button>
+
+        <!-- 修改按钮容器 -->
+        <el-form-item class="form-actions">
+          <el-button round class="submit-btn" @click="register(ruleFormRef)">注册</el-button>
+          <el-button round class="reset-btn" @click="resetForm(ruleFormRef)">重置</el-button>
         </el-form-item>
-        <div style="text-align: right;">
-          <el-link type="warning" style="margin-top: 20px;font-weight: 100" @click="$router.push('/login');">已有账号？去登录</el-link>
+
+        <div class="register-link">
+          <el-link type="warning" @click="$router.push('/login')">已有账号？去登录</el-link>
         </div>
       </el-form>
     </div>
@@ -119,19 +116,18 @@ const register = async (formEl) => {
         password: ruleForm.password,
         nickName: ruleForm.nickname,
         avatar: "rongxiaotong.gif",
-      })
-        .then((res) => {
-          if (res.flag == true) {
-            ElMessage.success(res.message);
-            store.commit("updateLoginUserNickname", ruleForm.nickname);
-            router.push("/login").catch((err) => err);
-          } else {
-            ElMessage.error(res.data);
-          }
-        })
-        .catch((err) => {
-          ElMessage.error(err.message || '注册失败');
-        });
+      }).then((res) => {
+        console.log(res);
+        if (res.flag) {
+          ElMessage.success(res.message);
+          store.commit("updateLoginUserNickname", ruleForm.nickname);
+          router.push("/login").catch((err) => err);
+        } else {
+          ElMessage.error(res.data);
+        }
+      }).catch((err) => {
+        ElMessage.error(err.message || '注册失败');
+      });
     } else {
       console.log('error submit!!');
       return false;
@@ -141,125 +137,96 @@ const register = async (formEl) => {
 </script>
 
 <style lang="less" scoped>
-#icon{
-  position:absolute;
+@import url("../../assets/bootstrap.css");
+
+#icon {
+  position: absolute;
   width: 100px;
-  top:0%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .login {
   box-sizing: border-box;
-  height: 100%;
+  height: 100vh;
+  background: url("../../assets/img/Login.jpg") no-repeat center center;
+  background-size: cover;
   padding-top: 150px;
-  background: url("../../assets/img/Login.jpg");
-  background-size: 1707px 837px;
 
-  .big-title {
-    width: 900px;
-    margin-top: 120px;
+  .loginPart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgb(26, 26, 26);
 
-    .title {
-      padding-top: 27px;
-      padding-left: 35px;
-      height: 94px;
-      background: url('../../assets/img/fontback.png');
-      background-size: 470px;
-      background-repeat: no-repeat;
-      margin-left: 220px;
-      font-size: 35px;
-      color: #ff9f34
+    h2 {
+      text-align: center;
+      color: #fff;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .el-form-item {
+      margin-bottom: 20px;
+    }
+
+    .el-input__inner {
+      border-radius: 10px;
+      border: 1px solid #dba155;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+    }
+
+    /* 按钮布局 */
+    .form-actions {
+      display: flex;
+      justify-content: space-between; /* 按钮左右分布 */
+      gap: 10px; /* 添加按钮之间的间距 */
+      margin-top: 20px;
+    }
+
+    .el-button {
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      width: 48%; /* 保证按钮宽度适中 */
+      flex: 1; /* 使按钮能够自适应并排显示 */
+    }
+
+    .submit-btn {
+      background-color: #dba155;
+      color: white;
+      border: 1px solid #dba155;
+    }
+
+    .reset-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #dba155;
+      border: 1px solid #dba155;
+    }
+
+    .submit-btn:hover {
+      background-color: #ffc377;
+    }
+
+    .reset-btn:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .register-link {
+      text-align: right;
+      color: white;
+      margin-top: 15px;
+      font-size: 14px;
     }
   }
-}
-
-.registerPart{
-  position:absolute;
-  /*定位方式绝对定位absolute*/
-  top:50%;
-  left:80%;
-  /*!*顶和高同时设置50%实现的是同时水平垂直居中效果*!*/
-  transform:translate(-50%,-50%);
-  /*实现块元素百分比下居中*/
-  width:450px;
-  min-height: 300px;
-  padding-top:70px;
-  padding-bottom:15px;
-  padding-right:50px;
-
-  background: rgba(0,0,0, .6);
-  /*背景颜色为黑色，透明度为0.8*/
-  box-sizing:border-box;
-  /*box-sizing设置盒子模型的解析模式为怪异盒模型，
-  将border和padding划归到width范围内*/
-  box-shadow: 0px 15px 25px rgba(0,0,0,.5);
-  /*边框阴影  水平阴影0 垂直阴影15px 模糊25px 颜色黑色透明度0.5*/
-  border-radius:15px;
-  /*边框圆角，四个角均为15px*/
-}
-.registerPart h2{
-  margin-top: -10px;
-  margin-bottom: 20px;
-  padding:0;
-  color: #fff;
-  font-weight: bold;
-  font-size: 22px;
-  font-family: "PingFang SC";
-  /*文字居中*/
-  margin-left:45.5%
-}
-.registerPart .inputbox{
-  position:relative;
-}
-.registerPart .inputElement .el-input__wrapper{
-  width: 100%;
-  padding:5px 0;
-  font-size:14px;
-  color:white;
-  letter-spacing: 1px;
-  /*字符间的间距1px*/
-  /*margin-bottom: 30px;*/
-  border:none;
-  border-bottom: 1px solid #fff;
-  box-shadow: none;
-  outline:none;
-  /*outline用于绘制元素周围的线在这里用途,是将输入框的边框的线条使其消失*/
-
-}
-
-// 修改:将 ::v-deep 替换为 :deep()
-:deep(.el-input__inner){
-  background-color: rgba(0, 0, 0, 0);
-  border: 1px solid #dba155;
-  color: #ffffff;
-  font-weight: 100;
-  font-size: 16px;
-  &::placeholder{
-    color: #848484;
-  }
-}
-
-// 修改:将 ::v-deep 替换为 :deep()
-:deep(.el-form-item__label){
-  color: #dba155;
-  font-family: 黑体;
-  font-size: 17px;
-  font-weight: bold;
-}
-
-.el-button{
-  background-color: rgba(255, 255, 255,0.2);
-  color: #dba155;
-  font-weight: 600;
-  font-size: 17px;
-  border: 1px solid #dba155;
-  width: 48%;
-}
-
-.el-button:hover {
-  color: #ffc377;
-  background-color: rgba(255, 255, 255,0.5);
-  border: 1px solid #dba155;
 }
 </style>

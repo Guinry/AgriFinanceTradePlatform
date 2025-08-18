@@ -1,28 +1,22 @@
 <template>
   <div class="login">
-    <div class="big-title">
-      <div style="width:500px;font:120px 字魂武林江湖体;color:#ffaa00;margin-left: 240px">融销通</div>
-      <div class="title" style="font-family:字魂27号-布丁体;" >
-        农产品融销一体化平台
-      </div>
-    </div>
-    <div style="margin-top: 10px" class="loginPart">
-      <img :src="icon" id="icon" >
-      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleFormRef" label-width="100px" class="demo-ruleForm" >
-        <h2 >用户登录</h2>
-        <el-form-item label="账号" prop="username" >
-          <el-input  v-model="ruleForm.username"   placeholder="请输入账号" autocomplete="off"></el-input>
+    <div class="loginPart">
+      <img :src="icon" id="icon" alt="logo" />
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleFormRef" label-width="50px" class="demo-ruleForm">
+        <h2>用户登录</h2>
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="ruleForm.username" placeholder="请输入账号" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" placeholder="请输入密码"  v-model="ruleForm.password" autocomplete="off"></el-input>
+          <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button round @click="submitForm(ruleFormRef)">登录</el-button>
-          <el-button round @click="resetForm(ruleFormRef)">重置</el-button>
+          <el-button round class="submit-btn" @click="submitForm(ruleFormRef)">登录</el-button>
+          <el-button round class="reset-btn" @click="resetForm(ruleFormRef)">重置</el-button>
         </el-form-item>
-          <div style="text-align: right;color: white;">
-            <el-link type="warning" style="margin-top: 20px;font-weight: 100" @click="$router.push('/register');">没有账号？去注册</el-link>
-          </div>
+        <div class="register-link">
+          <el-link type="warning" @click="$router.push('/register')">没有账号？去注册</el-link>
+        </div>
       </el-form>
     </div>
   </div>
@@ -34,7 +28,6 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { ElMessage } from 'element-plus'
 import icon from '../../assets/img/yellowlogo.png'
-
 
 import { userLogin } from "../../api/user";
 
@@ -64,12 +57,8 @@ const validatePass = (rule, value, callback) => {
 };
 
 const rules = {
-  password: [
-    { validator: validatePass, trigger: 'blur' }
-  ],
-  username: [
-    { validator: validateUsername, trigger: 'blur' }
-  ]
+  password: [{ validator: validatePass, trigger: 'blur' }],
+  username: [{ validator: validateUsername, trigger: 'blur' }],
 }
 
 const submitForm = async (formEl) => {
@@ -80,10 +69,8 @@ const submitForm = async (formEl) => {
         username: ruleForm.username,
         password: ruleForm.password,
       }).then((res) => {
-        if (res.flag == true) {
-          // 在Vuex中存储token
+        if (res.flag) {
           store.commit("setToken", res.data);
-          console.log(res.data)
           router.push("/home").catch((err) => err);
         } else {
           ElMessage.error(res.message);
@@ -109,124 +96,84 @@ const resetForm = (formEl) => {
 
 .login {
   box-sizing: border-box;
-
-  height: 100%;
+  height: 100vh;
+  background: url("../../assets/img/Login.jpg") no-repeat center center;
+  background-size: cover;
   padding-top: 150px;
-  background: url("../../assets/img/Login.jpg");
-  background-size: 1707px 837px;
-  .big-title{
-    width:900px;
-    margin-top: 120px;
-    .title{
-      padding-top: 27px;
-      padding-left: 35px;
-      height: 94px;
-      background:url('../../assets/img/fontback.png');
-      background-size:470px;
-      background-repeat: no-repeat;
-      margin-left: 220px;
-      font-size: 35px ;
-      color: #ff9f34
-    }
-  }
 
-  .loginPart{
-    position:absolute;
-    /*定位方式绝对定位absolute*/
-    top:50%;
-    left:80%;
-    /*!*顶和高同时设置50%实现的是同时水平垂直居中效果*!*/
-    transform:translate(-50%,-50%);
-    /*实现块元素百分比下居中*/
-    width:450px;
-    min-height: 300px;
-    padding-top:70px;
-    padding-bottom:15px;
-    padding-right:50px;
-
-    background: rgba(0, 0, 0, 0.6);
-    /*背景颜色为黑色，透明度为0.8*/
-    box-sizing:border-box;
-    /*box-sizing设置盒子模型的解析模式为怪异盒模型，
-    将border和padding划归到width范围内*/
+  .loginPart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
     box-shadow: 0px 0px 20px rgb(26, 26, 26);
-    /*边框阴影  水平阴影0 垂直阴影15px 模糊25px 颜色黑色透明度0.5*/
-    border-radius:15px;
-    /*边框圆角，四个角均为15px*/
 
-    h2{
-      margin-top: -10px;
-      margin-bottom: 20px;
-      padding:0;
+    h2 {
+      text-align: center;
       color: #fff;
+      font-size: 26px;
       font-weight: bold;
-      font-size: 22px;
-      font-family: "PingFang SC";
-      /*文字居中*/
-      margin-left:46%
+      margin-bottom: 20px;
     }
 
-    .inputbox{
-      position:relative;
+    .el-form-item {
+      margin-bottom: 20px;
+    }
+
+    .el-input__inner {
+      border-radius: 10px;
+      border: 1px solid #dba155;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+    }
+
+    .el-button {
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      width: 48%;
+      margin: 10px 1%;
+    }
+
+    .submit-btn {
+      background-color: #dba155;
+      color: white;
+      border: 1px solid #dba155;
+    }
+
+    .reset-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #dba155;
+      border: 1px solid #dba155;
+    }
+
+    .submit-btn:hover {
+      background-color: #ffc377;
+    }
+
+    .reset-btn:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .register-link {
+      text-align: left;
+      color: white;
+      margin-top: 15px;
+      font-size: 14px;
     }
   }
-}
 
-#icon{
-  position:absolute;
-  width: 100px;
-  top:0%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
-
-.loginPart .inputElement .el-input__wrapper{
-  width: 100%;
-  padding:5px 0;
-  font-size:14px;
-  color:white;
-  letter-spacing: 1px;
-  /*字符间的间距1px*/
-  /*margin-bottom: 30px;*/
-  border:none;
-  border-bottom: 1px solid #fff;
-  box-shadow: none;
-  outline:none;
-  /*outline用于绘制元素周围的线在这里用途,是将输入框的边框的线条使其消失*/
-}
-
-// 修改:将 ::v-deep 替换为 :deep()
-:deep(.el-input__inner){
-  background-color: rgba(0, 0, 0, 0);
-  border: 1px solid #dba155;
-  color: #ffffff;
-  font-weight: 100;
-  font-size: 16px;
-  &::placeholder{
-    color: #848484;
+  #icon {
+    position: absolute;
+    width: 100px;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-}
-
-// 修改:将 ::v-deep 替换为 :deep()
-:deep(.el-form-item__label){
-  color: #dba155;
-  font-family: 黑体;
-  font-size: 17px;
-  font-weight: bold;
-}
-
-.el-button{
-  background-color: rgba(255, 255, 255,0.2);
-  color: #dba155;
-  font-weight: 600;
-  font-size: 17px;
-  border: 1px solid #dba155;
-  width: 48%;
-}
-
-.el-button:hover {
-  color: #ffc377;
-  background-color: rgba(255, 255, 255,0.5);
-  border: 1px solid #dba155;
 }
 </style>

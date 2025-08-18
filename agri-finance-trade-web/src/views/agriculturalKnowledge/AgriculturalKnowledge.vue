@@ -45,8 +45,12 @@ const store = useStore();
 
 // 方法定义
 const pageClick = (item) => {
-  knowledge.value = item;
-  console.log('Page clicked:', item); // 确认页码是否正确触发
+  // 修改: 处理来自Pagination组件的完整分页数据
+  knowledge.value = item.list;
+  if (item.total !== undefined) {
+    total.value = item.total;
+  }
+  // console.log('Page clicked:', item); // 确认页码是否正确触发
 };
 
 // 生命周期钩子
@@ -54,18 +58,20 @@ onMounted(() => {
   loadKnowledge(knowledgeCount.value); // 加载数据
 });
 
+// 修改: 更新loadKnowledge方法以保持与分页组件的一致性
 const loadKnowledge = (page) => {
   selectKnowledgePage({
     pageNum: page,
   }).then((res) => {
-    if (res) {
-      let tmp = res.list;
+    if (res.flag) {
+      let tmp = res.data.list;
       tmp.forEach((e) => {
         const fileArr = e.picPath.split('.');
         e.type = fileArr[fileArr.length - 1];
       });
       knowledge.value = tmp;
-      total.value = res.total;
+      total.value = res.data.total;
+      pageSize.value = res.data.pageSize || 10;
     }
   });
 }

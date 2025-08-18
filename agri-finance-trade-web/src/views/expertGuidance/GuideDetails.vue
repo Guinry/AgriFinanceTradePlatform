@@ -21,7 +21,7 @@ const detailObj = ref({})
 
 const getData = () => {
   questionDetail({id: route.params.id}).then(res => {
-    detailObj.value = res
+    detailObj.value = res.data
   }).catch((error) => {
     console.error('API 调用失败:', error);
   });
