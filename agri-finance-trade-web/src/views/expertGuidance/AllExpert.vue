@@ -26,9 +26,9 @@ const total = ref(0)
 const pageSize = ref(30)
 const searchValue = ref('')
 const url = ref("/order/goods/")
-const goodsCount = ref(sessionStorage.getItem("/order/goods/pageCode") 
-  ? sessionStorage.getItem("/order/goods/pageCode") 
-  : 1)
+const goodsCount = ref(sessionStorage.getItem("/order/goods/pageCode")
+    ? sessionStorage.getItem("/order/goods/pageCode")
+    : 1)
 
 // 方法定义
 const pageClick = (item) => {
@@ -66,8 +66,8 @@ onMounted(() => {
 <style lang="less" scoped>
 .allExpert-page {
   width: 100%;
-  margin: 0 auto;
-
-  // float: left;
+  margin: 20px auto;
+  max-width: 1200px;
+  padding: 0 20px;
 }
 </style>

@@ -62,6 +62,21 @@ const routes = [
         component: () => import('../views/expertGuidance/ExpertGuidance.vue')
     },
     {
+        path: '/expertGuidance/guideDetails/:id',
+        name: 'ExpertDetails',
+        component: () => import('../views/expertGuidance/GuidanceDetails.vue')
+    },
+    {
+        path: '/expertGuidance/askQuestion',
+        name: 'AskQuestion',
+        component: () => import('../views/expertGuidance/AskQuestion.vue')
+    },
+    {
+        path: '/expertGuidance/makeAppointment',
+        name: 'MakeAppointment',
+        component: () => import('../views/expertGuidance/MakeAppointment.vue')
+    },
+    {
         path: '/financingApplication',
         name: 'FinancingApplication',
         component: () => import('../views/financingApplication/FinancingApplication.vue')

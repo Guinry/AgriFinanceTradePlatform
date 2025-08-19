@@ -19,7 +19,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {selectQuestions, selectExpert, selectGoodsPage} from "../../api/order";
-import GuideSource from "./GuideSource.vue";
+import GuideSource from "./GuidanceSource.vue";
 import Subtitle from "../../components/Subtitle.vue";
 import Questions from "./Questions.vue";
 import AllExpert from "./AllExpert.vue";

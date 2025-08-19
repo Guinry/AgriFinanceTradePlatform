@@ -1,8 +1,9 @@
 <template>
+  <NavigationBar />
   <div class="details-box2">
     <smart-match-user></smart-match-user>
   </div>
-
+  <Footer />
 </template>
 
 <script setup>
@@ -10,6 +11,8 @@ import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { selectRecommned } from "../../api/finance";
 import SmartMatchUser from '../../components/SmartMatchUser.vue';
+import NavigationBar from "../../components/NavigationBar.vue";
+import Footer from "../../components/Footer.vue";
 
 // 响应式数据
 const intentionData = ref({
@@ -71,6 +74,10 @@ onMounted(() => {
   background: #fff;
   min-height: 100%;
   height: auto;
+  // 添加清除浮动，防止内容跑到footer下面
+  overflow: hidden;
+  position: relative;
+  padding: 20px;
 
   img {
     width: 300px;

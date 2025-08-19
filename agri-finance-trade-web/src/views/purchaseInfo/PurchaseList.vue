@@ -1,7 +1,7 @@
 <template>
   <div class="needs-box">
     <div class="search3">
-      <el-input  placeholder="请输入内容" v-model="searchValue" maxlength="100" clearable style="width:250px;margin-right: 15px">
+      <el-input  placeholder="请输入内容" v-model="searchValue" maxlength="100" clearable style="width:300px;margin-right: 20px">
         <template #prefix>
           <i class="el-input__icon el-icon-search search-icon" @click="handleSearch"></i>
         </template>
@@ -17,25 +17,32 @@
         <el-button round @click="handleTopicDetail('玉米')"> 玉米 </el-button>
         <el-button round @click="handleTopicDetail('赣南脐橙')" style="width: 110px"> 赣南脐橙 </el-button>
       </el-button-group>
-
-
     </div>
+    
     <!-- 添加无数据时的显示 -->
     <div v-if="cneeds.length === 0" class="no-purchase-container">
       <img class="no-purchase-img" src="../../assets/img/no-purchase.png" alt="暂无求购" />
       <div class="no-purchase-text">暂无求购信息</div>
+      <div class="no-purchase-subtext">当前没有符合条件的求购信息，请尝试其他搜索条件</div>
     </div>
 
     <div v-else class="purchase-content">
       <div v-for="(item, index) in cneeds"
       :key="index" class="purchase-item"
       @click="detailsClick(item.orderId)">
-        <div class="title">
-          <span class="title-icon"><i class="el-icon-sunrise-1"></i></span>
-          <span class="title-content"> {{item.content}}</span>
+        <div class="title-section">
+          <div class="title">
+            <span class="title-icon"><i class="el-icon-sunrise-1"></i></span>
+            <span class="title-content"> {{item.content}}</span>
+          </div>
+          <div class="content">{{item.title}}</div>
         </div>
-        <div class="content">{{item.title}}</div>
-        <div class="update-time">{{ formatTimer(item.updateTime) }}</div>
+        <div class="info-section">
+          <div class="update-time">{{ formatTimer(item.updateTime) }}</div>
+          <div class="arrow-icon">
+            <i class="el-icon-arrow-right"></i>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -101,11 +108,13 @@ const formatTimer = (value) => {
 .needs-box{
   width: 100%;
   .search3 {
-    height: 60px;
-    background-color: white;
-    padding: 10px 20px;
-    margin: 10px auto;
+    height: auto;
+    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+    padding: 20px 30px;
+    margin: 15px auto;
     width: 1100px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
     .tag-item{
       margin-right: 10px;
@@ -123,7 +132,12 @@ const formatTimer = (value) => {
   .no-purchase-container {
     width: 100%;
     text-align: center;
-    padding: 50px 0;
+    padding: 80px 0;
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 auto;
+    width: 1100px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
     .no-purchase-img {
       width: 200px;
@@ -132,99 +146,169 @@ const formatTimer = (value) => {
     }
 
     .no-purchase-text {
-      font-size: 18px;
-      color: #999;
+      font-size: 22px;
+      color: #666;
       margin-top: 20px;
+      font-weight: 500;
+    }
+    
+    .no-purchase-subtext {
+      font-size: 16px;
+      color: #999;
+      margin-top: 10px;
     }
   }
 
   .purchase-content{
     background: #fff;
-    padding: 20px;
+    padding: 25px;
     width: 1100px;
     margin: 0 auto;
-    border-radius: 10px;
+    border-radius: 12px;
     font-family: "PingFang SC";
-    font-weight: 540;
+    font-weight: 500;
     font-size: 17px;
-    text-shadow: 0px 0px 1px #c7c7c7;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
     .purchase-item{
-      height: 70px;
       display: flex;
       align-items: center;
-      flex-direction: row;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #dedddd;
-      .title{
-        width: 620px;
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 1;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
-        .tips{
-          color: #000000;
-          font-weight: bold;
-        }
-        .title-content{
-          cursor: pointer;
-          &:hover{
-            color: #108fcb;
-            text-decoration: underline;
+      padding: 20px 15px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #f9f9f9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .title-section {
+        flex: 1;
+        
+        .title{
+          width: 100%;
+          /*超出的部分隐藏*/
+          overflow: hidden;
+          /*文字用省略号替代超出的部分*/
+          text-overflow: ellipsis;
+          /*弹性伸缩盒子模型显示*/
+          display: -webkit-box;
+          /*限制在一个块元素显示文本的行数*/
+          -webkit-line-clamp: 1;
+          /*设置或检索伸缩盒对象的子元素排列方式*/
+          -webkit-box-orient: vertical;
+          margin-bottom: 8px;
+          
+          .title-icon {
+            color: #409EFF;
+            margin-right: 10px;
+          }
+          
+          .tips{
+            color: #000000;
+            font-weight: bold;
+          }
+          .title-content{
+            cursor: pointer;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            
+            &:hover{
+              color: #409EFF;
+            }
           }
         }
+        
+        .content{
+          width: 100%;
+          /*超出的部分隐藏*/
+          overflow: hidden;
+          /*文字用省略号替代超出的部分*/
+          text-overflow: ellipsis;
+          /*弹性伸缩盒子模型显示*/
+          display: -webkit-box;
+          /*限制在一个块元素显示文本的行数*/
+          -webkit-line-clamp: 1;
+          /*设置或检索伸缩盒对象的子元 素排列方式*/
+          -webkit-box-orient: vertical;
+          color: #666;
+          font-size: 15px;
+        }
       }
-      .content{
-        width: 300px;
-        margin-left: 20px;
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 1;
-        /*设置或检索伸缩盒对象的子元 素排列方式*/
-        -webkit-box-orient: vertical;
-      }
-      .update-time{
-        width: 100px;
-        text-align: right;
+      
+      .info-section {
+        display: flex;
+        align-items: center;
+        
+        .update-time{
+          color: #999;
+          font-size: 14px;
+          margin-right: 15px;
+          min-width: 100px;
+          text-align: right;
+        }
+        
+        .arrow-icon {
+          color: #ccc;
+          font-size: 18px;
+        }
       }
     }
   }
 }
 
 .search3 :deep(.el-input--suffix .el-input__inner){
-  height: 35px;
-  line-height: 35px;
+  height: 42px;
+  line-height: 42px;
+  border-radius: 25px;
+  border: none;
+  padding-left: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 :deep(.el-button-group>.el-button) {
-  border-radius: 100px;
-  margin:0px 5px;
-  border: 1px solid #DCDFE6;
+  border-radius: 20px;
+  margin: 0 5px;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  font-weight: 500;
+  transition: all 0.3s ease;
 
   &:hover{
-    text-decoration: underline;
-    background-color: #ffffff;
-    color: black;
+    background: #fff;
+    color: #409EFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+  
   &:focus{
-    color: #ff4f16;
-    background-color: #ffffff;
+    color: #409EFF;
+    background: #fff;
+    border-color: #409EFF;
+  }
+  
+  &:first-child {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  
+  &:last-child {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
 }
 
 :deep(.el-button-group>.el-button:not(:first-child):not(:last-child)) {
-  border-radius: 100px;
+  border-radius: 20px;
 }
 </style>

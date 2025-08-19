@@ -1,9 +1,11 @@
 <template>
   <div class="goods-box4">
     <div class="search">
-      <el-input  placeholder="查找专家" v-model="searchValue" maxlength="100" clearable style="width:290px;">
+      <el-input placeholder="查找专家" v-model="searchValue" maxlength="100" clearable style="width:290px;">
         <template #prefix>
-          <el-icon class="el-input__icon search-icon" @click="handleSearch"><Search /></el-icon>
+          <el-icon class="el-input__icon search-icon" @click="handleSearch">
+            <Search />
+          </el-icon>
         </template>
       </el-input>
     </div>
@@ -12,20 +14,20 @@
       <img :src="imgShowRoad + '/file/' + 'experta.png'" alt="" />
       <div class="info">
         <p class="content">
-          <span style="margin-right:50px;">姓名：{{item.realName}}</span>
-          <span>职称：{{item.position}}</span>
+          <span class="info-item"><strong>姓名：</strong>{{item.realName}}</span>
+          <span class="info-item"><strong>职称：</strong>{{item.position}}</span>
         </p>
         <p class="content">
-          <span>从事专业：{{item.profession}}</span>
-          <span>联系电话：{{item.phone}}</span>
+          <span class="info-item"><strong>专业：</strong>{{item.profession}}</span>
+          <span class="info-item"><strong>电话：</strong>{{item.phone}}</span>
         </p>
         <p class="content">
-          <span>单位：{{item.belong}}</span>
+          <span class="info-item"><strong>单位：</strong>{{item.belong}}</span>
         </p>
       </div>
       <div class="info2">
-        <span class="question-btn" @click="handleQuestion(item)" style="margin-right:20px;">向我提问</span>
-        <span class="question-btn" @click="handleAppoint(item)">线下预约</span>
+        <span class="question-btn" @click="handleQuestion(item)">向我提问</span>
+        <span class="question-btn appoint-btn" @click="handleAppoint(item)">线下预约</span>
       </div>
     </div>
   </div>
@@ -81,11 +83,11 @@ const detailsClick = (item) => {
 }
 
 const handleQuestion = (item) => {
-  router.push(`/home/question?id=${item.userName}`).catch((err) => err);
+  router.push(`/expertGuidance/askQuestion?id=${item.userName}`).catch((err) => err);
 }
 
 const handleAppoint = (item) => {
-  router.push(`/home/appointment?id=${item.userName}`).catch((err) => err);
+  router.push(`/expertGuidance/makeAppointment?id=${item.userName}`).catch((err) => err);
 }
 
 const handleSearch = () => {
@@ -97,102 +99,119 @@ const handleSearch = () => {
 .search {
   height: 60px;
   background-color: #ffffff;
-  border-top-left-radius:15px;
-  border-top-right-radius:15px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   padding: 10px 20px;
   margin-top: 10px;
-  .search-icon{
-    position:relative;
-    bottom:2px;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: relative;
+    bottom: 2px;
     left: -2px;
     cursor: pointer;
   }
 }
 
 .goods-box4 {
-  border-radius:15px;
+  border-radius: 15px;
   background-color: #ffffff;
   width: 1100px;
   margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
   .goods {
     width: 1100px;
-    height: 150px;
-    padding: 10px 20px;
+    padding: 20px;
     background-color: white;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 15px 20px;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
     img {
       width: 100px;
       height: 100px;
       margin-right: 20px;
-      border-radius: 6px;
+      border-radius: 50%;
+      border: 3px solid #f0f0f0;
+      object-fit: cover;
     }
 
     .info {
-      width: 800px;
-      margin-top: 10px;
-      font-size: 16px;
+      flex: 1;
+      margin-top: 0;
+      font-size: 15px;
 
+      .info-item {
+        display: inline-block;
+        margin-right: 30px;
+        margin-bottom: 8px;
+        color: #555;
 
-      text-shadow: 0px 0px 2px #c7c7c7;
-      .initiator {
-        color: #666;
-      }
-
-      .title {
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 1;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
+        strong {
+          color: #333;
+        }
       }
 
       .content {
-        height: 20px;
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 7;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
+        height: auto;
+        margin: 5px 0;
       }
+    }
+  }
+}
 
-      .price {
-        font-weight: bold;
-        display: block;
-        color: red;
+.info2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  min-width: 160px;
+
+  .question-btn {
+    cursor: pointer;
+    color: #fff;
+    background-color: #67C23A;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: all 0.3s;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    border: 1px solid #67C23A;
+
+    &:hover {
+      background-color: #5daf34;
+      box-shadow: 0 4px 8px rgba(103, 194, 58, 0.3);
+    }
+
+    &.appoint-btn {
+      background-color: #409EFF;
+      border-color: #409EFF;
+
+      &:hover {
+        background-color: #337ecc;
+        box-shadow: 0 4px 8px rgba(64, 158, 255, 0.3);
       }
     }
   }
 }
-.info2{
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-end;
-  .question-btn{
-    cursor: pointer;
-    color: #67C23A;
-    &:hover{
-      text-decoration: underline;
-      color: #035D1C;
-    }
-  }
-}
-.search :deep(.el-input--suffix .el-input__inner){
-  height: 35px;
-  line-height: 35px;
+
+.search :deep(.el-input--suffix .el-input__inner) {
+  height: 40px;
+  line-height: 40px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
 }
 </style>

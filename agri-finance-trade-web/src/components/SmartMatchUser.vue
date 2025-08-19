@@ -160,6 +160,7 @@
           >
         </div>
       </div>
+      <div style="clear: both;"></div>
     </div>
   </div>
 </template>
@@ -389,6 +390,9 @@ const changeTime = (time) => {
   background: #fff;
   height: auto;
   min-height: 100%;
+  // 添加清除浮动，防止内容溢出
+  overflow: hidden;
+  
   .title {
     border-bottom: 1px solid #f2f2f2;
     padding: 10px 0px;
@@ -398,6 +402,10 @@ const changeTime = (time) => {
     background-color: #f9f9f9;
     width: 1100px;
     margin: 0 auto;
+    // 添加清除浮动
+    overflow: hidden;
+    padding-bottom: 20px;
+    
     .goods {
       float: left;
       text-align: center;
@@ -411,6 +419,8 @@ const changeTime = (time) => {
       position: relative;
       // margin: 0 auto;
       cursor: pointer;
+      margin-right: 10px;
+      
       .goods-img {
         float: left;
         width: 80px;

@@ -39,14 +39,16 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin-top: 20px" class="cancle">
-      <el-button @click="toggleSelection()">取消选择</el-button>
-    </div>
-    <div class="submit">
-      <div class="total-price">
-        <span>总价:￥{{ totalprice }}</span>
+    <div class="cart-actions">
+      <div style="margin-top: 20px" class="cancle">
+        <el-button @click="toggleSelection()">取消选择</el-button>
       </div>
-      <el-button type="danger" @click="payment" class="place-order">提交订单</el-button>
+      <div class="submit">
+        <div class="total-price">
+          <span>总价:￥{{ totalprice.toFixed(2) }}</span>
+        </div>
+        <el-button type="danger" @click="payment" class="place-order">提交订单</el-button>
+      </div>
     </div>
   </div>
   <Footer />
@@ -70,7 +72,7 @@ const router = useRouter()
 
 // 响应式数据
 const dataArray = ref([])
-const totalprice = ref("")
+const totalprice = ref(0)
 const addressData = ref({})
 const multipleSelection = ref([])
 const multipleTableRef = ref(null)
@@ -163,9 +165,9 @@ const handleSelectionChange = (val) => {
   let sum = 0
   val.forEach(e => {
     sum = sum + (Number(e.price) * e.count)
-    totalprice.value = sum
-    console.log('this.totalprice', totalprice.value)
   })
+  totalprice.value = sum
+  console.log('this.totalprice', totalprice.value)
 }
 
 const calPrice = () => {
@@ -177,12 +179,12 @@ const calPrice = () => {
         if (e.shoppingId === e1.shoppingId) {
           console.log('e1.shoppingId', e.count, e1.shoppingId)
           sum = sum + (Number(e1.price) * e.count)
-          totalprice.value = sum
-          console.log('---this.totalprice', totalprice.value)
         }
       })
     })
   }
+  totalprice.value = sum
+  console.log('---this.totalprice', totalprice.value)
 }
 
 // 更新商品数量  /cart/update/{id}/{count}
@@ -299,23 +301,27 @@ onMounted(() => {
       font-size: 20px;
     }
   }
-  .cancle {
-    float: left;
-  }
-  .submit {
+  .cart-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 20px;
-    float: right;
-    width: 300px;
-    height: 40px;
-    .total-price {
-      font-size: 20px;
+    .cancle {
       float: left;
-      color: red;
-      // margin-right: 50px;
-      line-height: 40px;
     }
-    .place-order {
+    .submit {
       float: right;
+      display: flex;
+      align-items: center;
+      .total-price {
+        font-size: 20px;
+        color: red;
+        margin-right: 20px;
+        line-height: 40px;
+      }
+      .place-order {
+        align-self: flex-end;
+      }
     }
   }
 }
