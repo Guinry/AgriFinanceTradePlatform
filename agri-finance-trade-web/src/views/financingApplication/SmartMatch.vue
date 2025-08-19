@@ -9,7 +9,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { selectRecommned } from "../../api/finance";
+import { selectRecommend } from "../../api/finance";
 import SmartMatchUser from '../../components/SmartMatchUser.vue';
 import NavigationBar from "../../components/NavigationBar.vue";
 import Footer from "../../components/Footer.vue";
@@ -31,8 +31,8 @@ const changeTime = (time) => {
 };
 
 // 方法定义
-const getAllRecommned = () => {
-  selectRecommned().then(res => {
+const getAllRecommend = () => {
+  selectRecommend().then(res => {
     if (res.flag) {
       console.log('ressss', res);
       allRecommendData.value = res.data;
@@ -46,7 +46,7 @@ const getAllRecommned = () => {
 
 // 生命周期钩子
 onMounted(() => {
-  // getAllRecommned();
+  // getAllRecommend();
   // 注意：这里的form变量在原代码中未定义，需要根据实际需求处理
   // form = Object.assign({}, {...JSON.parse(localStorage.getItem('financeObj'))});
 });

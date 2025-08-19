@@ -79,12 +79,77 @@ const routes = [
     {
         path: '/financingApplication',
         name: 'FinancingApplication',
-        component: () => import('../views/financingApplication/FinancingApplication.vue')
+        component: () => import('../views/financingApplication/FinanceApplication.vue')
     },
     {
         path: '/smartMatch',
         name: 'SmartMatch',
         component: () => import('../views/financingApplication/SmartMatch.vue')
+    },
+    {
+        path: '/userCenter',
+        component: () => import('../views/userCenter/UserCenter.vue'),
+        children: [
+            {
+                path: '',
+                redirect: '/userInformation'
+            },
+            {
+                path: '/userInformation',
+                name: 'UserInformation',
+                component: () => import('../views/userCenter/userInformation/UserInformation.vue')
+            },
+            {
+                path: '/userAddress',
+                name: 'UserAddress',
+                component: () => import('../views/userCenter/userInformation/UserAddress.vue')
+            },
+            {
+                path: '/userPassword',
+                name: 'UserPassword',
+                component: () => import('../views/userCenter/userInformation/UserPassword.vue')
+            },
+            {
+                path: '/userGoods',
+                name: 'UserGoods',
+                component: () => import('../views/userCenter/userPublish/UserGoods.vue')
+            },
+            {
+                path: '/publishGoods',
+                name: 'PublishGoods',
+                component: () => import('../views/userCenter/userPublish/PublishGoods.vue')
+            },
+            {
+                path: '/userNeeds',
+                name: 'UserNeeds',
+                component: () => import('../views/userCenter/userPublish/UserNeeds.vue')
+            },
+            {
+                path: '/publishNeeds',
+                name: 'PublishNeeds',
+                component: () => import('../views/userCenter/userPublish/PublishNeeds.vue')
+            },
+            {
+                path: '/userQuestion',
+                name: 'UserQuestion',
+                component: () => import('../views/userCenter/userExpert/UserQuestion.vue')
+            },
+            {
+                path: '/userAppointment',
+                name: 'UserAppointment',
+                component: () => import('../views/userCenter/userExpert/UserAppointment.vue')
+            },
+            {
+                path: '/userBuy',
+                name: 'UserBuy',
+                component: () => import('../views/userCenter/userOrder/UserBuy.vue')
+            },
+            {
+                path: '/userSell',
+                name: 'UserSell',
+                component: () => import('../views/userCenter/userOrder/UserSell.vue')
+            }
+        ]
     }
 ]
 

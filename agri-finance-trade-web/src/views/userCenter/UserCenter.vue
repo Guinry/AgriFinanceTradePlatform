@@ -1,0 +1,46 @@
+<template>
+  <div class="user-content">
+    <UserNavigationBar />
+    <div class="right-content">
+      <!-- 添加 router-view 以显示子路由内容 -->
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import UserNavigationBar from "../../components/UserNavigationBar.vue";
+import { useRouter } from 'vue-router'; // 使用 useRouter 替代 onBeforeRouteEnter
+import { onMounted } from 'vue'; // 添加 onMounted 钩子
+
+const router = useRouter();
+
+// 使用 onMounted 替代 onBeforeRouteEnter 进行路由守卫
+onMounted(() => {
+  let token = window.localStorage.token;
+  if (!token) {
+    router.push("/login");
+  }
+});
+</script>
+
+<style lang="less" scoped>
+.user-content {
+  width: 1100px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .right-content {
+    min-height: 100%;
+    padding-top: 20px;
+    height: auto;
+    background: #fff;
+    // 添加左侧边距，避免与导航栏遮挡
+    width: calc(100% - 240px); // 220px导航栏宽度 + 20px间距
+    margin-left: 20px;
+  }
+}
+</style>

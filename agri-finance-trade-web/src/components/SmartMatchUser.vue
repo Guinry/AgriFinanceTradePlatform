@@ -173,7 +173,7 @@ import {
   insertIntention,
   updateIntention as apiUpdateIntention,
   deleteIntention,
-  selectRecommned,
+  selectRecommend,
 } from "../api/finance";
 
 // 响应式数据
@@ -218,25 +218,22 @@ const ruleFormRef = ref();
 // 注入reload方法
 
 // 方法定义
-const getAllRecommned = () => {
-  selectRecommned()
-    .then((res) => {
-      console.log("ressss", res);
+const getAllRecommend = () => {
+  selectRecommend().then((res) => {
+      console.log("res", res);
       allRecommendData.value = res.data;
-    })
-    .catch((err) => {
-      console.log(err);
+    }).catch((err) => {
+      console.error("获取推荐融资人失败:", err);
     });
 };
 
 const getAllIntention = () => {
-  selectIntention()
-    .then((res) => {
-      console.log("ressss", res);
+  selectIntention().then((res) => {
+      console.log("res", res);
       allIntentionData.value = res.data;
     })
     .catch((err) => {
-      console.log(err);
+      console.error("获取融资意向失败:", err);
     });
 };
 
@@ -294,7 +291,7 @@ const updateIntention = () => {
         getAllIntention();
         ElMessage.success(res.message);
         showAdd.value = false;
-        getAllRecommned();
+        getAllRecommend();
       } else {
         showAdd.value = false;
         ElMessage.error(res.data);
@@ -314,7 +311,7 @@ const updateIntention = () => {
       if (res.flag === true) {
         getAllIntention();
         ElMessage.success(res.message);
-        getAllRecommned();
+        getAllRecommend();
         showAdd.value = false;
       } else {
         showAdd.value = false;
@@ -370,7 +367,7 @@ const detailsClick = (userName) => {
 // 生命周期钩子
 onMounted(() => {
   getAllIntention();
-  getAllRecommned();
+  getAllRecommend();
   // 注意：原代码中的form变量未在data中定义，此处注释掉
   // form = Object.assign({}, { ...JSON.parse(localStorage.getItem("financeObj")) });
 });

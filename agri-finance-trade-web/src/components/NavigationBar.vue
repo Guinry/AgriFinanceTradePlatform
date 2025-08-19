@@ -30,7 +30,7 @@
         <button><router-link to="/register">注册</router-link></button>
       </div>
       <div class="actions" v-else>
-        <button><a href="javascript:void(0)" @click="userPage">个人中心</a></button>
+        <button><router-link to="/userCenter">个人中心</router-link></button>
         <button><a href="javascript:void(0)" @click="logout">退出</a></button>
       </div>
     </div>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -53,6 +53,9 @@ const router = useRouter()
 const avatar = ref("")
 const loginUserNickname = ref("")
 
+// 添加定时器引用
+const logoutTimer = ref(null)
+
 // 方法定义
 const handleSelect = (key, keyPath) => {}
 
@@ -65,6 +68,12 @@ const Register = () => {
 }
 
 const logout = () => {
+  // 清除定时器
+  if (logoutTimer.value) {
+    clearTimeout(logoutTimer.value)
+    logoutTimer.value = null
+  }
+  
   store.commit("updateLoginUserNickname", "")
   store.commit("removeStorage")
   loginUserNickname.value = ""
@@ -99,8 +108,27 @@ const handleFinancingCommand = (command) => {
   }
 }
 
+// 添加重置定时器函数
+const resetLogoutTimer = () => {
+  // 清除现有定时器
+  if (logoutTimer.value) {
+    clearTimeout(logoutTimer.value)
+  }
+  
+  // 设置1小时后自动退出登录 (3600000毫秒 = 1小时)
+  logoutTimer.value = setTimeout(() => {
+    logout()
+  }, 3600000)
+}
+
+// 添加用户活动监听函数
+const handleUserActivity = () => {
+  resetLogoutTimer()
+}
+
 // 生命周期钩子
 onMounted(() => {
+  // 检查本地存储中的token
   if (window.localStorage.token) {
     let token = window.localStorage.token
     let arr = token.split(".")
@@ -116,6 +144,28 @@ onMounted(() => {
     loginUserNickname.value = nickname
   }
   console.log(loginUserNickname.value)
+  
+  // 初始化定时器
+  resetLogoutTimer()
+  
+  // 监听用户活动事件
+  window.addEventListener('mousemove', handleUserActivity)
+  window.addEventListener('keypress', handleUserActivity)
+  window.addEventListener('click', handleUserActivity)
+  window.addEventListener('scroll', handleUserActivity)
+})
+
+// 组件卸载时清理定时器和事件监听
+onUnmounted(() => {
+  if (logoutTimer.value) {
+    clearTimeout(logoutTimer.value)
+  }
+  
+  // 移除事件监听器
+  window.removeEventListener('mousemove', handleUserActivity)
+  window.removeEventListener('keypress', handleUserActivity)
+  window.removeEventListener('click', handleUserActivity)
+  window.removeEventListener('scroll', handleUserActivity)
 })
 </script>
 

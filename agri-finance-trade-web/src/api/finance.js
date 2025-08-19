@@ -75,7 +75,7 @@ export function deleteIntention() {
     })
 }
 // 查询推荐人
-export function selectRecommned() {
+export function selectRecommend() {
     return request({
         method: 'get',
         url: '/finance/selectRecommendByName',
@@ -86,7 +86,7 @@ export function selectRecommned() {
 }
 
 // 查询单人贷款人信息
-export function selectFinaceUser(bank_id) {
+export function selectFinanceUser(bank_id) {
     return request({
         method: 'get',
         url: '/finance/selectFinaceUser/' + bank_id.bank_id,
@@ -139,7 +139,7 @@ export function deleteById(financeId) {
     })
 }
 // 根据id查询融资信息，信息回显
-export function selectFinaceById(params) {
+export function selectFinanceById(params) {
     return request({
         method: 'get',
         url: 'finance/selectById/' + params.id,
