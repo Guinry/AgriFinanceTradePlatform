@@ -91,11 +91,6 @@ const logout = () => {
     sessionStorage.removeItem("/user/search/pageCode")
   }
 }
-
-const userPage = () => {
-  router.push("/home/user").catch((err) => err)
-}
-
 // 添加融资申请相关的处理函数
 const handleFinancingCommand = (command) => {
   switch (command) {

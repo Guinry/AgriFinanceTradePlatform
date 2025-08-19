@@ -1,48 +1,70 @@
 <template>
   <div class="add-address">
-    <div class="title">我的收货地址</div>
-    <el-button type="success" round plain style="margin-top:10px;" @click="handleAdd">添加</el-button>
-    <div v-for="(item,index) in allAddressData" :key="index"  class="default-address-container">
-      <div>
-        <div class="address-item">收货人：{{item.consignee}}</div>
-        <div class="address-item">收货地址：{{item.addressDetail}}</div>
-        <div class="address-item">收货手机号：{{item.phone}}</div>
-      </div>
-      <div class="right-btn">
-        <el-tag style="position:relative;top:-40px;right:-138px;margin-right: 20px;" v-if="item.isDefault" type="success">默认收货地址</el-tag>
-        <!-- <div class="marginR20" @click="handleDetail(item)">详情</div>   -->
-        <div class="marginR20" @click="handleEdit(item)">编辑</div>
-        <div class="marginR20" @click="handleDel(item)">删除</div>
+    <div class="header-section">
+      <h2 class="title">我的收货地址</h2>
+      <el-button type="success" round class="add-btn" @click="handleAdd">
+        <el-icon><Plus /></el-icon>
+        添加新地址
+      </el-button>
+    </div>
+
+    <div class="address-list">
+      <div v-for="(item, index) in allAddressData" :key="index" class="address-card">
+        <div class="address-content">
+          <div class="address-info">
+            <div class="info-row">
+              <el-tag v-if="item.isDefault" type="success" effect="dark" class="default-tag">默认地址</el-tag>
+              <span class="consignee">{{ item.consignee }}</span>
+              <span class="phone">{{ item.phone }}</span>
+            </div>
+            <div class="address-detail">
+              <el-icon><Location /></el-icon>
+              {{ item.addressDetail }}
+            </div>
+          </div>
+          <!-- 编辑与删除按钮放在地址卡片的底部 -->
+          <div class="address-actions">
+            <el-button link type="primary" @click="handleEdit(item)">编辑</el-button>
+            <el-button link type="danger" @click="handleDel(item)">删除</el-button>
+          </div>
+        </div>
       </div>
     </div>
-    <el-dialog title="更换地址" v-model="dialogVisible" width="580px" :before-close="handleClose">
-      <el-table ref="multipleTable" :data="allAddressData" tooltip-effect="dark" style="width: 100%"
-       @select="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column label="收货人" prop="consignee" width="120" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="addressDetail" label="收获地址" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="phone" label="收获手机号" width="120" show-overflow-tooltip></el-table-column>
-      </el-table>
 
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="handleClose">取 消</el-button>
-          <el-button type="success" @click="submitChange">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-    <el-dialog :title="title" v-model="showAdd" width="580px" :before-close="closeAdd">
-      <el-form :model="addressData" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="收货人：" prop="consignee">
-          <el-input v-model="addressData.consignee"></el-input>
+    <!-- 添加/编辑地址弹窗 -->
+    <el-dialog
+        :title="title"
+        v-model="showAdd"
+        width="580px"
+        :before-close="closeAdd"
+        class="address-dialog"
+    >
+      <el-form
+          :model="addressData"
+          ref="ruleForm"
+          label-width="100px"
+          class="address-form"
+      >
+        <el-form-item label="收货人：" prop="consignee" required>
+          <el-input v-model="addressData.consignee" placeholder="请输入收货人姓名"></el-input>
         </el-form-item>
-        <el-form-item label="收货地址：" prop="addressDetail">
-          <el-input v-model="addressData.addressDetail"></el-input>
+        <el-form-item label="手机号：" prop="phone" required>
+          <el-input v-model="addressData.phone" placeholder="请输入收货人手机号"></el-input>
         </el-form-item>
-        <el-form-item label="收货手机号：" prop="phone">
-          <el-input v-model="addressData.phone"></el-input>
+        <el-form-item label="收货地址：" prop="addressDetail" required>
+          <el-input
+              v-model="addressData.addressDetail"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入详细收货地址"
+          ></el-input>
         </el-form-item>
-        <el-checkbox style="float:right;" v-model="addressData.isDefault">设为默认地址</el-checkbox>
+        <el-form-item label="设为默认：">
+          <el-switch
+              v-model="addressData.isDefault"
+              active-text="设为默认地址"
+          ></el-switch>
+        </el-form-item>
       </el-form>
 
       <template #footer>
@@ -52,13 +74,13 @@
         </span>
       </template>
     </el-dialog>
-
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, Location } from '@element-plus/icons-vue'
 import {
   defaultAddressInfoUpdate,
   selectDefaultByOwnName,
@@ -76,131 +98,101 @@ const addressData = reactive({
 });
 
 const allAddressData = ref([]);
-const dialogVisible = ref(false);
 const showAdd = ref(false);
 const title = ref('添加地址');
-const multipleTable = ref(null);
 const ruleForm = ref(null);
 
 // 方法定义
-const changeChecked = (e) => {
-  console.log(e);
-  addressData.isDefault = e;
-};
-
 const getAllAdress = () => {
   selectAllAddressByUsername().then(res => {
-    console.log("data--------------");
-    console.log('ressss', res);
     allAddressData.value = res.data;
   }).catch(err => {
     console.log(err);
+    ElMessage.error('获取地址列表失败');
   });
-};
-
-const handleChange = () => {
-  dialogVisible.value = true;
-};
-
-const submitChange = () => {
-  dialogVisible.value = false;
-};
-
-const handleClose = () => {
-  dialogVisible.value = false;
-};
-
-const handleSelectionChange = (row, column) => {
-  Object.assign(addressData, ...row);
 };
 
 const handleAdd = () => {
   showAdd.value = true;
   title.value = '添加地址';
+  // 重置表单数据
+  Object.keys(addressData).forEach(key => {
+    if (key === 'isDefault') {
+      addressData[key] = false;
+    } else {
+      addressData[key] = "";
+    }
+  });
 };
 
 const closeAdd = () => {
   showAdd.value = false;
-  Object.keys(addressData).forEach(key => {
-    addressData[key] = "";
-  });
 };
 
 const updateAddress = () => {
-  if (addressData.consignee == "") {
+  if (!addressData.consignee) {
     ElMessage.warning("收货人不能为空");
     return;
-  } else if (addressData.phone == "") {
+  } else if (!addressData.phone) {
     ElMessage.warning("手机号不能为空");
     return;
-  } else if (addressData.addressDetail == "") {
+  } else if (!addressData.addressDetail) {
     ElMessage.warning("收货地址不能为空");
     return;
   }
-  
-  if(title.value === '编辑地址'){
-    defaultAddressInfoUpdate({
-      id: addressData.id,
-      consignee: addressData.consignee,
-      phone: addressData.phone,
-      addressDetail: addressData.addressDetail,
-      isDefault: addressData.isDefault,
-    }).then((res) => {
-      if (res.flag == true) {
-        getAllAdress();
-        ElMessage.success(res.message);
-        showAdd.value = false;
-      } else {
-        showAdd.value = false;
-        ElMessage.error(res.data);
-      }
-    });
-  } else {
-    addAddress({
-      consignee: addressData.consignee,
-      phone: addressData.phone,
-      addressDetail: addressData.addressDetail,
-      isDefault: addressData.isDefault,
-    }).then((res) => {
-      if (res.flag == true) {
-        getAllAdress();
-        ElMessage.success(res.message);
-        showAdd.value = false;
-      } else {
-        showAdd.value = false;
-        ElMessage.error(res.data);
-      }
-    });
-  }
-};
 
-const handleDetail = (item) => {
-  // 未实现功能
+  const addressPayload = {
+    consignee: addressData.consignee,
+    phone: addressData.phone,
+    addressDetail: addressData.addressDetail,
+    isDefault: addressData.isDefault,
+  };
+
+  const request = title.value === '编辑地址'
+      ? defaultAddressInfoUpdate({ id: addressData.id, ...addressPayload })
+      : addAddress(addressPayload);
+
+  request.then((res) => {
+    if (res.flag) {
+      getAllAdress();
+      ElMessage.success(res.message || (title.value === '编辑地址' ? '地址更新成功' : '地址添加成功'));
+      showAdd.value = false;
+    } else {
+      ElMessage.error(res.message || '操作失败');
+    }
+  }).catch(() => {
+    ElMessage.error('操作失败，请稍后重试');
+  });
 };
 
 const handleEdit = (item) => {
   showAdd.value = true;
   title.value = '编辑地址';
-  Object.assign(addressData, {...item});
+  Object.assign(addressData, { ...item });
 };
 
 const handleDel = (item) => {
-  ElMessageBox.confirm('确认删除该信息?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-  }).then(() => {
-    deleteAddressById({
-      addressId: item.id
-    }).then(res => {
-      if(res.flag == true){
-        getAllAdress();
-        ElMessage.success('删除成功!');
-      } else {
-        ElMessage.error(res.message);
+  ElMessageBox.confirm(
+      `确定要删除收货人"${item.consignee}"的地址吗？`,
+      '删除确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       }
-    }).catch(err => {
-      ElMessage.error('删除失败!');
-    });
+  ).then(() => {
+    deleteAddressById({ addressId: item.id })
+        .then(res => {
+          if(res.flag) {
+            getAllAdress();
+            ElMessage.success('删除成功!');
+          } else {
+            ElMessage.error(res.message || '删除失败');
+          }
+        })
+        .catch(() => {
+          ElMessage.error('删除失败，请稍后重试');
+        });
   }).catch(() => {
     ElMessage.info('已取消删除');
   });
@@ -213,45 +205,127 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.add-address {
-  width: 900px;
-  float: left;
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
   padding: 20px;
-  background: #fff;
-  min-height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
   .title {
-    border-bottom: 1px solid #f2f2f2;
-    padding: 10px 0px;
-    font-size: 18px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .add-btn {
+    padding: 12px 20px;
+    font-size: 14px;
   }
 }
-.default-address-container{
-  border: 1px dashed #ccc;
-  border-radius: 6px;
-  padding: 10px 20px;
-  display: flex;
-  margin-top: 20px;
-  align-items: center;
-  justify-content: space-between;
-  .address-item{
-    line-height: 30px;
-    height: 30px;
-    margin-right: 50px;
+
+.address-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.address-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
   }
-  .right-btn{
+
+  .address-content {
+    padding: 20px;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .address-info {
+    flex: 1;
+  }
+
+  .info-row {
+    display: flex;
     align-items: center;
-    .marginR20{
-      margin-right: 20px;
-      cursor: pointer;
-      color: #67C23A;
-      &:hover{
-        color: #035D1C;
-        text-decoration: underline;
-      }
+    margin-bottom: 15px;
+
+    .default-tag {
+      margin-right: 10px;
+    }
+
+    .consignee {
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 15px;
+    }
+
+    .phone {
+      color: #666;
     }
   }
+
+  .address-detail {
+    display: flex;
+    align-items: flex-start;
+    color: #666;
+    line-height: 1.5;
+
+    i {
+      margin-right: 8px;
+      margin-top: 3px;
+      color: #999;
+    }
+  }
+
+  .address-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+
+    :deep(.el-button) {
+      margin-left: 15px;
+    }
+  }
+}
+
+.address-dialog {
+  :deep(.el-dialog__header) {
+    border-bottom: 1px solid #eee;
+  }
+
+  .address-form {
+    padding: 20px 0;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 22px;
+  }
+
+  :deep(.el-form-item__label) {
+    font-weight: 500;
+  }
+
+  :deep(.el-textarea__inner) {
+    resize: none;
+  }
+}
+
+.dialog-footer {
+  text-align: right;
 }
 </style>

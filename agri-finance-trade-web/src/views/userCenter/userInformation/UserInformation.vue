@@ -1,25 +1,29 @@
-<!--基本信息-->
 <template>
   <div class="user-info">
+    <!-- 用户头像 -->
     <user-avatar ref="avatar" :cUserAvatar="userinfo.avatar"></user-avatar>
-    <el-form :model="userinfo" ref="ruleForm" label-width="80px" style="margin-top:40px">
+
+    <!-- 用户信息表单 -->
+    <el-form :model="userinfo" ref="ruleForm" label-width="100px" class="form-container">
       <el-form-item label="昵称：" prop="nickName">
-        <el-input v-model="userinfo.nickName" style="width:300px"></el-input>
+        <el-input v-model="userinfo.nickName" class="input-field"></el-input>
       </el-form-item>
       <el-form-item label="姓名：" prop="realName">
-        <el-input v-model="userinfo.realName" style="width:300px"></el-input>
+        <el-input v-model="userinfo.realName" class="input-field"></el-input>
       </el-form-item>
       <el-form-item label="手机号：" prop="phone">
-        <el-input v-model="userinfo.phone" style="width:300px"></el-input>
+        <el-input v-model="userinfo.phone" class="input-field"></el-input>
       </el-form-item>
       <el-form-item label="身份证：" prop="identityNum">
-        <el-input v-model="userinfo.identityNum" style="width:300px"></el-input>
+        <el-input v-model="userinfo.identityNum" class="input-field"></el-input>
       </el-form-item>
       <el-form-item label="地址：" prop="address">
-        <el-input v-model="userinfo.address" style="width:300px"></el-input>
+        <el-input v-model="userinfo.address" class="input-field"></el-input>
       </el-form-item>
     </el-form>
-    <el-button style="margin-left: 310px;" type="success" @click="updateInfo">修改</el-button>
+
+    <!-- 修改按钮 -->
+    <el-button type="success" @click="updateInfo" class="update-btn">修改</el-button>
   </div>
 </template>
 
@@ -68,25 +72,25 @@ const updateInfo = () => {
     address: userinfo.address,
     avatar: userinfo.avatar,
   })
-    .then((res) => {
-      if (res.flag == true) {
-        console.log('res', res)
-        console.log('this.userinfo', userinfo)
-        store.commit("removeStorage");
-        store.commit("setToken", res.data);
-        store.commit(
-          "updateLoginUserNickname",
-          userinfo.nickName
-        );
-        store.commit("updateLoginUserAvatar", userinfo.avatar);
-        ElMessage.success(res.message);
-      } else {
-        ElMessage.error(res.data);
-      }
-    })
-    .catch((err) => {
-      ElMessage.error("更新失败");
-    });
+      .then((res) => {
+        if (res.flag == true) {
+          console.log('res', res)
+          console.log('this.userinfo', userinfo)
+          store.commit("removeStorage");
+          store.commit("setToken", res.data);
+          store.commit(
+              "updateLoginUserNickname",
+              userinfo.nickName
+          );
+          store.commit("updateLoginUserAvatar", userinfo.avatar);
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.data);
+        }
+      })
+      .catch((err) => {
+        ElMessage.error("更新失败");
+      });
 }
 
 // 生命周期钩子
@@ -102,13 +106,55 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.user-info {
-  margin: 0px auto;
-  width: 900px;
-  float: left;
-  padding-left: 20px;
-  background: #fff;
-  height: 100%;
-  min-height: 600px;
+.form-container {
+  margin-top: 20px;
+}
+
+.input-field {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.update-btn {
+  display: block;
+  width: 150px;
+  margin: 20px auto;
+  background-color: #67C23A;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.update-btn:hover {
+  background-color: #4e9c2e;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+.el-form-item label {
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+}
+
+.el-form-item .el-input__inner {
+  border-radius: 4px;
+  height: 38px;
+  font-size: 14px;
+  color: #555;
+}
+
+.el-input:focus {
+  border-color: #67C23A;
+  box-shadow: 0 0 0 2px rgba(103, 194, 58, 0.2);
+}
+
+.el-button {
+  font-size: 14px;
 }
 </style>

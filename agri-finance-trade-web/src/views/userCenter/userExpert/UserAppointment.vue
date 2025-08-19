@@ -1,146 +1,207 @@
 <!--专家问答-->
 <template>
   <div class="expert-appoint-container">
-    <div v-for="(item,index) in appointArray" :key="index" class="appoint-item">
-      <div class="appoint-content">
-        <div class="title">{{item.plantName}}</div>
-        <div class="content">{{item.plantDetail}}</div>
-        <div class="item-container">
-          <div class="item-content marginR30" v-if="role==='expert'">
-            <div class="item-title">咨询者：</div>
-            <div class="item-text">{{item.questioner}}</div>
-          </div>
-          <div class="item-content marginR30" v-if="role==='expert'">
-            <div class="item-title">咨询者联系方式：</div>
-            <div class="item-text">{{item.phone}}</div>
-          </div>
-          <div class="item-content marginR30" v-if="role==='questioner'">
-            <div class="item-title">专家姓名：</div>
-            <span class="item-text">{{item.expertName}}</span>
-          </div>
-        </div>
-        <div class="item-container">
-          <div class="item-content marginR30">
-            <div class="item-title">作物条件：</div>
-            <span class="item-text">{{item.plantCondition}}</span>
-          </div>
-          <div class="item-content marginR30">
-            <div class="item-title">土壤条件：</div>
-            <div class="item-text" :title="item.soilCondition">{{item.soilCondition}}</div>
-          </div>
-          <div class="item-content marginR30">
-            <div class="item-title">面积：</div>
-            <div class="item-text">{{item.area}}亩</div>
-          </div>
-          <el-tag style="position:relative;left:360px" :type="item.status === 0 ? 'danger':'success'" size="mini">{{item.status === 0 ? '未回答' :'已回答'}}</el-tag>
-        </div>
-      </div>
-      <div class="appoint-btn">
-        <div class="btn-text" @click="handleDetail(item)">详情</div>
-        <div class="btn-text" @click="handleEdit(item)">修改</div>
-        <div class="btn-text" @click="delAppoint(item)">删除</div>
-      </div>
+    <div class="header-section">
+      <h2 class="page-title">专家问答</h2>
+      <el-alert
+        v-if="role==='expert'"
+        title="您是专家，可以查看和回答用户的咨询问题"
+        type="success"
+        :closable="false"
+        class="role-info"
+      />
+      <el-alert
+        v-else
+        title="您可以在这里查看专家对您问题的回复"
+        type="info"
+        :closable="false"
+        class="role-info"
+      />
     </div>
-    <el-dialog title="详情" :visible.sync="showDetail" width="600px" :before-close="detailClose">
+    
+    <div v-if="appointArray.length === 0" class="empty-state">
+      <el-empty description="暂无咨询记录">
+        <el-button type="success" @click="$router.push('/expert/question')">发起咨询</el-button>
+      </el-empty>
+    </div>
+    
+    <div v-for="(item,index) in appointArray" :key="index" class="appoint-item">
+      <el-card class="appoint-card" shadow="hover">
+        <div class="appoint-content">
+          <div class="title-section">
+            <h3 class="title">{{item.plantName}}</h3>
+            <el-tag :type="item.status === 0 ? 'danger':'success'" size="small">{{item.status === 0 ? '未回答' :'已回答'}}</el-tag>
+          </div>
+          
+          <div class="content-section">
+            <p class="content">{{item.plantDetail}}</p>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-item" v-if="role==='expert'">
+              <el-icon><User /></el-icon>
+              <div class="info-text">
+                <div class="info-label">咨询者</div>
+                <div class="info-value">{{item.questioner}}</div>
+              </div>
+            </div>
+            
+            <div class="info-item" v-if="role==='expert'">
+              <el-icon><Phone /></el-icon>
+              <div class="info-text">
+                <div class="info-label">联系方式</div>
+                <div class="info-value">{{item.phone}}</div>
+              </div>
+            </div>
+            
+            <div class="info-item" v-if="role==='questioner'">
+              <el-icon><User /></el-icon>
+              <div class="info-text">
+                <div class="info-label">专家姓名</div>
+                <div class="info-value">{{item.expertName}}</div>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <el-icon><Document /></el-icon>
+              <div class="info-text">
+                <div class="info-label">作物条件</div>
+                <div class="info-value">{{item.plantCondition}}</div>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <el-icon><Location /></el-icon>
+              <div class="info-text">
+                <div class="info-label">土壤条件</div>
+                <div class="info-value" :title="item.soilCondition">{{item.soilCondition}}</div>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <el-icon><ScaleToOriginal /></el-icon>
+              <div class="info-text">
+                <div class="info-label">面积</div>
+                <div class="info-value">{{item.area}}亩</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="appoint-actions">
+          <el-button size="small" @click="handleDetail(item)">
+            <el-icon><View /></el-icon>
+            详情
+          </el-button>
+          <el-button v-if="role==='expert'" size="small" type="primary" @click="handleEdit(item)">
+            <el-icon><Edit /></el-icon>
+            回答
+          </el-button>
+          <el-button size="small" type="danger" @click="delAppoint(item)">
+            <el-icon><Delete /></el-icon>
+            删除
+          </el-button>
+        </div>
+      </el-card>
+    </div>
+    
+    <el-dialog 
+      title="咨询详情" 
+      v-model="showDetail" 
+      width="600px" 
+      :before-close="detailClose"
+      class="detail-dialog"
+    >
       <div class="detail-content">
-        <div class="detail-item">
-          <div class="item-title">种植作物：</div>
-          <div class="item-content">{{detailObj.plantName}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">作物详细信息：</div>
-          <div class="item-content">{{detailObj.plantDetail}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">地址：</div>
-          <div class="item-content">{{detailObj.address}}</div>
-        </div>
-         <div class="detail-item">
-          <div class="item-title">土壤条件：</div>
-          <div class="item-content">{{detailObj.soilCondition}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">面积：</div>
-          <div class="item-content">{{detailObj.area}}</div>
-        </div>
-         <div class="detail-item">
-          <div class="item-title">作物条件：</div>
-          <div class="item-content">{{detailObj.plantCondition}}</div>
-        </div>
-         <div class="detail-item" v-if="role==='expert'">
-          <div class="item-title">联系方式：</div>
-          <div class="item-content">{{detailObj.phone}}</div>
-        </div>
-         <div class="detail-item" v-if="role==='expert'">
-          <div class="item-title">提问者：</div>
-          <div class="item-content">{{detailObj.questioner}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">问题状态：</div>
-          <el-tag type="danger" size="mini">{{detailObj.status === 0 ? '未回答' :'已回答'}}</el-tag>
-        </div>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="种植作物">{{detailObj.plantName}}</el-descriptions-item>
+          <el-descriptions-item label="作物详细信息">{{detailObj.plantDetail}}</el-descriptions-item>
+          <el-descriptions-item label="地址">{{detailObj.address}}</el-descriptions-item>
+          <el-descriptions-item label="土壤条件">{{detailObj.soilCondition}}</el-descriptions-item>
+          <el-descriptions-item label="面积">{{detailObj.area}}亩</el-descriptions-item>
+          <el-descriptions-item label="作物条件">{{detailObj.plantCondition}}</el-descriptions-item>
+          <el-descriptions-item v-if="role==='expert'" label="联系方式">{{detailObj.phone}}</el-descriptions-item>
+          <el-descriptions-item v-if="role==='expert'" label="提问者">{{detailObj.questioner}}</el-descriptions-item>
+          <el-descriptions-item label="问题状态">
+            <el-tag :type="detailObj.status === 0 ? 'danger':'success'" size="small">
+              {{detailObj.status === 0 ? '未回答' :'已回答'}}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item v-if="detailObj.answer" label="专家回答">{{detailObj.answer}}</el-descriptions-item>
+        </el-descriptions>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="showDetail = false">取 消</el-button>
-        <el-button type="primary" @click="showDetail = false">确 定</el-button>
-      </span>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showDetail = false">关闭</el-button>
+        </span>
+      </template>
     </el-dialog>
-    <el-dialog title="修改" :visible.sync="dialogVisible" width="650px" :before-close="closeRevise">
+    
+    <el-dialog 
+      title="回答问题" 
+      v-model="dialogVisible" 
+      width="650px" 
+      :before-close="closeRevise"
+      class="answer-dialog"
+    >
       <div class="detail-content">
-        <div class="detail-item">
-          <div class="item-title">种植作物：</div>
-          <div class="item-content">{{detailObj.plantName}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">作物详细信息：</div>
-          <div class="item-content">{{detailObj.plantDetail}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">地址：</div>
-          <div class="item-content">{{detailObj.address}}</div>
-        </div>
-         <div class="detail-item">
-          <div class="item-title">土壤条件：</div>
-          <div class="item-content">{{detailObj.soilCondition}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">面积：</div>
-          <div class="item-content">{{detailObj.area}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">作物条件：</div>
-          <div class="item-content">{{detailObj.plantCondition}}</div>
-        </div>
-         <div class="detail-item">
-          <div class="item-title">联系方式：</div>
-          <div class="item-content">{{detailObj.phone}}</div>
-        </div>
-         <div class="detail-item">
-          <div class="item-title">提问者：</div>
-          <div class="item-content">{{detailObj.questioner}}</div>
-        </div>
-        <div class="detail-item">
-          <div class="item-title">问题状态：</div>
-          <el-tag type="danger" size="mini">{{detailObj.status === 0 ? '未回答' :'已回答'}}</el-tag>
-        </div>
-        <el-form ref="form" :model="detailObj" label-width="60px">
-          <el-form-item label="回答：">
-            <el-input type="textarea" v-model="detailObj.answer"></el-input>
+        <el-descriptions :column="1" border class="info-descriptions">
+          <el-descriptions-item label="种植作物">{{detailObj.plantName}}</el-descriptions-item>
+          <el-descriptions-item label="作物详细信息">{{detailObj.plantDetail}}</el-descriptions-item>
+          <el-descriptions-item label="地址">{{detailObj.address}}</el-descriptions-item>
+          <el-descriptions-item label="土壤条件">{{detailObj.soilCondition}}</el-descriptions-item>
+          <el-descriptions-item label="面积">{{detailObj.area}}亩</el-descriptions-item>
+          <el-descriptions-item label="作物条件">{{detailObj.plantCondition}}</el-descriptions-item>
+          <el-descriptions-item v-if="role==='expert'" label="联系方式">{{detailObj.phone}}</el-descriptions-item>
+          <el-descriptions-item v-if="role==='expert'" label="提问者">{{detailObj.questioner}}</el-descriptions-item>
+        </el-descriptions>
+        
+        <el-form ref="form" :model="detailObj" label-width="80px" class="answer-form">
+          <el-form-item label="问题状态">
+            <el-tag :type="detailObj.status === 0 ? 'danger':'success'" size="small">
+              {{detailObj.status === 0 ? '未回答' :'已回答'}}
+            </el-tag>
+          </el-form-item>
+          
+          <el-form-item label="专家回答" required>
+            <el-input 
+              type="textarea" 
+              v-model="detailObj.answer" 
+              :rows="5"
+              placeholder="请输入您的回答..."
+              maxlength="500"
+              show-word-limit
+            ></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="closeRevise">取 消</el-button>
-        <el-button type="primary" @click="submitRevise">确 定</el-button>
-      </span>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="closeRevise">取消</el-button>
+          <el-button type="primary" @click="submitRevise">提交回答</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { selectAppointByUser,reviseAppointByUserId,delAppointByUserId } from '../../../api/question.js'
+import { User, Phone, Document, Location, ScaleToOriginal, View, Edit, Delete } from '@element-plus/icons-vue'
 
 export default {
+  components: {
+    User,
+    Phone,
+    Document,
+    Location,
+    ScaleToOriginal,
+    View,
+    Edit,
+    Delete
+  },
   data(){
     return{
       appointArray:[],
@@ -168,7 +229,7 @@ export default {
       })
     },
     delAppoint(item){
-      this.$confirm('确认删除该行信息？', '删除', {
+      this.$confirm('确认删除该行信息？', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -181,6 +242,7 @@ export default {
           this.getData()
         }).catch(err=>{
           console.log(err)
+          this.$message.error('删除失败')
         })
       }).catch(() => {
         this.$message({
@@ -206,11 +268,12 @@ export default {
     submitRevise(){
       this.detailObj.status = 1
       reviseAppointByUserId(this.detailObj).then(res => {
-        this.$message.success('修改成功！')
+        this.$message.success('回答成功！')
         this.dialogVisible = false
         this.getData()
       }).catch(err=>{
         console.log(err)
+        this.$message.error('提交失败')
       })
     }
   },
@@ -222,102 +285,133 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.expert-appoint-container{
-  width: 900px;
-  min-height: 100%;
-  // padding: 10px 20px;
-  background: #fff;
-  .appoint-item{
-    border:1px solid #f2f2f2;
-    border-radius: 6px;
-    padding: 10px 20px;
-    margin: 10px 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    .appoint-content{
-      width: 650px;
-      .title{
-        font-weight: bold;
-        font-size: 18px;
-        line-height: 30px;
-        height: 30px;
-      }
-      .content{
-        line-height: 25px;
-        height: auto;
-        word-break: break-all;
-      }
-      .item-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: 12px;
-        line-height: 20px;
-        .item-content{
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: center;
-        }
-        .item-title{
-          max-width: 100px;
-        }
-      }
-      .marginR30{
-        margin-right: 30px;
-      }
-      .item-text{
-        color: #666;
-        max-width: 200px;
-        /*超出的部分隐藏*/
-        overflow: hidden;
-        /*文字用省略号替代超出的部分*/
-        text-overflow: ellipsis;
-        /*弹性伸缩盒子模型显示*/
-        display: -webkit-box;
-        /*限制在一个块元素显示文本的行数*/
-        -webkit-line-clamp: 1;
-        /*设置或检索伸缩盒对象的子元素排列方式*/
-        -webkit-box-orient: vertical;
-        word-break: break-all;
-      }
-    }
-    .appoint-btn{
-      display: flex;
-      .btn-text{
-        height: 25px;
-        cursor: pointer;
-        margin-right: 10px;
-        color: #67C23A;
-        &:hover{
-          color: #035D1C;
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-  .detail-content{
-    max-height: 500px;
-    height: auto;
-    overflow-y: auto;
-  }
-  .detail-item{
-    display: flex;
-    line-height: 30px;
-    .item-content{
-      line-height: 30px;
-      height: auto;
-      width: 480px;
-      display: flex;
-    }
-    .item-title{
-      width: 150px;
-      height: 30px;
-      font-weight: bold;
+.expert-appoint-container {
+  .header-section {
+    margin-bottom: 20px;
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
       color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .role-info {
+      border-radius: 8px;
+    }
+  }
+  
+  .empty-state {
+    padding: 50px 0;
+  }
+  
+  .appoint-item {
+    margin-bottom: 20px;
+    
+    .appoint-card {
+      border-radius: 12px;
+      border: 1px solid #ebeef5;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      .appoint-content {
+        .title-section {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+          
+          .title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+        
+        .content-section {
+          margin-bottom: 20px;
+          
+          .content {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+          }
+        }
+        
+        .info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 15px;
+          margin-bottom: 20px;
+          
+          .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            
+            i {
+              font-size: 16px;
+              color: #409eff;
+              margin-top: 2px;
+            }
+            
+            .info-text {
+              .info-label {
+                font-size: 12px;
+                color: #999;
+                margin-bottom: 2px;
+              }
+              
+              .info-value {
+                font-size: 14px;
+                color: #333;
+                word-break: break-word;
+              }
+            }
+          }
+        }
+      }
+      
+      .appoint-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+      }
+    }
+  }
+  
+  .detail-dialog, .answer-dialog {
+    :deep(.el-dialog__header) {
+      border-bottom: 1px solid #eee;
+      padding: 15px 20px;
+    }
+    
+    :deep(.el-dialog__body) {
+      padding: 20px;
+    }
+    
+    .detail-content {
+      .info-descriptions {
+        margin-bottom: 20px;
+      }
+      
+      .answer-form {
+        .el-form-item {
+          margin-bottom: 20px;
+        }
+      }
+    }
+    
+    .dialog-footer {
+      text-align: right;
     }
   }
 }

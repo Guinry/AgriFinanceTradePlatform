@@ -1,35 +1,97 @@
 <template>
   <div class="publish-message">
-    <el-form ref="formRef" :model="form" label-width="70px" style="margin-top:50px;">
-      <el-form-item label="添加图片">
-        <el-upload
-          class="orders-img_el_upload"
-          :action="upurl"
-          :headers="upheaders"
-          :limit="3"
-          list-type="picture-card"
-          :on-change="handleChange"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :on-success="handleSuccess"
-          :on-error="handleError"
-          :file-list="fileList"
-          :class="{ disUoloadSty: noneBtnImg }"
-          ref="uploadRef">
-          <span class="orders-img_el_upload_btn" @click.stop="submitUpload">添加图片</span>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="标题">
-        <el-input v-model="form.title"  style="width:800px;" placeholder="添加标题"></el-input>
-      </el-form-item>
-      <el-form-item label="内容">
-        <el-input type="textarea"  style="width:800px;" v-model="form.content" placeholder="添加内容"></el-input>
-      </el-form-item>
-      <el-form-item label="定价">
-        <el-input v-model="form.price" style="width:100px;"></el-input>
-      </el-form-item>
-    </el-form>
-    <el-button type="success" :disabled="isDisabled" @click="publishClick">发布信息</el-button>
+    <el-card class="publish-card">
+      <template #header>
+        <div class="card-header">
+          <span class="header-title">发布{{ props.ctype === 'needs' ? '需求' : '商品' }}</span>
+          <el-tag :type="props.ctype === 'needs' ? 'primary' : 'success'">
+            {{ props.ctype === 'needs' ? '需求信息' : '商品信息' }}
+          </el-tag>
+        </div>
+      </template>
+      
+      <el-form ref="formRef" :model="form" label-width="80px" class="publish-form">
+        <el-form-item label="标题" prop="title" required>
+          <el-input 
+            v-model="form.title" 
+            placeholder="请输入标题" 
+            clearable
+            maxlength="50"
+            show-word-limit
+          >
+            <template #prefix>
+              <el-icon><Document /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        
+        <el-form-item label="内容" prop="content" required>
+          <el-input 
+            type="textarea" 
+            v-model="form.content" 
+            placeholder="请输入详细内容" 
+            :rows="4"
+            maxlength="500"
+            show-word-limit
+          />
+        </el-form-item>
+        
+        <el-form-item label="定价" prop="price" v-if="props.ctype !== 'needs'">
+          <el-input 
+            v-model="form.price" 
+            style="width: 200px;" 
+            placeholder="请输入价格"
+          >
+            <template #prepend>￥</template>
+          </el-input>
+          <span class="price-tip">请输入合理的价格</span>
+        </el-form-item>
+        
+        <el-form-item label="图片" prop="picture">
+          <div class="upload-container">
+            <el-upload
+              class="orders-img_el_upload"
+              :action="upurl"
+              :headers="upheaders"
+              :limit="3"
+              list-type="picture-card"
+              :on-change="handleChange"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              :on-error="handleError"
+              :file-list="fileList"
+              :class="{ disUploadSty: noneBtnImg }"
+              ref="uploadRef"
+            >
+              <el-icon class="upload-icon"><Plus /></el-icon>
+              <div class="upload-text">上传图片</div>
+            </el-upload>
+            <div class="upload-tip">
+              <el-icon><InfoFilled /></el-icon>
+              最多可上传3张图片，支持JPG、PNG格式
+            </div>
+          </div>
+        </el-form-item>
+      </el-form>
+      
+      <div class="form-footer">
+        <el-button @click="resetForm">重置</el-button>
+        <el-button 
+          type="success" 
+          :disabled="isDisabled" 
+          @click="publishClick"
+          class="publish-btn"
+        >
+          <el-icon><Promotion /></el-icon>
+          发布信息
+        </el-button>
+      </div>
+    </el-card>
+    
+    <el-dialog v-model="dialogVisible" title="图片预览">
+      <img w-full :src="dialogImageUrl" alt="Preview Image" class="preview-image" />
+    </el-dialog>
   </div>
 </template>
 
@@ -38,7 +100,8 @@ import { addOrder } from "../api/order";
 import { ref, computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Document, Plus, InfoFilled, Promotion } from '@element-plus/icons-vue'
 
 // 定义 props
 const props = defineProps({
@@ -103,9 +166,9 @@ const handleSuccess = (response, file, fileList) => {
     if (fileList.length >= 3) {
       uploadDisabled.value = true
     }
-    alert(file.response.message)
+    ElMessage.success(file.response.message)
   } else {
-    alert(file.response.data)
+    ElMessage.error(file.response.data)
   }
 }
 
@@ -115,7 +178,6 @@ const handleChange = (file, fileList) => {
 
 const handleRemove = (file, fileList) => {
   noneBtnImg.value = fileList.length >= limitCountImg.value
-  fileList.value.pop()
   uploadDisabled.value = false
 }
 
@@ -128,9 +190,32 @@ const submitUpload = () => {
   uploadRef.value.submit()
 }
 
+const resetForm = () => {
+  ElMessageBox.confirm(
+    '确定要重置表单吗？所有已填写的内容将被清除',
+    '确认重置',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(() => {
+    form.title = ""
+    form.content = ""
+    form.price = ""
+    form.picture = ""
+    fileList.value = []
+    noneBtnImg.value = false
+    uploadDisabled.value = false
+    ElMessage.info('表单已重置')
+  }).catch(() => {
+    // 用户取消重置
+  })
+}
+
 const publishClick = () => {
   if ((form.picture == "")&&(props.ctype !== 'needs')) {
-    alert("图片不能为空")
+    ElMessage.warning("图片不能为空")
   } else {
     addOrder({
       title: form.title,
@@ -139,81 +224,152 @@ const publishClick = () => {
       type: props.ctype,
       picture: form.picture,
     }).then((res) => {
-      if (res.flag == true) {
+      console.log(res)
+      if (res.flag) {
         ElMessage.success(res.message)
-        router.push("/home/user/published" + props.ctype)
+        router.push("/user" + props.ctype)
       } else {
         ElMessage.error(res.data)
       }
-    })
-    .catch((err) => {
+    }).catch((err) => {
       console.log("添加失败")
+      ElMessage.error("发布失败，请稍后重试")
     })
   }
 }
 </script>
 
 <style lang="less" scoped>
-.disUoloadSty .el-upload--picture-card {
+.disUploadSty .el-upload--picture-card {
   display: none; /* 上传按钮隐藏 */
 }
+
 .publish-message {
-  width: 1100px;
-  margin: 20px auto;
-  padding: 10px 20px;
-  .orders-img_el_upload {
-    width: 1000px;
-    float: left;
-    height: 148px;
-    .el-upload {
-      //   width: 50px;
-      //   height: 20px;
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      &:hover {
-        border-color: #409eff;
-      }
-      .el-upload__input {
-        position: absolute;
-        left: -1000px;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+
+  .publish-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    
+    :deep(.el-card__header) {
+      padding: 20px 30px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .header-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
       }
     }
   }
-  .title {
-    width: 1100px;
-    height: 60px;
-    margin-top: 50px;
-    font-size: 22px;
-    outline: none;
-    border: none;
-    border-bottom: 1px solid black;
-  }
-  .content {
-    font-size: 18px;
-    width: 1200px;
-    resize: none;
-    outline: none;
-    border: none;
-    border-bottom: 1px solid black;
-  }
-  .price {
-    font-size: 20px;
-    .price-input {
-      width: 100px;
-      outline: none;
-      border: none;
-      margin: 0 20px;
+  
+  .publish-form {
+    padding: 20px 30px;
+    
+    :deep(.el-form-item) {
+      margin-bottom: 25px;
+    }
+    
+    :deep(.el-form-item__label) {
+      font-weight: 500;
+      color: #555;
+    }
+    
+    :deep(.el-input__inner) {
+      border-radius: 8px;
+    }
+    
+    :deep(.el-textarea__inner) {
+      border-radius: 8px;
     }
   }
-  .el-button {
-    width: 120px;
-    height: 50px;
-    margin-top: 20px;
-    margin-left: 540px;
-    font-size: 20px;
+  
+  .upload-container {
+    .orders-img_el_upload {
+      :deep(.el-upload--picture-card) {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        border: 2px dashed #d9d9d9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        
+        &:hover {
+          border-color: #409eff;
+          transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+          font-size: 24px;
+          color: #999;
+        }
+        
+        .upload-text {
+          margin-top: 8px;
+          font-size: 12px;
+          color: #999;
+        }
+      }
+      
+      :deep(.el-upload-list__item) {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+      }
+    }
+    
+    .upload-tip {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #999;
+      
+      i {
+        margin-right: 5px;
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .price-tip {
+    margin-left: 15px;
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .form-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    
+    .publish-btn {
+      padding: 12px 30px;
+      font-size: 16px;
+      border-radius: 8px;
+      
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+  
+  .preview-image {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
   }
 }
 </style>
