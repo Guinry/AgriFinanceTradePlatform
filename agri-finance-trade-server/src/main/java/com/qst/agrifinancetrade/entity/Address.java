@@ -2,20 +2,11 @@ package com.qst.agrifinancetrade.entity;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import javax.persistence.Id;
+import javax.validation.constraints.Pattern;
 
-import jakarta.validation.constraints.Pattern;
-
-// 添加MyBatis-Plus相关导入
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import org.springframework.data.annotation.Id;
-
-// 继承Model类以支持ActiveRecord模式
-@TableName("address") // 指定表名
-public class Address extends Model<Address> {
+public class Address {
     @Id
-    @TableId // 标识主键
     private Integer id;
     private String ownName;
     @NotBlank(message = "收货人不能为空")

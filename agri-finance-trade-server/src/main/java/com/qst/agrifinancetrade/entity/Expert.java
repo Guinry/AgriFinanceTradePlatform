@@ -2,15 +2,7 @@ package com.qst.agrifinancetrade.entity;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-// 添加MyBatis-Plus相关导入
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-// 继承Model类以支持ActiveRecord模式
-@TableName("expert") // 指定表名
-public class Expert extends Model<Expert> {
-    @TableId // 标识主键
+public class Expert {
     private String userName;
     @NotBlank(message = "真实姓名不能为空")
     private String realName;

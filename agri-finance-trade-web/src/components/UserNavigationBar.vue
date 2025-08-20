@@ -175,7 +175,7 @@ const handleExpertAppoint = () => router.push("/userAppointment")
 const UserFinance = () => router.push("/userFinance")
 const handleExpertInfo = () => router.push("/expertInfo")
 const PublishedKnowledgeClick = () => router.push("/expertKnowledge")
-const UserManageClick = () => router.push("/home/usermanage")
+const UserManageClick = () => router.push("/userManage")
 
 // 更新 Vuex 中的 activeIndex
 store.commit("updateUserActiveIndex", "1-1")

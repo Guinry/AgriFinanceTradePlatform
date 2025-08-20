@@ -2,6 +2,7 @@ package com.qst.agrifinancetrade.controller;
 
 import com.qst.agrifinancetrade.common.Result;
 import com.qst.agrifinancetrade.common.StatusCode;
+//import com.qst.crop.component.Test;
 import com.qst.agrifinancetrade.dao.OrderDao;
 import com.qst.agrifinancetrade.dao.UserDao;
 import com.qst.agrifinancetrade.entity.*;
@@ -9,6 +10,8 @@ import com.qst.agrifinancetrade.security.service.JwtUserDetailsServiceImpl;
 import com.qst.agrifinancetrade.security.util.JwtTokenUtil;
 import com.qst.agrifinancetrade.service.ExpertService;
 import com.qst.agrifinancetrade.service.UserService;
+
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,15 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @author QST
+ * @Description 用户模块
+ * @Date 2021-08-24
+ */
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -198,18 +206,7 @@ public class UserController {
     @ApiOperation("分页查询所有用户")
     @GetMapping("/search/{pageNum}")
     public Result<PageInfo> findPage(@PathVariable("pageNum") Integer pageNum) {
-        // 使用MyBatis-Plus分页功能
-        Page<User> page = new Page<>(pageNum, 10); // 每页10条记录
-        Page<User> userPage = userService.page(page);
-        
-        // 转换为PageInfo格式以保持接口兼容性
-        PageInfo<User> pageInfo = new PageInfo<>();
-        pageInfo.setPageNum((int) userPage.getCurrent());
-        pageInfo.setPageSize((int) userPage.getSize());
-        pageInfo.setTotal(userPage.getTotal());
-        pageInfo.setPages((int) (userPage.getPages() == 0 ? 1 : userPage.getPages()));
-        pageInfo.setList(userPage.getRecords());
-        
+        PageInfo<User> pageInfo = userService.findPage(pageNum);
         return new Result<PageInfo>(true, StatusCode.OK, "分页查询成功", pageInfo);
     }
 
@@ -219,32 +216,7 @@ public class UserController {
     public Result<PageInfo> findPage(@RequestBody User user,
                                      @PathVariable("pageNum") Integer pageNum,
                                      @PathVariable("pageSize") Integer pageSize) {
-        // 使用MyBatis-Plus分页功能
-        Page<User> page = new Page<>(pageNum, pageSize);
-        
-        // 构造查询条件
-        com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<User> queryWrapper = 
-            new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
-        if (user.getUserName() != null && !user.getUserName().isEmpty()) {
-            queryWrapper.like("user_name", user.getUserName());
-        }
-        if (user.getNickName() != null && !user.getNickName().isEmpty()) {
-            queryWrapper.like("nick_name", user.getNickName());
-        }
-        if (user.getRole() != null && !user.getRole().isEmpty()) {
-            queryWrapper.eq("role", user.getRole());
-        }
-        
-        Page<User> userPage = userService.page(page, queryWrapper);
-        
-        // 转换为PageInfo格式以保持接口兼容性
-        PageInfo<User> pageInfo = new PageInfo<>();
-        pageInfo.setPageNum((int) userPage.getCurrent());
-        pageInfo.setPageSize((int) userPage.getSize());
-        pageInfo.setTotal(userPage.getTotal());
-        pageInfo.setPages((int) (userPage.getPages() == 0 ? 1 : userPage.getPages()));
-        pageInfo.setList(userPage.getRecords());
-        
+        PageInfo<User> pageInfo = userService.findPage(user, pageNum, pageSize);
         return new Result<PageInfo>(true, StatusCode.OK, "查询成功", pageInfo);
     }
 

@@ -14,11 +14,10 @@
         <result column="integral" jdbcType="INTEGER" property="integral" />
         <result column="credit" jdbcType="INTEGER" property="credit" />
         <result column="avatar" jdbcType="VARCHAR" property="avatar" />
-        <result column="real_name" jdbcType="VARCHAR" property="realName" />
     </resultMap>
     <sql id="Base_Column_List">
-        user_name, password, nick_name, phone, identity_num, address, role, create_time,
-        update_time, integral, credit, avatar, real_name
+        user_name,real_name, password, nick_name, phone, identity_num, address, role, create_time,
+        update_time, integral, credit, avatar
     </sql>
     <insert id="insertSelective" parameterType="com.qst.agrifinancetrade.entity.User">
         insert into tb_user
@@ -103,7 +102,7 @@
     <select id="selectByExample" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from tb_user
+        from tb_knowledge
     </select>
     <select id="selectAll" resultMap="BaseResultMap">
         select

@@ -1,8 +1,7 @@
 package com.qst.agrifinancetrade.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.qst.agrifinancetrade.dao.ExpertDao;
 import com.qst.agrifinancetrade.entity.Expert;
 import com.qst.agrifinancetrade.service.ExpertService;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ExpertServiceImpl extends ServiceImpl<ExpertDao, Expert> implements ExpertService {
+public class ExpertServiceImpl implements ExpertService {
     @Autowired
     private ExpertDao expertDao;
 
@@ -22,7 +21,7 @@ public class ExpertServiceImpl extends ServiceImpl<ExpertDao, Expert> implements
     @Override
     public Expert selectById(String name) {
 
-        Expert expert = expertDao.selectById(name);
+        Expert expert = expertDao.selectByPrimaryKey(name);
 
         return expert;
     }
@@ -30,41 +29,39 @@ public class ExpertServiceImpl extends ServiceImpl<ExpertDao, Expert> implements
     @Override
     public List<Expert> selectAllExpert() {
 
-        List<Expert> experts = expertDao.selectList(null);
+        List<Expert> experts = expertDao.selectAllExpert();
 
         return experts;
     }
 
     @Override
     public void delete(String name) {
-        expertDao.deleteById(name);
+        expertDao.deleteByPrimaryKey(name);
     }
 
     @Override
     public void insert(Expert expert) {
-        expertDao.insert(expert);
+        expertDao.insertSelective(expert);
     }
 
     @Override
-    public int updateById(Expert expert) {
-        return expertDao.updateById(expert);
+    public void updateById(Expert expert) {
+        expertDao.updateByPrimaryKeySelective(expert);
     }
 
     @Override
-    public Page<Expert> findPage(Integer pageNum){
-        Page<Expert> page = new Page<>(pageNum, pageSize);
-        return expertDao.selectPage(page, null);
+    public PageInfo<Expert> findPage(Integer pageNum){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Expert> experts = expertDao.selectAllExpert();
+        PageInfo<Expert> expertPageInfo = new PageInfo<>(experts);
+        return expertPageInfo;
     }
 
     @Override
-    public Page<Expert> findPageByKeys(String keys, Integer pageNum){
-        Page<Expert> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<Expert> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("user_name", keys).or()
-                  .like("real_name", keys).or()
-                  .like("profession", keys).or()
-                  .like("position", keys).or()
-                  .like("belong", keys);
-        return expertDao.selectPage(page, queryWrapper);
+    public PageInfo<Expert> findPageByKeys(String keys, Integer pageNum){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Expert> experts = expertDao.selectAllByKeys(keys);
+        PageInfo<Expert> orderPageInfo = new PageInfo<>(experts);
+        return orderPageInfo;
     }
 }

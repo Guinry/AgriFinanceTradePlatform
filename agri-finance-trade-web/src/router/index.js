@@ -173,6 +173,11 @@ const routes = [
                 path: '/publishKnowledge',
                 name: 'PublishKnowledge',
                 component: () => import('../components/PublishKnowledge.vue')
+            },
+            {
+                path: '/userManage',
+                name: 'UserManage',
+                component: () => import('../views/userCenter/userManage/UserManage.vue')
             }
         ]
     }

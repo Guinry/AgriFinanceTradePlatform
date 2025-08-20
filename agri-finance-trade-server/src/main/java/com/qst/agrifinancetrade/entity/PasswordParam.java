@@ -3,7 +3,7 @@ package com.qst.agrifinancetrade.entity;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.Pattern;
 
 @Data
 public class PasswordParam {

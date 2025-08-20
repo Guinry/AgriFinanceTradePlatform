@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import  jakarta.servlet.ServletException;
-import  jakarta.servlet.ServletOutputStream;
-import  jakarta.servlet.http.HttpServletRequest;
-import  jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 /**
  * @author QST
