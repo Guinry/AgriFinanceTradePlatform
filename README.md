@@ -22,34 +22,58 @@
 - **Axios**
 - **Less** CSS预处理器
 
-### 后端 (详见后端项目)
+### 后端
 - **Spring Boot**
 - **MyBatis Plus**
 - **MySQL**
 - **Redis**
 - **JWT认证**
 
-## 项目结构
+## 前端项目结构
 
 ```
 
 agri-finance-trade-web/
-├── public/               # 静态资源
+├── public/                    # 静态资源
 ├── src/
-│   ├── api/              # API接口封装
-│   ├── assets/           # 静态资源文件
-│   ├── components/       # 公共组件
-│   ├── router/           # 路由配置
-│   ├── store/            # Vuex状态管理
-│   ├── utils/            # 工具类
-│   ├── views/            # 页面组件
-│   └── App.vue           # 根组件
-├── .env                  # 环境变量配置
-├── .gitignore            # Git忽略文件
-└── vite.config.js        # 构建配置
+│   ├── api/                   # API接口封装
+│   ├── assets/                # 静态资源文件
+│   ├── components/            # 公共组件
+│   ├── router/                # 路由配置
+│   ├── store/                 # Vuex状态管理
+│   ├── utils/                 # 工具类
+│   ├── views/                 # 页面组件
+│   └── App.vue                # 根组件
+├── .env                       # 环境变量配置
+├── .gitignore                 # Git忽略文件
+└── vite.config.js             # 构建配置
+```
+### 后端项目结构
 
 ```
 
+agri-finance-trade-server/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/qst/agrifinancetrade/
+│   │   │       ├── common/         # 通用类（返回结果、状态码等）
+│   │   │       ├── config/         # 配置类（支付宝、Swagger等）
+│   │   │       ├── controller/     # 控制器层
+│   │   │       ├── dao/            # 数据访问层接口
+│   │   │       ├── entity/         # 实体类
+│   │   │       ├── exception/      # 自定义异常处理
+│   │   │       ├── intercepter/    # 拦截器
+│   │   │       ├── model/          # 数据模型
+│   │   │       ├── security/       # 安全认证相关
+│   │   │       ├── service/        # 业务逻辑层
+│   │   │       └── AgriFinanceTradeServerApplication.java # 启动类
+│   │   └── resources/
+│   │       ├── mapper/             # MyBatis映射文件
+│   │       └── application.yml     # 配置文件
+│   └── test/                       # 测试代码
+└── pom.xml                         # Maven配置文件
+```
 ## 功能模块
 
 ### 1. 首页 (Home)
@@ -73,36 +97,60 @@ agri-finance-trade-web/
 - 知识详情查看
 - 用户评论功能
 
-### 5. 购物车 (Shopping Cart)
+### 5. 专家指导 (Expert Guidance)
+- 专家列表展示
+- 在线提问功能
+- 预约专家服务
+
+### 6. 融资申请 (Finance Application)
+- 融资产品展示
+- 融资申请提交
+- 智能匹配服务
+
+### 7. 购物车 (Shopping Cart)
 - 商品管理
 - 订单结算
 - 收货地址管理
 
-### 6. 用户中心 (User Center)
+### 8. 用户中心 (User Center)
 - 个人信息管理
 - 订单管理
 - 收货地址管理
+- 用户管理（管理员功能）
 
 ## 环境配置
 
 ### 开发环境要求
 - **Node.js** >= 16.0
 - **npm** >= 8.0
+- **Java** >= 17
+- **Maven** >= 3.8
+- **MySQL** >= 8.0
 
+### 数据库配置
+后端项目使用MySQL数据库，配置信息如下：
+```
+yaml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/agri-finance-trade?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: G200410115812
+```
 ### 环境变量配置
-在项目根目录创建 `.env` 文件:
+在前端项目根目录创建 `.env` 文件:
 
 ```
 
-VITE\_API\_URL=[http://localhost:9090](http://localhost:9090)
-
-````
-
+VITE_API_URL=http://localhost:9090
+```
 ## 安装与运行
 
 ### 前端项目启动
 
-```bash
+```
+bash
 # 克隆项目
 git clone [项目地址]
 
@@ -117,11 +165,21 @@ npm run dev
 
 # 构建生产环境
 npm run build
-````
-
+```
 ### 后端项目启动
 
-请参考后端项目文档进行部署。
+```
+bash
+# 进入后端项目目录
+cd agri-finance-trade-server
+
+# Maven构建
+mvn clean install
+
+# 运行项目
+mvn spring-boot:run
+```
+或者使用IDE直接运行 `AgriFinanceTradeServerApplication.java` 启动类。
 
 ## 部署说明
 
@@ -141,6 +199,8 @@ npm run build
 4. **路由管理** - 使用 Vue Router 实现单页面应用
 5. **API拦截** - 统一处理请求和响应
 6. **权限控制** - 基于 JWT 的用户认证机制
+7. **分页加载** - 支持大数据量分页展示
+8. **表单验证** - 前端表单数据验证
 
 ## 主要页面展示
 
@@ -172,6 +232,24 @@ npm run build
 * 视频/图文内容播放
 * 用户评论互动
 
+### 专家指导页面
+
+* 专家列表展示
+* 在线提问功能
+* 预约服务
+
+### 融资申请页面
+
+* 融资产品展示
+* 申请表单提交
+* 智能匹配推荐
+
+### 用户管理页面（管理员）
+
+* 用户信息查看与管理
+* 用户信息编辑
+* 用户删除操作
+
 ## 开发规范
 
 ### 代码规范
@@ -197,12 +275,16 @@ npm run build
 2. 根据实际部署环境配置正确的 API 地址。
 3. 图片和视频资源需要后端支持文件上传和访问。
 4. 部分功能需要用户登录后才能使用。
+5. 管理员功能需要相应权限才能访问。
 
 ## 贡献者
 
-* \[您的姓名/团队名称]
+* [郭鑫瑞]
 
 ## 许可证
 
 [待定]
+```
+
+
 
