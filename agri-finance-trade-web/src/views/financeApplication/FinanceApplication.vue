@@ -1,9 +1,25 @@
 <template>
-  <div class="goods-box5">
-    <div class="goods" v-for="(item,index) in goods" :key="index" @click="DetailBtn(item)">
-      <img class="imgs" :src="item.icon" alt="" />
+  <NavigationBar />
+  <div class="finance-container">
+    <div class="page-header">
+      <h1 class="page-title">农业金融产品</h1>
+      <p class="page-description">选择合适的银行和金融产品，助力您的农业发展</p>
+    </div>
+    <div class="goods-box5">
+      <div
+        class="goods"
+        v-for="(item,index) in goods"
+        :key="index"
+        @click="DetailBtn(item)"
+      >
+        <img class="imgs" :src="item.icon" :alt="item.bankName" />
+        <div class="bank-info">
+          <h3 class="bank-name">{{ item.bankName }}</h3>
+        </div>
+      </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script setup>
@@ -21,6 +37,8 @@ import bank1007 from '../../assets/img/bank1007.jpg'
 import bank1008 from '../../assets/img/bank1008.jpg'
 import bank1009 from '../../assets/img/bank1009.jpg'
 import bank1010 from '../../assets/img/bank1010.jpg'
+import NavigationBar from "../../components/NavigationBar.vue";
+import Footer from "../../components/Footer.vue";
 
 // 使用 Composition API
 const router = useRouter()
@@ -108,33 +126,77 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.finance-container {
+  min-height: calc(100vh - 200px);
+  background-color: #f5f7fa;
+  padding: 20px 0;
+}
+
+.page-header {
+  width: 1100px;
+  margin: 0 auto 30px;
+  text-align: center;
+
+  .page-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .page-description {
+    font-size: 16px;
+    color: #666;
+  }
+}
 
 .goods-box5 {
-  background-color: #f9f9f9;
   width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  // justify-content: center;
+  justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
+  gap: 25px;
+
   .goods {
-    width: 200px;
-    height: 180px;
+    width: 220px;
     background-color: white;
-    border-radius: 6px;
-    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
-    margin-top: 20px;
-    margin-right: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
     .imgs {
-      width: 150px;
+      width: 100%;
       height: 140px;
-      margin-right: 10px;
-      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    .bank-info {
+      padding: 15px;
+
+      .bank-name {
+        font-size: 18px;
+        color: #333;
+        margin: 0 0 8px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .bank-id {
+        font-size: 14px;
+        color: #999;
+        margin: 0;
+        text-align: center;
+      }
     }
   }
 }

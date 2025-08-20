@@ -2,7 +2,7 @@
 <template>
   <div class="expert-appoint-container">
     <div class="header-section">
-      <h2 class="page-title">专家问答</h2>
+      <h2 class="page-title">专家预约</h2>
       <el-alert
         v-if="role==='expert'"
         title="您是专家，可以查看和回答用户的咨询问题"
@@ -21,7 +21,6 @@
     
     <div v-if="appointArray.length === 0" class="empty-state">
       <el-empty description="暂无咨询记录">
-        <el-button type="success" @click="$router.push('/expert/question')">发起咨询</el-button>
       </el-empty>
     </div>
     
@@ -157,7 +156,7 @@
           <el-descriptions-item v-if="role==='expert'" label="提问者">{{detailObj.questioner}}</el-descriptions-item>
         </el-descriptions>
         
-        <el-form ref="form" :model="detailObj" label-width="80px" class="answer-form">
+        <el-form ref="formRef" :model="detailObj" label-width="80px" class="answer-form">
           <el-form-item label="问题状态">
             <el-tag :type="detailObj.status === 0 ? 'danger':'success'" size="small">
               {{detailObj.status === 0 ? '未回答' :'已回答'}}
@@ -187,101 +186,102 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { selectAppointByUser,reviseAppointByUserId,delAppointByUserId } from '../../../api/question.js'
 import { User, Phone, Document, Location, ScaleToOriginal, View, Edit, Delete } from '@element-plus/icons-vue'
 
-export default {
-  components: {
-    User,
-    Phone,
-    Document,
-    Location,
-    ScaleToOriginal,
-    View,
-    Edit,
-    Delete
-  },
-  data(){
-    return{
-      appointArray:[],
-      role:"",
-      showDetail: false,
-      dialogVisible: false,
-      detailObj:{
-        title:'',
-        expertName:'',
-        questioner:'',
-        status:''
-      }
-    }
-  },
-  methods:{
-    getData(){
-      this.role =  this.$store.getters.isExpert?'expert':'questioner'
+// 使用 Composition API
+const store = useStore()
 
-      // kind：普通用户：questioner；专家：expert
-      selectAppointByUser({type:this.role}).then(res => {
-        console.log('rererer',res)
-        this.appointArray = res.data
-      }).catch(err=>{
-        console.log(err)
-      })
-    },
-    delAppoint(item){
-      this.$confirm('确认删除该行信息？', '删除确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delAppointByUserId({id:item.id}).then(res=>{
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getData()
-        }).catch(err=>{
-          console.log(err)
-          this.$message.error('删除失败')
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
-    handleDetail(item){
-      this.showDetail = true
-      this.detailObj = Object.assign({},{...item})
-    },
-    detailClose(){
-      this.showDetail = false
-    },
-    handleEdit(item){
-      this.dialogVisible = true
-      this.detailObj = Object.assign({},{...item})
-    },
-    closeRevise(){
-      this.dialogVisible = false
-    },
-    submitRevise(){
-      this.detailObj.status = 1
-      reviseAppointByUserId(this.detailObj).then(res => {
-        this.$message.success('回答成功！')
-        this.dialogVisible = false
-        this.getData()
-      }).catch(err=>{
-        console.log(err)
-        this.$message.error('提交失败')
-      })
-    }
-  },
-  mounted(){
-    this.$store.commit("updateUserActiveIndex", "4-2");
-    this.getData()
-  }
+// 响应式数据
+const appointArray = ref([])
+const role = ref("")
+const showDetail = ref(false)
+const dialogVisible = ref(false)
+const detailObj = ref({
+  title:'',
+  expertName:'',
+  questioner:'',
+  status:''
+})
+
+const formRef = ref(null)
+
+// 方法定义
+const getData = () => {
+  role.value = store.getters.isExpert?'expert':'questioner'
+
+  // kind：普通用户：questioner；专家：expert
+  selectAppointByUser({type:role.value}).then(res => {
+    console.log('rererer',res)
+    appointArray.value = res.data
+  }).catch(err=>{
+    console.log(err)
+  })
 }
+
+const delAppoint = (item) => {
+  ElMessageBox.confirm('确认删除该行信息？', '删除确认', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    delAppointByUserId({id:item.id}).then(res=>{
+      ElMessage({
+        type: 'success',
+        message: '删除成功!'
+      });
+      getData()
+    }).catch(err=>{
+      console.log(err)
+      ElMessage.error('删除失败')
+    })
+  }).catch(() => {
+    ElMessage({
+      type: 'info',
+      message: '已取消删除'
+    });
+  });
+}
+
+const handleDetail = (item) => {
+  showDetail.value = true
+  detailObj.value = Object.assign({},{...item})
+}
+
+const detailClose = () => {
+  showDetail.value = false
+}
+
+const handleEdit = (item) => {
+  dialogVisible.value = true
+  detailObj.value = Object.assign({},{...item})
+}
+
+const closeRevise = () => {
+  dialogVisible.value = false
+}
+
+const submitRevise = () => {
+  detailObj.value.status = 1
+  reviseAppointByUserId(detailObj.value).then(res => {
+    ElMessage.success('回答成功！')
+    dialogVisible.value = false
+    getData()
+  }).catch(err=>{
+    console.log(err)
+    ElMessage.error('提交失败')
+  })
+}
+
+// 生命周期钩子
+onMounted(() => {
+  store.commit("updateUserActiveIndex", "4-2");
+  getData()
+})
 </script>
 
 <style lang="less" scoped>

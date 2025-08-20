@@ -1,79 +1,145 @@
 <template>
+  <NavigationBar />
   <div class="details-box2">
-    <div class="title">
-      <strong>{{ FinanceUserDetails.bankName }}</strong>
-    </div>
-    <div class="introduce">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ FinanceUserDetails.introduce }}
+    <div class="bank-header">
+      <h1 class="bank-title">{{ FinanceUserDetails.bankName }}</h1>
+      <div class="bank-intro">
+        <p>{{ FinanceUserDetails.introduce }}</p>
+      </div>
     </div>
 
-    <div class="title">
-      <br />
-      <strong>请选择个人贷款还是组合贷款</strong><br />
-      <el-button type="success" plain round @click="individual" v-if="Already === false"
-        >个人贷款</el-button
-      >
-      <el-button type="success" plain round @click="combination" v-if="Already === false"
-        >组合贷款</el-button
-      >
-      <el-button type="warning" v-if="Already" disabled>已申请贷款</el-button>
+    <div class="loan-selection">
+      <div class="selection-header">
+        <h2>请选择贷款类型</h2>
+        <p>根据您的需求选择合适的贷款方式</p>
+      </div>
+      
+      <div class="loan-options">
+        <el-card class="loan-card" shadow="hover">
+          <div class="card-content">
+            <div class="card-icon">
+              <i class="el-icon-user-solid"></i>
+            </div>
+            <h3>个人贷款</h3>
+            <p>适用于个人独立申请贷款</p>
+            <el-button 
+              type="primary" 
+              plain 
+              round 
+              @click="individual" 
+              :disabled="Already"
+              class="loan-btn"
+            >
+              {{ Already ? '已申请' : '申请个人贷款' }}
+            </el-button>
+          </div>
+        </el-card>
+        
+        <el-card class="loan-card" shadow="hover">
+          <div class="card-content">
+            <div class="card-icon">
+              <i class="el-icon-user"></i>
+              <i class="el-icon-plus"></i>
+              <i class="el-icon-user"></i>
+            </div>
+            <h3>组合贷款</h3>
+            <p>适用于多人联合申请贷款</p>
+            <el-button 
+              type="success" 
+              plain 
+              round 
+              @click="combination" 
+              :disabled="Already"
+              class="loan-btn"
+            >
+              {{ Already ? '已申请' : '申请组合贷款' }}
+            </el-button>
+          </div>
+        </el-card>
+      </div>
     </div>
 
     <!--单人贷款 -->
     <el-dialog
       :title="title"
       v-model="showIndividual"
-      width="580px"
+      width="600px"
       :before-close="closeIndividual"
+      class="loan-dialog"
     >
       <el-form
-        v-model="FinanceUserDetails"
+        :model="FinanceUserDetails"
         ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
+        label-width="120px"
+        class="loan-form"
       >
-        <el-form-item label="姓名：" prop="name">
-          <el-input v-model="FinanceUserDetails.name"></el-input>
-        </el-form-item>
-        <el-form-item label="融资额度：" prop="money">
-          <el-input v-model="FinanceUserDetails.money"></el-input>
-        </el-form-item>
-        <el-form-item label="利息：" prop="rate">
-          <!-- <el-input v-model="FinanceUserDetails.rate"></el-input> -->
-          {{ FinanceUserDetails.rate }}
-        </el-form-item>
-        <el-form-item label="意向借款期：" prop="repayment">
-          <el-select v-model="value" placeholder="意向借款期：">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="联系方式：" prop="phone">
-          <el-input v-model="FinanceUserDetails.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号：" prop="idNum">
-          <el-input v-model="FinanceUserDetails.idNum"></el-input>
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="姓名：" prop="name">
+              <el-input v-model="FinanceUserDetails.name" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="融资额度：" prop="money">
+              <el-input v-model="FinanceUserDetails.money" placeholder="请输入融资额度">
+                <template #append>元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="利息：" prop="rate">
+              <el-input v-model="FinanceUserDetails.rate" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="意向借款期：" prop="repayment">
+              <el-select v-model="value" placeholder="请选择借款期" style="width: 100%">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="联系方式：" prop="phone">
+              <el-input v-model="FinanceUserDetails.phone" placeholder="请输入联系方式"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号：" prop="idNum">
+              <el-input v-model="FinanceUserDetails.idNum" placeholder="请输入身份证号"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
         <el-form-item label="上传材料：" prop="photo">
           <el-upload
             class="upload-demo"
             drag
             :action="upurl"
             multiple
-        :headers="upheaders"
-        :on-change="handleChange"
-        :on-success="handleSuccess"
-        :file-list="fileList"
-        ref="upload"
+            :headers="upheaders"
+            :on-change="handleChange"
+            :on-success="handleSuccess"
+            :file-list="fileList"
+            ref="upload"
           >
-            <el-icon><Upload /></el-icon>
+            <el-icon class="el-icon--upload"><Upload /></el-icon>
             <div class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
+            </div>
+            <div class="el-upload__tip">
+              请上传身份证、收入证明等相关材料
             </div>
           </el-upload>
         </el-form-item>
@@ -81,7 +147,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="closeIndividual">取 消</el-button>
-          <el-button type="success" @click="handleApplyOne">申请</el-button>
+          <el-button type="primary" @click="handleApplyOne">申请</el-button>
         </span>
       </template>
     </el-dialog>
@@ -90,85 +156,132 @@
     <el-dialog
       :title="title"
       v-model="showCombination"
-      width="580px"
+      width="650px"
       :before-close="closeCombination"
+      class="loan-dialog"
     >
       <el-form
-        v-model="UserDetailsMulti"
+        :model="UserDetailsMulti"
         ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
+        label-width="130px"
+        class="loan-form"
       >
-        <!-- 综合信息 -->
-        <strong style="color: green">申请融资信息：</strong>
-        <el-form-item label="融资额度：" prop="money">
-          <el-input v-model="UserDetailsMulti.money"></el-input>
-        </el-form-item>
-        <el-form-item label="利息：" prop="rate">
-          <!-- <el-input v-model="UserDetailsMulti.rate"></el-input> -->
-          {{ UserDetailsMulti.rate }}
-        </el-form-item>
-        <el-form-item label="意向借款期：" prop="repaymentPeriod">
-          <el-select v-model="value" placeholder="意向借款期：">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <!-- 用户1 -->
-        <strong style="color: green">用户1：</strong>
-        <el-form-item label="姓名：" prop="realName">
-          <el-input v-model="UserDetailsMulti.realName"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式：" prop="phone">
-          <el-input v-model="UserDetailsMulti.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号：" prop="idNum">
-          <el-input v-model="UserDetailsMulti.idNum"></el-input>
-        </el-form-item>
-        <!-- 用户2 -->
-        <strong style="color: green">用户2：</strong>
-        <el-form-item label="姓名：" prop="combinationName1">
-          <el-input v-model="UserDetailsMulti.combinationName1"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式：" prop="combinationPhone1">
-          <el-input v-model="UserDetailsMulti.combinationPhone1"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号：" prop="combinationIdnum1">
-          <el-input v-model="UserDetailsMulti.combinationIdnum1"></el-input>
-        </el-form-item>
-
-        <!-- 用户3 -->
-        <strong style="color: green">用户3：</strong>
-        <el-form-item label="姓名：" prop="combinationName2">
-          <el-input v-model="UserDetailsMulti.combinationName2"></el-input>
-        </el-form-item>
-        <el-form-item label="联系方式：" prop="combinationPhone2">
-          <el-input v-model="UserDetailsMulti.combinationPhone2"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号：" prop="combinationIdnum2">
-          <el-input v-model="UserDetailsMulti.combinationIdnum2"></el-input>
-        </el-form-item>
+        <el-card class="form-section">
+          <div slot="header" class="clearfix">
+            <span>融资信息</span>
+          </div>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="融资额度：" prop="money">
+                <el-input v-model="UserDetailsMulti.money" placeholder="请输入融资额度">
+                  <template #append>元</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="利息：" prop="rate">
+                <el-input v-model="UserDetailsMulti.rate" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
+          <el-form-item label="意向借款期：" prop="repaymentPeriod">
+            <el-select v-model="value" placeholder="请选择借款期" style="width: 100%">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-card>
+        
+        <el-card class="form-section">
+          <div slot="header" class="clearfix">
+            <span>主申请人信息</span>
+          </div>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="姓名：" prop="realName">
+                <el-input v-model="UserDetailsMulti.realName" placeholder="请输入姓名"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系方式：" prop="phone">
+                <el-input v-model="UserDetailsMulti.phone" placeholder="请输入联系方式"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
+          <el-form-item label="身份证号：" prop="idNum">
+            <el-input v-model="UserDetailsMulti.idNum" placeholder="请输入身份证号"></el-input>
+          </el-form-item>
+        </el-card>
+        
+        <el-card class="form-section">
+          <div slot="header" class="clearfix">
+            <span>联合申请人1信息</span>
+          </div>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="姓名：" prop="combinationName1">
+                <el-input v-model="UserDetailsMulti.combinationName1" placeholder="请输入姓名"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系方式：" prop="combinationPhone1">
+                <el-input v-model="UserDetailsMulti.combinationPhone1" placeholder="请输入联系方式"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
+          <el-form-item label="身份证号：" prop="combinationIdnum1">
+            <el-input v-model="UserDetailsMulti.combinationIdnum1" placeholder="请输入身份证号"></el-input>
+          </el-form-item>
+        </el-card>
+        
+        <el-card class="form-section">
+          <div slot="header" class="clearfix">
+            <span>联合申请人2信息（可选）</span>
+          </div>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="姓名：" prop="combinationName2">
+                <el-input v-model="UserDetailsMulti.combinationName2" placeholder="请输入姓名"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系方式：" prop="combinationPhone2">
+                <el-input v-model="UserDetailsMulti.combinationPhone2" placeholder="请输入联系方式"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
+          <el-form-item label="身份证号：" prop="combinationIdnum2">
+            <el-input v-model="UserDetailsMulti.combinationIdnum2" placeholder="请输入身份证号"></el-input>
+          </el-form-item>
+        </el-card>
+        
         <el-form-item label="上传材料：" prop="photo">
           <el-upload
             class="upload-demo"
             drag
             :action="upurl"
             multiple
-        :headers="upheaders"
-        :on-change="handleChange"
-        :on-success="handleSuccess"
-        :file-list="fileList"
-        ref="upload"
+            :headers="upheaders"
+            :on-change="handleChange"
+            :on-success="handleSuccess"
+            :file-list="fileList"
+            ref="upload"
           >
-            <el-icon><Upload /></el-icon>
+            <el-icon class="el-icon--upload"><Upload /></el-icon>
             <div class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
+            </div>
+            <div class="el-upload__tip">
+              请上传所有申请人的身份证、收入证明等相关材料
             </div>
           </el-upload>
         </el-form-item>
@@ -176,11 +289,12 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="closeCombination">取 消</el-button>
-          <el-button type="success" @click="handleApplyMulti">申请</el-button>
+          <el-button type="primary" @click="handleApplyMulti">申请</el-button>
         </span>
       </template>
     </el-dialog>
   </div>
+  <Footer />
 </template>
 
 <script setup>
@@ -193,6 +307,8 @@ import {
   addFinance,
   addFinanceMulti,
 } from "../../api/finance";
+import NavigationBar from "../../components/NavigationBar.vue";
+import Footer from "../../components/Footer.vue";
 
 // 使用 Composition API
 const router = useRouter()
@@ -201,7 +317,7 @@ const route = useRoute()
 // 添加一个全局状态变量来替代未定义的store
 const globalState = reactive({
   mutiFile: "",
-  fileUploadRoad: "http://localhost:8080" // 添加默认值，根据实际情况修改
+  fileUploadRoad: "http://localhost:9090" // 添加默认值，根据实际情况修改
 })
 
 // 响应式数据
@@ -613,92 +729,140 @@ onMounted(() => {
 <style lang="less" scoped>
 .details-box2 {
   width: 1100px;
-  margin: 10px auto;
+  margin: 20px auto;
   background: #fff;
   min-height: 100%;
   height: auto;
-  padding: 10px 20px;
-  img {
-    width: 300px;
-    height: 300px;
-    float: left;
-    margin-right: 20px;
-  }
-  .title {
-    font-size: 18px;
-    line-height: 40px;
-  }
-  .introduce {
-    line-height: 25px;
-    max-height: 100px;
-  }
-  .item-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    height: 30px;
-    line-height: 30px;
-    .item-title {
-      font-weight: bold;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  
+  .bank-header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+    
+    .bank-title {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 15px;
     }
-    .item-text {
+    
+    .bank-intro {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
     }
   }
-  .info {
-    position: relative;
-    width: 340px;
-    height: 300px;
-    float: left;
-    .title {
-      font-size: 22px;
-      font-weight: bold;
+  
+  .loan-selection {
+    .selection-header {
+      text-align: center;
+      margin-bottom: 30px;
+      
+      h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+      
+      p {
+        font-size: 16px;
+        color: #666;
+      }
     }
-    .content {
-      height: 100px;
+    
+    .loan-options {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      
+      .loan-card {
+        width: 350px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-content {
+          text-align: center;
+          padding: 30px 20px;
+          
+          .card-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            
+            i {
+              margin: 0 5px;
+              color: #409eff;
+            }
+          }
+          
+          h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+          }
+          
+          p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+          }
+          
+          .loan-btn {
+            width: 150px;
+          }
+        }
+      }
     }
-    .price {
-      color: red;
-      font-size: 25px;
-      font-weight: bold;
+  }
+}
+
+.loan-dialog {
+  .loan-form {
+    padding: 20px 0;
+    
+    .form-section {
+      margin-bottom: 20px;
+      border-radius: 6px;
+      
+      :deep(.el-card__header) {
+        background-color: #f5f7fa;
+        padding: 10px 20px;
+        font-weight: bold;
+      }
     }
-    .time {
-      margin-top: 10px;
+    
+    :deep(.el-form-item) {
+      margin-bottom: 20px;
+    }
+    
+    :deep(.el-upload-dragger) {
+      width: 100%;
+    }
+    
+    :deep(.el-upload__tip) {
+      text-align: center;
       color: #999;
-      .createtime {
-        float: left;
-      }
-      .updatetime {
-        float: right;
-      }
+      font-size: 12px;
+      margin-top: 7px;
     }
-  }
-  .operation {
-    position: absolute;
-    bottom: 0;
-    margin-top: 20px;
-    .like,
-    .collection,
-    .comment {
-      display: inline-block;
-      width: 30px;
-      margin-right: 30px;
-      img {
-        margin: 0;
-        width: 20px;
-        height: 20px;
-        border-radius: 6px;
-      }
-    }
-  }
-  .add-shopcart {
-    position: absolute;
-    right: 20px;
-    bottom: 5px;
   }
 }
-.btn-style {
+
+.dialog-footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 0 20px 20px;
 }
+
 </style>

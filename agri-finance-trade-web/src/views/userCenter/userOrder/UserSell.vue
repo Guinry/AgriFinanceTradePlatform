@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="user-sell">
     <div class="sell" v-for="(item, index) in userSellList" :key="index">
@@ -12,12 +10,12 @@
         <div style="display: flex">
           <div class="right-item" style="margin-right: 20px">
             创建时间：<span class="item-text">{{
-              item.createTime | formatTimer
+              formatTimer(item.createTime)
             }}</span>
           </div>
           <div class="right-item">
             更新时间：<span class="item-text">{{
-              item.updateTime | formatTimer
+              formatTimer(item.updateTime)
             }}</span>
           </div>
         </div>
@@ -27,12 +25,12 @@
           </div>
           <div class="item-content">
             <span class="price" style="margin-right: 20px"
-              >￥ {{ item.uninPricee }}</span
+            >￥ {{ item.uninPricee }}</span
             >
             <el-tag
-              :type="item.type === 0 ? 'danger' : 'success'"
-              size="mini"
-              >{{ item.type === 0 ? "未发货" : "已发货" }}</el-tag
+                :type="item.type === 0 ? 'danger' : 'success'"
+                size="small"
+            >{{ item.type === 0 ? "未发货" : "已发货" }}</el-tag
             >
           </div>
         </div>
@@ -41,38 +39,41 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
 import { selectSellByUserName } from "../../../api/order";
-export default {
-  data() {
-    return {
-      userSellList: [],
-    };
-  },
-  filters: {
-    formatTimer: function (value) {
-      let date = new Date(value);
-      let y = date.getFullYear();
-      let MM = date.getMonth() + 1;
-      MM = MM < 10 ? "0" + MM : MM;
-      let d = date.getDate();
-      d = d < 10 ? "0" + d : d;
-      let h = date.getHours();
-      h = h < 10 ? "0" + h : h;
-      let m = date.getMinutes();
-      m = m < 10 ? "0" + m : m;
-      let s = date.getSeconds();
-      s = s < 10 ? "0" + s : s;
-      return y + "-" + MM + "-" + d + " " + h + ":" + m;
-    },
-  },
-  created() {
-    this.$store.commit("updateUserActiveIndex", "3-2");
-    selectSellByUserName({}).then((res) => {
-      this.userSellList = res.data;
-    });
-  },
-};
+
+// 使用 Composition API
+const store = useStore()
+
+// 响应式数据
+const userSellList = ref([])
+
+// 过滤器转换为方法
+const formatTimer = (value) => {
+  let date = new Date(value);
+  let y = date.getFullYear();
+  let MM = date.getMonth() + 1;
+  MM = MM < 10 ? "0" + MM : MM;
+  let d = date.getDate();
+  d = d < 10 ? "0" + d : d;
+  let h = date.getHours();
+  h = h < 10 ? "0" + h : h;
+  let m = date.getMinutes();
+  m = m < 10 ? "0" + m : m;
+  let s = date.getSeconds();
+  s = s < 10 ? "0" + s : s;
+  return y + "-" + MM + "-" + d + " " + h + ":" + m;
+}
+
+// 生命周期钩子
+onMounted(() => {
+  store.commit("updateUserActiveIndex", "3-2");
+  selectSellByUserName({}).then((res) => {
+    userSellList.value = res.data;
+  });
+})
 </script>
 
 <style lang="less" scoped>

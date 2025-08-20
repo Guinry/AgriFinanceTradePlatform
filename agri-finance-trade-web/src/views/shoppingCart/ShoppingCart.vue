@@ -3,14 +3,14 @@
   <div class="cart">
     <receiving-address ref="address"></receiving-address>
     <el-table
-      ref="multipleTableRef"
-      :data="dataArray"
-      tooltip-effect="dark"
-      style="width: 100%;margin-top: 20px;"
-      :reserve-selection="true"
-      :row-key="(row) => { return row.id }"
-      @selection-change="handleSelectionChange"
-      :row-class-name="rowClassName">
+        ref="multipleTableRef"
+        :data="dataArray"
+        tooltip-effect="dark"
+        style="width: 100%;margin-top: 20px;"
+        :reserve-selection="true"
+        row-key="shoppingId"
+        @selection-change="handleSelectionChange"
+        :row-class-name="rowClassName">
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column label="商品">
         <template #default="scope">
@@ -41,7 +41,7 @@
     </el-table>
     <div class="cart-actions">
       <div style="margin-top: 20px" class="cancle">
-        <el-button @click="toggleSelection()">取消选择</el-button>
+        <el-button @click="toggleSelection()">{{ isAllSelected ? '取消选择' : '全选' }}</el-button>
       </div>
       <div class="submit">
         <div class="total-price">
@@ -77,6 +77,8 @@ const addressData = ref({})
 const multipleSelection = ref([])
 const multipleTableRef = ref(null)
 const address = ref(null)
+// 添加全选状态
+const isAllSelected = ref(false)
 
 // 定义 reload 方法
 const reload = () => {
@@ -113,15 +115,15 @@ const payment = () => {
       tMoney: totalprice.value,
       shoppingModelList: multipleSelection.value
     })
-      .then((res) => {
-        store.commit("updatePaymentInfo", res);
-        // 打开新页面
-        window.open(res.data);
-        reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          store.commit("updatePaymentInfo", res);
+          // 打开新页面
+          window.open(res.data);
+          reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   } else {
     ElMessage.error('请选择商品')
   }
@@ -155,55 +157,58 @@ const toggleSelection = (rows) => {
       multipleTableRef.value.toggleRowSelection(row);
     });
   } else {
-    multipleTableRef.value.clearSelection();
+    // 修改为切换全选/取消全选状态
+    if (isAllSelected.value) {
+      multipleTableRef.value.clearSelection();
+    } else {
+      multipleTableRef.value.selectAll();
+    }
+    isAllSelected.value = !isAllSelected.value;
   }
 }
 
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
-  localStorage.setItem('multipleSelection', JSON.stringify(multipleSelection.value))
-  let sum = 0
+  // 更新全选状态
+  isAllSelected.value = val.length === dataArray.value.length && val.length > 0;
+  
+  // 重新计算总价
+  let sum = 0;
   val.forEach(e => {
-    sum = sum + (Number(e.price) * e.count)
-  })
-  totalprice.value = sum
-  console.log('this.totalprice', totalprice.value)
+    sum += Number(e.price) * e.count;
+  });
+  totalprice.value = sum;
+  console.log('this.totalprice', totalprice.value);
 }
 
 const calPrice = () => {
-  let sum = 0
-  multipleSelection.value = JSON.parse(localStorage.getItem('multipleSelection'))
-  if (multipleSelection.value && multipleSelection.value.length > 0) {
-    dataArray.value.forEach(e => {
-      multipleSelection.value.forEach(e1 => {
-        if (e.shoppingId === e1.shoppingId) {
-          console.log('e1.shoppingId', e.count, e1.shoppingId)
-          sum = sum + (Number(e1.price) * e.count)
-        }
-      })
-    })
-  }
-  totalprice.value = sum
-  console.log('---this.totalprice', totalprice.value)
+  // 修复价格计算逻辑
+  let sum = 0;
+  multipleSelection.value.forEach(e => {
+    sum += Number(e.price) * e.count;
+  });
+  totalprice.value = sum;
+  console.log('---this.totalprice', totalprice.value);
 }
 
 // 更新商品数量  /cart/update/{id}/{count}
 const handleChange = (val, row) => {
+  // 更新选中项中的商品数量
   if (multipleSelection.value && multipleSelection.value.length > 0) {
-    multipleSelection.value.forEach(e => {
-      if (e.shoppingId === row.shoppingId) {
-        e.count = val
-      }
-    })
-    localStorage.setItem('multipleSelection', JSON.stringify(multipleSelection.value))
+    const selectedItems = multipleSelection.value;
+    const index = selectedItems.findIndex(item => item.shoppingId === row.shoppingId);
+    if (index !== -1) {
+      selectedItems[index].count = val;
+      multipleSelection.value = [...selectedItems];
+    }
   }
 
   updateGoodsCount({
     count: val,
     id: row.shoppingId
   }).then(res => {
-    multipleSelection.value = JSON.parse(localStorage.getItem('multipleSelection'))
-    calPrice()
+    // 更新数量后重新计算价格
+    calPrice();
   }).catch(err => {
     console.log(err)
   })
@@ -214,14 +219,20 @@ const getOrderList = () => {
     if (res.flag == true) {
       dataArray.value = res.data;
       totalprice.value = 0;
+      // 页面加载后恢复之前的选择状态
+      nextTick(() => {
+        multipleSelection.value.forEach(row => {
+          multipleTableRef.value.toggleRowSelection(row, true);
+        });
+      });
     } else {
       ElMessage.error('您未登录，请先登录')
       router.push("/login")
     }
   })
-    .catch((err) => {
-      console.log(err);
-    });
+      .catch((err) => {
+        console.log(err);
+      });
 }
 
 // 生命周期钩子
@@ -231,12 +242,12 @@ onMounted(() => {
   }
   getOrderList()
   selectDefaultByOwnName({})
-    .then((res) => {
-      addressData.value = res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((res) => {
+        addressData.value = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 })
 </script>
 

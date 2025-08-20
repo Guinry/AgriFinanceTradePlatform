@@ -26,7 +26,7 @@
               <el-menu-item
                   index="1-4"
                   v-if="isExpert"
-                  @click="handleExperInfo"
+                  @click="handleExpertInfo"
                   class="menu-item"
               >
                 <el-icon><Medal /></el-icon>
@@ -173,9 +173,9 @@ const UserSellClick = () => router.push("userSell")
 const handleExpertQuestion = () => router.push("/userQuestion")
 const handleExpertAppoint = () => router.push("/userAppointment")
 const UserFinance = () => router.push("/userFinance")
-const PublishedKnowledgeClick = () => router.push("/home/user/publishedknowledge")
+const handleExpertInfo = () => router.push("/expertInfo")
+const PublishedKnowledgeClick = () => router.push("/expertKnowledge")
 const UserManageClick = () => router.push("/home/usermanage")
-const handleExperInfo = () => router.push("/home/user/expertInfo")
 
 // 更新 Vuex 中的 activeIndex
 store.commit("updateUserActiveIndex", "1-1")

@@ -158,6 +158,21 @@ const routes = [
                 path: '/userFinance',
                 name: 'UserFinance',
                 component: () => import('../views/userCenter/userFinance/UserFinance.vue')
+            },
+            {
+                path: '/expertInfo',
+                name: 'ExpertInfo',
+                component: () => import('../views/userCenter/userInformation/ExpertInfo.vue')
+            },
+            {
+                path: '/expertKnowledge',
+                name: 'ExpertKnowledge',
+                component: () => import('../views/userCenter/userExpert/ExpertKnowledge.vue')
+            },
+            {
+                path: '/publishKnowledge',
+                name: 'PublishKnowledge',
+                component: () => import('../components/PublishKnowledge.vue')
             }
         ]
     }
