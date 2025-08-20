@@ -98,7 +98,7 @@ const handleFinancingCommand = (command) => {
       router.push("/smartMatch").catch((err) => err)
       break
     case 'financing':
-      router.push("/financingApplication").catch((err) => err)
+      router.push("/financeApplication").catch((err) => err)
       break
   }
 }

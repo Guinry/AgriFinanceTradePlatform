@@ -14,13 +14,13 @@
       <video
         v-if="updateInfo.type === 'mp4' || updateInfo.type === 'MP4'"
         class="media-content"
-        :src="imgShowRoad + '/file/' + updateInfo.picPath"
+        :src="imgShowRoad + '/file/upload/order/' + updateInfo.picPath"
         controls
       ></video>
       <img
         v-else
         class="media-content"
-        :src="imgShowRoad + '/file/' + updateInfo.picPath"
+        :src="imgShowRoad + '/file/upload/order/' + updateInfo.picPath"
         alt=""
       />
     </div>

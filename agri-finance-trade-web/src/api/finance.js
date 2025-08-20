@@ -89,7 +89,7 @@ export function selectRecommend() {
 export function selectFinanceUser(bank_id) {
     return request({
         method: 'get',
-        url: '/finance/selectFinaceUser/' + bank_id.bank_id,
+        url: '/finance/selectFinanceUser/' + bank_id.bank_id,
         data: bank_id,
         headers: {
             'Authorization': window.localStorage.token,

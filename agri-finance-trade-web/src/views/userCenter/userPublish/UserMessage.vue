@@ -30,7 +30,7 @@
           <div class="image-container">
             <img
                 v-if="item.picture"
-                :src="$store.state.imgShowRoad + '/file/' + item.picture"
+                :src="$store.state.imgShowRoad + '/file/upload/order/' + item.picture"
                 class="product-image"
             />
             <img v-else src="../../../assets/img/wutu.gif" class="product-image" />

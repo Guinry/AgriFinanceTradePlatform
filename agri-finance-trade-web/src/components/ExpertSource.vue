@@ -11,7 +11,7 @@
     </div>
 
     <div class="goods" v-for="(item, index) in cgoods" :style="index===cgoods.length-1?'':'border-bottom:1px solid #f2f2f2;'" :key="index">
-      <img :src="imgShowRoad + '/file/' + 'experta.png'" alt="" />
+      <img :src="imgShowRoad + '/file/upload/order/' + 'experta.png'" alt="" />
       <div class="info">
         <p class="content">
           <span class="info-item"><strong>姓名：</strong>{{item.realName}}</span>

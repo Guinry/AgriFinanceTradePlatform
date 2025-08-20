@@ -73,7 +73,7 @@ const pageClick = (item) => {
 
 const DetailBtn = (item) => {
   localStorage.setItem('financeObj',JSON.stringify(item))
-  router.push(`/home/financingDetails?bankId=${item.bankId}`).catch((err) => err);
+  router.push(`/financeDetails?bankId=${item.bankId}`).catch((err) => err);
 }
 
 // 数据获取

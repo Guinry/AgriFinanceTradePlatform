@@ -8,7 +8,7 @@
     >
       <img
         v-if="item.picture"
-        :src="$store.state.imgShowRoad + '/file/' + item.picture"
+        :src="$store.state.imgShowRoad + '/file/upload/order/' + item.picture"
         alt=""
       />
       <img

@@ -15,7 +15,7 @@
       <el-table-column label="商品">
         <template #default="scope">
           <div class="goods">
-            <img :src="$store.state.imgShowRoad + '/file/' + scope.row.picture" alt=""/>
+            <img :src="$store.state.imgShowRoad + '/file/upload/order/' + scope.row.picture" alt=""/>
             <div class="info">
               <h4 class="title">{{ scope.row.title }}</h4>
               <p class="content">{{ scope.row.content }}</p>
@@ -61,7 +61,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { alipayRoad } from "../../api/alipay";
 import { cartDeleteOrder, cartShow, updateGoodsCount } from "../../api/cart";
-import ReceivingAddress from "../../components/ReceivingAddress.vue";
+import ReceivingAddress from "../../components/ReceiveAddress.vue";
 import { selectDefaultByOwnName } from "../../api/address";
 import NavigationBar from "../../components/NavigationBar.vue";
 import Footer from "../../components/Footer.vue";

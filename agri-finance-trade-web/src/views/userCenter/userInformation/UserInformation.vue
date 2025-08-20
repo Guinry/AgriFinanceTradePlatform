@@ -73,7 +73,7 @@ const updateInfo = () => {
     avatar: userinfo.avatar,
   })
       .then((res) => {
-        if (res.flag == true) {
+        if (res.flag) {
           console.log('res', res)
           console.log('this.userinfo', userinfo)
           store.commit("removeStorage");

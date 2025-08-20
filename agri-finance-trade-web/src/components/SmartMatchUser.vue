@@ -127,7 +127,7 @@
         <img
           class="goods-img"
           v-if="item.avatar !== ''"
-          :src="$store.state.imgShowRoad + '/file/' + item.avatar"
+          :src="$store.state.imgShowRoad + '/file/upload/avatar/' + item.avatar"
           alt=""
         />
         <img

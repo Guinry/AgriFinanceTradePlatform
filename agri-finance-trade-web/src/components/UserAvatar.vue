@@ -1,6 +1,6 @@
 <template>
   <div class="user-avatar">
-    <img :src="$store.state.imgShowRoad + '/file/' + cUserAvatar" alt="" class="avatar"/>
+    <img :src="$store.state.imgShowRoad + '/file/upload/avatar/' + cUserAvatar" alt="" class="avatar"/>
     <el-form label-width="100px">
       <el-upload
         class="user-avatar_el_upload"

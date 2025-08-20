@@ -4,7 +4,7 @@
   <NavigationBar />
   <div class="details-box">
     <div class="image-section">
-      <img v-if="data.picture" :src="$store.state.imgShowRoad + '/file/' + data.picture" alt="" />
+      <img v-if="data.picture" :src="$store.state.imgShowRoad + '/file/upload/order/' + data.picture" alt="" />
       <img v-else src="../../assets/img/wutu.gif" alt="" class="no-image"/>
     </div>
     <div class="info">

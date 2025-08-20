@@ -77,14 +77,19 @@ const routes = [
         component: () => import('../views/expertGuidance/MakeAppointment.vue')
     },
     {
-        path: '/financingApplication',
-        name: 'FinancingApplication',
-        component: () => import('../views/financingApplication/FinanceApplication.vue')
+        path: '/financeApplication',
+        name: 'FinanceApplication',
+        component: () => import('../views/financeApplication/FinanceApplication.vue')
     },
     {
         path: '/smartMatch',
         name: 'SmartMatch',
-        component: () => import('../views/financingApplication/SmartMatch.vue')
+        component: () => import('../views/financeApplication/SmartMatch.vue')
+    },
+    {
+        path: '/financeDetails',
+        name: 'FinanceDetails',
+        component: () => import('../views/financeApplication/FinanceDetails.vue')
     },
     {
         path: '/userCenter',
@@ -148,6 +153,11 @@ const routes = [
                 path: '/userSell',
                 name: 'UserSell',
                 component: () => import('../views/userCenter/userOrder/UserSell.vue')
+            },
+            {
+                path: '/userFinance',
+                name: 'UserFinance',
+                component: () => import('../views/userCenter/userFinance/UserFinance.vue')
             }
         ]
     }

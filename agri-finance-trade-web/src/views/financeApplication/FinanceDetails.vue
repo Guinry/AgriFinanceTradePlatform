@@ -1,10 +1,10 @@
 <template>
   <div class="details-box2">
     <div class="title">
-      <strong>{{ FinaceUserDetails.bankName }}</strong>
+      <strong>{{ FinanceUserDetails.bankName }}</strong>
     </div>
     <div class="introduce">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ FinaceUserDetails.introduce }}
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ FinanceUserDetails.introduce }}
     </div>
 
     <div class="title">
@@ -27,20 +27,20 @@
       :before-close="closeIndividual"
     >
       <el-form
-        v-model="FinaceUserDetails"
+        v-model="FinanceUserDetails"
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
       >
         <el-form-item label="姓名：" prop="name">
-          <el-input v-model="FinaceUserDetails.name"></el-input>
+          <el-input v-model="FinanceUserDetails.name"></el-input>
         </el-form-item>
         <el-form-item label="融资额度：" prop="money">
-          <el-input v-model="FinaceUserDetails.money"></el-input>
+          <el-input v-model="FinanceUserDetails.money"></el-input>
         </el-form-item>
         <el-form-item label="利息：" prop="rate">
-          <!-- <el-input v-model="FinaceUserDetails.rate"></el-input> -->
-          {{ FinaceUserDetails.rate }}
+          <!-- <el-input v-model="FinanceUserDetails.rate"></el-input> -->
+          {{ FinanceUserDetails.rate }}
         </el-form-item>
         <el-form-item label="意向借款期：" prop="repayment">
           <el-select v-model="value" placeholder="意向借款期：">
@@ -54,10 +54,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="联系方式：" prop="phone">
-          <el-input v-model="FinaceUserDetails.phone"></el-input>
+          <el-input v-model="FinanceUserDetails.phone"></el-input>
         </el-form-item>
         <el-form-item label="身份证号：" prop="idNum">
-          <el-input v-model="FinaceUserDetails.idNum"></el-input>
+          <el-input v-model="FinanceUserDetails.idNum"></el-input>
         </el-form-item>
         <el-form-item label="上传材料：" prop="photo">
           <el-upload
@@ -189,8 +189,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Upload } from '@element-plus/icons-vue'
 import {
-  toAuthorizationUser,
-  selectFinaceUser,
+  selectFinanceUser,
   addFinance,
   addFinanceMulti,
 } from "../../api/finance";
@@ -198,6 +197,12 @@ import {
 // 使用 Composition API
 const router = useRouter()
 const route = useRoute()
+
+// 添加一个全局状态变量来替代未定义的store
+const globalState = reactive({
+  mutiFile: "",
+  fileUploadRoad: "http://localhost:8080" // 添加默认值，根据实际情况修改
+})
 
 // 响应式数据
 const options = ref([
@@ -230,7 +235,7 @@ const upheaders = ref({
 })
 const fileList = ref([])
 const imgurl = ref("")
-const upurl = computed(() => store.state.fileUploadRoad + "/file/uploadInfo/info")
+const upurl = computed(() => globalState.fileUploadRoad + "/file/uploadInfo/info")
 const data = ref([])
 const Already = ref(false)
 const AuthorizationUser = reactive({
@@ -244,7 +249,7 @@ const isAuthorization = ref(true)
 const showIndividual = ref(false)
 const showCombination = ref(false)
 const showAdd = ref(false)
-const FinaceUserDetails = reactive({
+const FinanceUserDetails = reactive({
   bankName: "",
   name: "",
   money: "",
@@ -281,18 +286,18 @@ const upload = ref(null)
 const handleApplyOne = () => {
   if (localStorage.getItem("token")) {
     console.log("信息");
-    console.log(FinaceUserDetails);
+    console.log(FinanceUserDetails);
 
     if (
-      FinaceUserDetails.name == "" ||
-      FinaceUserDetails.name == null
+      FinanceUserDetails.name == "" ||
+      FinanceUserDetails.name == null
     ) {
       alert("姓名不能为空");
       return;
     }
     if (
-      FinaceUserDetails.money == "" ||
-      FinaceUserDetails.money == null
+      FinanceUserDetails.money == "" ||
+      FinanceUserDetails.money == null
     ) {
       alert("融资额度不能为空");
       return;
@@ -302,22 +307,22 @@ const handleApplyOne = () => {
       return;
     }
     if (
-      FinaceUserDetails.phone == "" ||
-      FinaceUserDetails.phone == null
+      FinanceUserDetails.phone == "" ||
+      FinanceUserDetails.phone == null
     ) {
       alert("联系方式不能为空");
       return;
     }
     if (
-      FinaceUserDetails.idNum == "" ||
-      FinaceUserDetails.idNum == null
+      FinanceUserDetails.idNum == "" ||
+      FinanceUserDetails.idNum == null
     ) {
       alert("身份证号不能为空");
       return;
     }
     if (
-      store.state.mutiFile == "" ||
-      store.state.mutiFile == null
+      globalState.mutiFile == "" ||
+      globalState.mutiFile == null
     ) {
       alert("资料不能为空");
       return;
@@ -325,13 +330,13 @@ const handleApplyOne = () => {
 
     addFinance({
       bankId: window.localStorage.financeObj.substring(10, 14),
-      realName: FinaceUserDetails.name,
-      money: FinaceUserDetails.money,
-      rate: FinaceUserDetails.rate,
+      realName: FinanceUserDetails.name,
+      money: FinanceUserDetails.money,
+      rate: FinanceUserDetails.rate,
       repayment: value.value,
-      phone: FinaceUserDetails.phone,
-      idNum: FinaceUserDetails.idNum,
-      fileInfo: store.state.mutiFile
+      phone: FinanceUserDetails.phone,
+      idNum: FinanceUserDetails.idNum,
+      fileInfo: globalState.mutiFile
     })
       .then((res) => {
         if (res.flag) {
@@ -340,16 +345,16 @@ const handleApplyOne = () => {
           localStorage.removeItem("financeObj");
           Already.value = true;
           showIndividual.value = false;
-          store.state.mutiFile = "";
+          globalState.mutiFile = "";
         } else {
           ElMessage.error(res.message);
-          store.state.mutiFile = "";
+          globalState.mutiFile = "";
         }
       })
       .catch((err) => {
         console.log(err);
         ElMessage.error(err.message);
-        store.state.mutiFile = "";
+        globalState.mutiFile = "";
       });
   } else {
     ElMessage.error("请先登录");
@@ -413,8 +418,8 @@ const handleApplyMulti = () => {
       return;
     }
     if (
-      store.state.mutiFile == "" ||
-      store.state.mutiFile == null
+      globalState.mutiFile == "" ||
+      globalState.mutiFile == null
     ) {
       alert("资料不能为空");
       return;
@@ -438,7 +443,7 @@ const handleApplyMulti = () => {
       combinationPhone2: UserDetailsMulti.combinationPhone2,
       combinationIdnum2: UserDetailsMulti.combinationIdnum2,
 
-      fileInfo: store.state.mutiFile
+      fileInfo: globalState.mutiFile
     })
       .then((res) => {
         if (res.flag) {
@@ -447,16 +452,16 @@ const handleApplyMulti = () => {
           localStorage.removeItem("financeObj");
           Already.value = true;
           showCombination.value = false;
-          store.state.mutiFile = "";
+          globalState.mutiFile = "";
         } else {
           ElMessage.error(res.message);
-          store.state.mutiFile = "";
+          globalState.mutiFile = "";
         }
       })
       .catch((err) => {
         console.log(err);
         ElMessage.error(err.message);
-        store.state.mutiFile = "";
+        globalState.mutiFile = "";
       });
   } else {
     ElMessage.error("请先登录");
@@ -466,14 +471,14 @@ const handleApplyMulti = () => {
 
 const individual = () => {
   title.value = "个人贷款信息";
-  store.state.mutiFile = "";
-  selectFinaceUser({
+  globalState.mutiFile = ""; // 修复：使用globalState替代store
+  selectFinanceUser({
     bank_id: window.localStorage.financeObj.substring(10, 14),
   }).then((res) => {
     showIndividual.value = true;
     showCombination.value = false;
     if (res.flag) {
-      Object.assign(FinaceUserDetails, res.data);
+      Object.assign(FinanceUserDetails, res.data);
       console.log(route.query.bankId);
     } else {
       console.log(route.query.bankId);
@@ -483,12 +488,12 @@ const individual = () => {
 }
 
 const select = () => {
-  selectFinaceUser({
+  selectFinanceUser({
     bank_id: window.localStorage.financeObj.substring(10, 14),
   }).then((res) => {
     if (res.flag) {
-      Object.assign(FinaceUserDetails, res.data);
-      console.log(FinaceUserDetails);
+      Object.assign(FinanceUserDetails, res.data);
+      console.log(FinanceUserDetails);
     } else {
       console.log(window.localStorage.financeObj.substring(10, 14));
       ElMessage.error(res.data);
@@ -498,8 +503,8 @@ const select = () => {
 
 const combination = () => {
   title.value = "组合贷款信息";
-  store.state.mutiFile = "";
-  selectFinaceUser({
+  globalState.mutiFile = ""; // 修复：使用globalState替代store
+  selectFinanceUser({
     bank_id: window.localStorage.financeObj.substring(10, 14),
   }).then((res) => {
     showCombination.value = true;
@@ -524,12 +529,12 @@ const closeAdd = () => {
 
 const closeIndividual = () => {
   showIndividual.value = false;
-  store.state.mutiFile = "";
+  globalState.mutiFile = "";
 }
 
 const closeCombination = () => {
   showCombination.value = false;
-  store.state.mutiFile = "";
+  globalState.mutiFile = "";
 }
 
 const toAuthorization = () => {
@@ -562,9 +567,9 @@ const handleError = (err, file, fileList) => {
 const handleSuccess = (response, file, fileList) => {
   if (file.response.flag == true) {
     fileList.value = fileList;
-    store.state.mutiFile += file.response.data + " ";
+    globalState.mutiFile += file.response.data + " "; // 修复：使用globalState替代store
     console.log("上传文件=====")
-    console.log(store.state.mutiFile)
+    console.log(globalState.mutiFile) // 修复：使用globalState替代store
     console.log("=============")
     if (fileList.length >= 1) {
       // uploadDisabled.value = true;

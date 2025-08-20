@@ -12,7 +12,7 @@
 
     <!-- 商品图片 -->
     <div class="image-container">
-      <img :src="$store.state.imgShowRoad + '/file/' + data.picture" v-if="data.picture" alt="商品图片" />
+      <img :src="$store.state.imgShowRoad + '/file/upload/order/' + data.picture" v-if="data.picture" alt="商品图片" />
       <img v-else src="../../assets/img/wutu.gif" alt="无图片" />
     </div>
 

@@ -76,7 +76,7 @@ const router = useRouter()
 
 // 方法定义
 const getImagePath = (picturePath) => {
-  const fullPath = store.state.imgShowRoad + '/file/' + picturePath;
+  const fullPath = store.state.imgShowRoad + '/file/upload/order/' + picturePath;
   return fullPath;
 };
 
